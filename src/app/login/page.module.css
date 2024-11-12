@@ -8,29 +8,98 @@
   font-family: Arial, sans-serif;
 }
 
+
+
 .mainWrapper {
+  width: 100%;
+  /* Ensure full-width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Centers main vertically */
   padding: 2px;
-  /* Border thickness */
   border-radius: 14px;
-  background: linear-gradient(135deg, #BF03B0, #1D88F0);
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  max-width: 800px;
+  overflow: hidden;
+  position: relative;
+  height: 600px;
+  box-shadow: 0px 0px 50px 15px rgba(0, 0, 0, 0.3);
+  /* Larger glow effect */
+  /* Set the height of the mainWrapper */
 }
 
-.mainWrapper .main {
-  border-radius: 12px;
-  background-color: #EAE9EE;
-  padding: 32px;
+.main,
+.imageContainer {
+  width: 50%;
+  /* Set each container to 50% width */
 }
 
+
+.imageContainer {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Set the height of the imageContainer to 100% of the mainWrapper */
+  background-color: #0A0A15;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.welcomeText {
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  max-width: 80%;
+}
+
+.image {
+  width: 50%;
+  object-fit: contain;
+  /* Ensures the image fits within the container while maintaining aspect ratio */
+}
 
 .main {
   display: flex;
+  height: 100%;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  /* Centers content vertically within main */
   gap: 24px;
   padding: 32px;
-  border-radius: 12px;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
   background-color: #EAE9EE;
+  transition: transform 0.2s ease-in-out;
+}
+
+
+.mainWrapper.slide .main {
+  transform: translateX(100%);
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.mainWrapper.slide .imageContainer {
+  transform: translateX(-100%);
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.mainWrapper .main {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  background-color: #EAE9EE;
+  padding: 32px;
 }
 
 .heading {
@@ -43,7 +112,6 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  max-width: 320px;
 }
 
 .input {
@@ -66,15 +134,30 @@
   border-radius: 8px;
   font-size: 16px;
   font-weight: bold;
-  background: linear-gradient(135deg, #BF03B0, #1D88F0);
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .button:hover {
-  background-color: var(--primary-color-hover);
+  background-color: var(--primary-color);
 }
+
+.forgotPassword {
+  font-size: 14px;
+  color: var(--primary-color);
+  text-align: center;
+  display: block;
+  margin-top: -8px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.forgotPassword:hover {
+  color: var(--secondary-color);
+}
+
 
 /* Separator line style */
 .separator {
@@ -89,7 +172,6 @@
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  max-width: 320px;
 }
 
 .registerArtist,
@@ -109,7 +191,7 @@
   padding: 2px;
   /* Border thickness */
   border-radius: 8px;
-  background: linear-gradient(135deg, #BF03B0, #1D88F0);
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
 }
 
 .buttonWrapper .registerArtist,
@@ -124,7 +206,7 @@
 }
 
 .registerArtist:hover {
-  background-color: #1D88F0;
+  background-color: var(--primary-color);
 }
 
 .registerMuseum {
@@ -132,5 +214,28 @@
 }
 
 .registerMuseum:hover {
-  background-color: #BF03B0;
+  background-color: var(--secondary-color);
+}
+
+@media (max-width: 768px) {
+  .imageContainer {
+    display: none;
+  }
+
+  .main {
+    width: 100%;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+
+  .page {
+    padding: 25px;
+  }
+
+  .mainWrapper.slide .main {
+    transform: translateX(0%);
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+
 }

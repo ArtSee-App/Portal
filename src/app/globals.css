@@ -1,24 +1,16 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary-color: #0070f3;
-  --primary-color-hover: #005bb5;
-  --artist-color: #ff4081;
-  --artist-color-hover: #e0356f;
-  --museum-color: #34c759;
-  --museum-color-hover: #28a745;
+  --primary-color: #1D88F0;
+  --secondary-color: #BF03B0;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-    --primary-color: #0070f3;
-    --primary-color-hover: #005bb5;
-    --artist-color: #ff4081;
-    --artist-color-hover: #e0356f;
-    --museum-color: #34c759;
-    --museum-color-hover: #28a745;  
+    --primary-color: #1D88F0;
+    --secondary-color: #BF03B0;
   }
 }
 
