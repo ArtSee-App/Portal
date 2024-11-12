@@ -1,19 +1,33 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary-color: #0070f3;
+  --primary-color-hover: #005bb5;
+  --artist-color: #ff4081;
+  --artist-color-hover: #e0356f;
+  --museum-color: #34c759;
+  --museum-color-hover: #28a745;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --primary-color: #0070f3;
+    --primary-color-hover: #005bb5;
+    --artist-color: #ff4081;
+    --artist-color-hover: #e0356f;
+    --museum-color: #34c759;
+    --museum-color-hover: #28a745;  
   }
 }
 
 html,
 body {
-  max-width: 100vw;
+  max-width: 1200px;
   overflow-x: hidden;
+  margin: 0 auto;
+  /* Center the body horizontally */
 }
 
 body {
