@@ -2,8 +2,10 @@
 
 import React, { useState } from "react";
 import styles from "./page.module.css";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function Login() {
+  const router = useRouter(); // Initialize useRouter
   const [isRegistering, setIsRegistering] = useState(false);
   const [registerAsArtist, setRegisterAsArtist] = useState(true);
 
@@ -22,6 +24,11 @@ export default function Login() {
     setRegisterAsArtist(false);
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.push("/home"); // Navigate to /home on form submission
+  };
+
   return (
     <div className={styles.page}>
       <div
@@ -29,7 +36,7 @@ export default function Login() {
       >
         <main className={styles.main}>
           <h1 className={styles.heading}>ArtVista Portal</h1>
-          <form className={styles.form}>
+          <form className={styles.form} onSubmit={handleSubmit}>
             {isRegistering ? (
               <>
                 <input

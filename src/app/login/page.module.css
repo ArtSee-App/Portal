@@ -51,7 +51,8 @@
 
 .welcomeText {
   color: white;
-  font-size: 16px;
+  font-size: 1rem;
+  /* 16px */
   text-align: center;
   max-width: 80%;
 }
@@ -103,7 +104,8 @@
 }
 
 .heading {
-  font-size: 24px;
+  font-size: 1.5rem;
+  /* 24px */
   color: #333;
 }
 
@@ -118,7 +120,8 @@
   padding: 12px 16px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 1rem;
+  /* 16px */
   transition: border-color 0.2s;
 }
 
@@ -132,7 +135,8 @@
   padding: 12px;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 1rem;
+  /* 16px */
   font-weight: bold;
   background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
   color: white;
@@ -145,7 +149,8 @@
 }
 
 .forgotPassword {
-  font-size: 14px;
+  font-size: 0.875rem;
+  /* 14px */
   color: var(--primary-color);
   text-align: center;
   display: block;
@@ -179,7 +184,8 @@
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 0.875rem;
+  /* 14px */
   font-weight: bold;
   color: black;
   cursor: pointer;

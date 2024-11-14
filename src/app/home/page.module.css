@@ -1,0 +1,122 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  gap: 20px;
+}
+
+.headerList {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  background-color: #e6e6fa;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.shapeWhite,
+.shapePrimary,
+.shapeSecondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+  /* 1rem equals 16px based on the base font size */
+}
+
+.shapeWhite {
+  background-color: #ffffff;
+  border: 2px solid #ccc;
+}
+
+.shapePrimary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.shapeSecondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.listContainer {
+  width: 100%;
+  padding: 20px;
+  background-color: #e6e6fa;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.listHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 1.125rem;
+  /* 18px */
+  font-weight: bold;
+}
+
+.refreshButton {
+  padding: 8px 16px;
+  background-color: #e6e6fa;
+  color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  /* 14px */
+}
+
+.artworkList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.artworkItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  background-color: #ffffff;
+  border-radius: 50px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+}
+
+.artworkImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.artworkTitle {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.viewDetails {
+  padding: 6px 12px;
+  color: var(--secondary-color);
+  background-color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  /* 14px */
+}
+
+
+@media (max-width: 768px) {}

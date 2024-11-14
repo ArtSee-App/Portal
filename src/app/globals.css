@@ -1,5 +1,6 @@
 :root {
-  --background: #ffffff;
+  --background: linear-gradient(180deg, #00081E 0%, #40005F 100%);
+  /* Gradient background */
   --foreground: #171717;
   --primary-color: #1D88F0;
   --secondary-color: #BF03B0;
@@ -19,7 +20,7 @@ body {
   max-width: 1200px;
   overflow-x: hidden;
   margin: 0 auto;
-  /* Center the body horizontally */
+  font-size: 16px;
 }
 
 body {
