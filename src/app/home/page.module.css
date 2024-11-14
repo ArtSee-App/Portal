@@ -10,14 +10,39 @@
 
 .headerList {
   display: flex;
-  gap: 15px;
+  justify-content: space-between;
   padding: 20px;
   background-color: #e6e6fa;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   width: 100%;
-  justify-content: space-between;
 }
+
+.headerLeft,
+.headerRight {
+  display: flex;
+  gap: 10px;
+  /* Adjusts spacing between grouped items */
+}
+
+.headerLeft {
+  margin-right: auto;
+}
+
+.headerRight {
+  margin-left: auto;
+}
+
+.headerLeft>div:first-child {
+  color: #28a745;
+  /* Brighter green */
+}
+
+.headerLeft>div:nth-child(2) {
+  color: #ffd700;
+  /* Bright yellow */
+}
+
 
 .shapeWhite,
 .shapePrimary,
@@ -88,17 +113,17 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 12px 20px;
   background-color: #ffffff;
-  border-radius: 50px;
+  border-radius: 25px;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   justify-content: space-between;
 }
 
 .artworkImage {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 200px;
+  height: 100px;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
   object-fit: cover;
 }
 
