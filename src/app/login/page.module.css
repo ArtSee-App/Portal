@@ -114,6 +114,31 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
+  max-height: 500px;
+  /* Adjust to fit within the wrapper */
+  overflow-y: auto;
+  /* Enable vertical scrolling */
+}
+
+.form::-webkit-scrollbar {
+  width: 6px;
+  /* Customize scrollbar width */
+}
+
+.form::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  /* Customize scrollbar thumb color */
+  border-radius: 8px;
+}
+
+.form::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+  /* Change color on hover */
+}
+
+.inputWrapper {
+  margin-bottom: 16px;
+  width: 100%;
 }
 
 .input {
@@ -123,6 +148,7 @@
   font-size: 1rem;
   /* 16px */
   transition: border-color 0.2s;
+  width: 100%;
 }
 
 .input:focus {
@@ -131,7 +157,56 @@
   box-shadow: 0 0 4px rgba(0, 112, 243, 0.2);
 }
 
+
+.inputWrapper p {
+  font-size: 0.875rem;
+  /* Slightly smaller text for descriptions */
+  color: #555;
+  /* Subtle color for description text */
+  margin-bottom: 4px;
+}
+
+.textarea {
+  resize: none;
+  /* Disable manual resizing */
+  min-height: 40px;
+  /* Initial height */
+  max-height: 200px;
+  /* Limit the maximum height */
+  overflow-y: auto;
+  /* Show scrollbar only when content overflows */
+  overflow-x: hidden;
+  /* Prevent horizontal scrolling */
+  padding: 12px 16px;
+  /* Add padding for better usability */
+  border: 1px solid #ddd;
+  /* Keep consistent border styling */
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+/* Custom scrollbar styles for the textarea */
+.textarea::-webkit-scrollbar {
+  width: 6px;
+  /* Customize scrollbar width */
+}
+
+.textarea::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  /* Customize scrollbar thumb color */
+  border-radius: 8px;
+  /* Round scrollbar thumb edges */
+}
+
+.textarea::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+  /* Change color on hover */
+}
+
+
 .button {
+  width: 100%;
   padding: 12px;
   border: none;
   border-radius: 8px;
