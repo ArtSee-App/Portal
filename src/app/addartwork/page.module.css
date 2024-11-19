@@ -13,6 +13,369 @@
 }
 
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.headerTitle {
+  font-size: 1.7rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.link {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
+.gradientText {
+  background: var(--secondary-color);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+}
+
+.gradientText::after {
+  content: "";
+  /* Creates the underline */
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  /* Positions underline below text */
+  width: 100%;
+  height: 1px;
+  background: var(--secondary-color);
+}
+
+
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: #ccc;
+  /* Light gray divider */
+}
+
+.headerHelp {
+  font-size: 1rem;
+  color: #1e90ff;
+  /* Fallback blue for browsers without gradient support */
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  /* Adjust to fit within the wrapper */
+  overflow-y: auto;
+  background-color: #e6e6fa;
+  /* Enable vertical scrolling */
+}
+
+.formRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.leftColumn {
+  flex: 1;
+  /* Left side takes 1 part */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+}
+
+.rightColumn {
+  flex: 1;
+  /* Right side takes 2 parts */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.registeringForm {
+  border: 2px solid var(--primary-color);
+  /* Adjust border color as needed */
+  border-radius: 8px;
+  /* Optional: Add rounded corners */
+  padding: 16px;
+  /* Optional: Add some padding */
+}
+
+
+.form::-webkit-scrollbar {
+  width: 6px;
+  /* Customize scrollbar width */
+}
+
+.form::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  /* Customize scrollbar thumb color */
+  border-radius: 8px;
+}
+
+.form::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+  /* Change color on hover */
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.fileInputContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fileButton {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.fileButton:hover {
+  background-color: var(--primary-color);
+}
+
+.fileName {
+  font-size: 0.875rem;
+  color: #555;
+  word-wrap: break-word;
+  max-width: 200px;
+}
+
+.imageUploadWrapper {
+  flex: 1;
+  /* Distribute equal space between the three boxes */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.imageUploadBox {
+  width: 100%;
+  height: 400px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: #f8f8f8;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.smallImageUploadBox {
+  height: 150px;
+}
+
+
+.imageUploadBox:hover {
+  border-color: var(--primary-color);
+}
+
+.plusIcon {
+  font-size: 2rem;
+  color: #ccc;
+}
+
+.uploadedImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.additionalInfo {
+  margin-top: 16px;
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.additionalInfo a {
+  color: var(--primary-color);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.extraImagesRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+
+.inputWrapper {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.input {
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  /* 16px */
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 4px rgba(0, 112, 243, 0.2);
+}
+
+
+.inputWrapper p {
+  font-size: 0.875rem;
+  /* Slightly smaller text for descriptions */
+  color: #555;
+  /* Subtle color for description text */
+  margin-bottom: 4px;
+}
+
+.textarea {
+  resize: none;
+  /* Disable manual resizing */
+  min-height: 40px;
+  /* Initial height */
+  max-height: 200px;
+  /* Limit the maximum height */
+  overflow-y: auto;
+  /* Show scrollbar only when content overflows */
+  overflow-x: hidden;
+  /* Prevent horizontal scrolling */
+  padding: 12px 16px;
+  /* Add padding for better usability */
+  border: 1px solid #ddd;
+  /* Keep consistent border styling */
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+/* Custom scrollbar styles for the textarea */
+.textarea::-webkit-scrollbar {
+  width: 6px;
+  /* Customize scrollbar width */
+}
+
+.textarea::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  /* Customize scrollbar thumb color */
+  border-radius: 8px;
+  /* Round scrollbar thumb edges */
+}
+
+.textarea::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+  /* Change color on hover */
+}
+
+
+.button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  /* 16px */
+  font-weight: bold;
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: var(--primary-color);
+}
+
+.guideContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #e6e6fa;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  gap: 12px;
+  width: 100%;
+}
+
+.guideText {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.guideActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.guideLink {
+  font-size: 0.9rem;
+  color: #555;
+  text-align: right;
+}
+
+.italicText {
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.soonButton {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: not-allowed;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.soonButton:hover {
+  background-color: #003366;
+}
+
+
 
 @media (max-width: 768px) {
   .page {

@@ -291,19 +291,6 @@ export default function AddArtist() {
             </button>
           </div>
         </form>
-
-        <div className={styles.guideContainer}>
-          <p className={styles.guideText}>
-            <strong>Do you want to upload multiple artworks at a time using Excel?</strong>
-          </p>
-          <div className={styles.guideActions}>
-            <p className={styles.guideLink}>
-              <span className={styles.italicText}>Check our 'how to' guide here!</span>
-            </p>
-            <button className={styles.soonButton}>Soon!</button>
-          </div>
-        </div>
-
       </div>
     </>
   );
