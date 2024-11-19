@@ -2,10 +2,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100vh;
   font-family: Arial, sans-serif;
   gap: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 100px;
+  margin-bottom: 20px;
 }
 
 .headerList {
@@ -65,13 +69,45 @@
 
 .shapePrimary {
   background-color: var(--primary-color);
+  /* Primary color */
   color: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  /* Ensures the pointer cursor appears */
+}
+
+.shapePrimary:hover {
+  background-color: #003366;
+  /* Darker blue for hover */
+  /* Darker shade of primary color for hover */
+  color: #f5f5f5;
+  /* Slightly lighter text color for better contrast */
+  transform: scale(1.05);
+  /* Subtle zoom effect */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  /* Add shadow for depth */
 }
 
 .shapeSecondary {
   background-color: var(--secondary-color);
+  /* Primary purple color */
   color: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  /* Ensures the pointer cursor appears */
 }
+
+.shapeSecondary:hover {
+  background-color: #5a189a;
+  /* Darker purple for hover */
+  color: #f5f5f5;
+  /* Slightly lighter text color for better contrast */
+  transform: scale(1.05);
+  /* Subtle zoom effect */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  /* Add shadow for depth */
+}
+
 
 .listContainer {
   width: 100%;
@@ -143,5 +179,87 @@
   /* 14px */
 }
 
+.viewAllButton {
+  color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  align-self: center;
+  /* Centers the button horizontally */
+  margin-top: 10px;
+  /* Adds some spacing above the button */
+}
 
-@media (max-width: 768px) {}
+.viewAllButton:hover {
+  color: #0056b3;
+  /* Slightly darker shade for hover effect */
+}
+
+
+
+@media (max-width: 768px) {
+  .page {
+    padding-top: 60px;
+  }
+
+  .headerList {
+    align-items: center;
+    gap: 15px;
+    /* Add spacing between the stacked items */
+    padding: 15px;
+    /* Adjust padding for smaller screens */
+  }
+
+  .headerLeft,
+  .headerRight {
+    justify-content: center;
+    gap: 5px;
+    /* Reduce spacing between grouped items */
+  }
+
+  .headerLeft>div,
+  .headerRight>div {
+    font-size: 0.875rem;
+    padding: 8px 15px;
+  }
+
+  .artworkItem {
+    flex-direction: column;
+    /* Stack items vertically */
+    align-items: center;
+    padding: 10px;
+    /* Add padding for better spacing */
+    gap: 10px;
+    /* Adjust gap between items */
+  }
+
+  .artworkImage {
+    width: 100%;
+    /* Make the image take full width */
+    height: auto;
+    /* Maintain aspect ratio */
+    border-radius: 15px;
+    /* Slightly smaller radius for smaller screens */
+  }
+
+  .artworkTitle {
+    font-size: 0.875rem;
+    /* Reduce font size */
+    text-align: center;
+    /* Center-align text for better readability */
+    padding: 0 10px;
+    /* Add padding for better spacing around text */
+  }
+
+  .viewDetails {
+    font-size: 0.875rem;
+    /* Reduce button font size */
+    padding: 8px 12px;
+    /* Adjust padding for smaller buttons */
+    align-self: center;
+    /* Center the button */
+  }
+
+}
