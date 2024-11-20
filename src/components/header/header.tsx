@@ -29,13 +29,30 @@ const Header = () => {
     }, [sidebarOpen]);
 
     const toggleSidebar = () => {
-        setSidebarOpen(!sidebarOpen);
-        document.body.style.overflow = sidebarOpen ? "" : "hidden";
+        const sidebarElement = document.querySelector(`.${styles.sidebar}`);
+        if (sidebarOpen && sidebarElement) {
+            sidebarElement.classList.add(styles.sidebarClosing);
+            setTimeout(() => {
+                sidebarElement.classList.remove(styles.sidebarClosing); // Remove after animation
+                setSidebarOpen(false);
+                document.body.style.overflow = "";
+            }, 300); // Match animation duration
+        } else {
+            setSidebarOpen(true);
+            document.body.style.overflow = "hidden";
+        }
     };
 
     const closeSidebar = () => {
-        setSidebarOpen(false);
-        document.body.style.overflow = "";
+        const sidebarElement = document.querySelector(`.${styles.sidebar}`);
+        if (sidebarElement) {
+            sidebarElement.classList.add(styles.sidebarClosing);
+            setTimeout(() => {
+                sidebarElement.classList.remove(styles.sidebarClosing); // Remove the class after animation completes
+                setSidebarOpen(false);
+                document.body.style.overflow = "";
+            }, 300); // Match the animation duration (0.3s)
+        }
     };
 
     return (
@@ -80,10 +97,9 @@ const Header = () => {
             </nav>
             {sidebarOpen && (
                 <>
-                    <div className={styles.sidebar}>
-                        <button className={styles.closeButton} onClick={closeSidebar} aria-label="Close sidebar">
-                            &times;
-                        </button>
+                    <div
+                        className={`${styles.sidebar} ${sidebarOpen ? "" : styles.sidebarClosing}`}
+                    >
                         <ul className={styles.sidebarLinks}>
                             <li>
                                 <Link href="/home" onClick={closeSidebar}>
@@ -96,7 +112,7 @@ const Header = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/home" onClick={closeSidebar}>
+                                <Link href="https://artvista.app/" onClick={closeSidebar}>
                                     ArtVista Website
                                 </Link>
                             </li>
