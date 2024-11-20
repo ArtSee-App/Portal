@@ -8,8 +8,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: linear-gradient(180deg, #00081E 0%, #40005F 100%);
+    --foreground: #171717;
     --primary-color: #1D88F0;
     --secondary-color: #BF03B0;
   }
@@ -66,8 +66,8 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 }
