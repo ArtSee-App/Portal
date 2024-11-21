@@ -122,13 +122,90 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  /* Keeps the search bar in relative context */
   margin-bottom: 20px;
   font-size: 1.125rem;
   /* 18px */
   font-weight: bold;
 }
 
+.toggleContainer {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.toggleButton {
+  flex: 1;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.toggleButton.active {
+  background-color: var(--primary-color);
+  color: #fff;
+  transform: scale(1.05);
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.toggleButton:not(.active):hover {
+  background-color: #e0e0e0;
+  color: var(--primary-color);
+}
+
+.toggleContainer .toggleButton+.toggleButton {
+  border-left: 1px solid #ccc;
+  /* Adds a divider between buttons */
+}
+
+
+.searchWrapper {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  max-width: 300px;
+  width: 100%;
+}
+
+.searchBar {
+  flex: 1;
+  padding: 8px 8px 8px 35px;
+  /* Adds padding to the left to make space for the icon */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  /* 14px */
+  text-align: left;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  /* Adjust size if needed */
+  color: #999;
+  /* Adjust color to fit the theme */
+}
+
+
+
+
 .refreshButton {
+  flex-shrink: 0;
+  /* Prevents shrinking of the button */
   padding: 8px 16px;
   background-color: #e6e6fa;
   color: var(--primary-color);
@@ -179,22 +256,31 @@
   /* 14px */
 }
 
-.viewAllButton {
-  color: var(--primary-color);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: bold;
-  align-self: center;
-  /* Centers the button horizontally */
-  margin-top: 10px;
-  /* Adds some spacing above the button */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-.viewAllButton:hover {
-  color: #0056b3;
-  /* Slightly darker shade for hover effect */
+.pageButton {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageButton:hover {
+  background-color: #f0f0f0;
+}
+
+.pageButton.activePage {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  font-weight: bold;
 }
 
 
@@ -205,6 +291,8 @@
   }
 
   .headerList {
+    flex-direction: column;
+    /* Stack elements vertically */
     align-items: center;
     gap: 15px;
     /* Add spacing between the stacked items */
@@ -214,9 +302,12 @@
 
   .headerLeft,
   .headerRight {
+    width: 100%;
+    /* Ensure full width */
     justify-content: center;
-    gap: 5px;
-    /* Reduce spacing between grouped items */
+    /* Center-align the content */
+    gap: 10px;
+    /* Add spacing between items within each section */
   }
 
   .headerLeft>div,
@@ -261,5 +352,42 @@
     align-self: center;
     /* Center the button */
   }
+
+  .listHeader {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    /* Add spacing between stacked elements */
+  }
+
+  .toggleContainer {
+    margin-top: 40px;
+    width: 100%;
+    /* Ensure it takes the full width */
+    justify-content: center;
+    /* Center-align the toggle buttons */
+  }
+
+  .searchWrapper {
+    width: 100%;
+    /* Full width for smaller screens */
+    max-width: none;
+    /* Remove max-width constraint */
+    order: 1;
+    /* Position search below toggle buttons */
+  }
+
+  .searchBar {
+    padding-left: 35px;
+    /* Maintain padding for the search icon */
+    width: 100%;
+    /* Adjust width to fit the container */
+  }
+
+  .searchIcon {
+    left: 10px;
+    /* Maintain icon position relative to the input */
+  }
+
 
 }

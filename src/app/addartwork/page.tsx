@@ -12,6 +12,7 @@ export default function AddArtwork() {
     artworkYear: string;
     timelineLeft: string;
     timelineCenter: string;
+    customTimelineCenter: string;
     timelineRight: string;
     artworkGenre: string;
     artworkMedia: string;
@@ -32,6 +33,7 @@ export default function AddArtwork() {
     artworkYear: "",
     timelineLeft: "",
     timelineCenter: "",
+    customTimelineCenter: "",
     timelineRight: "",
     artworkGenre: "",
     artworkMedia: "",
@@ -63,9 +65,12 @@ export default function AddArtwork() {
   const isFormValid =
     formData.artworkTitle &&
     formData.artistName &&
-    formData.timelineCenter &&
+    formData.artistName !== "Select An Existing Artist" && // Exclude the placeholder option
     formData.artworkAbout &&
-    formData.artworkImage;
+    formData.artworkImage &&
+    formData.timelineCenter &&
+    formData.timelineCenter !== "Select Era of Origin" && // Exclude the placeholder option
+    (formData.timelineCenter !== "custom" || (formData.timelineCenter === "custom" && formData.customTimelineCenter && formData.customTimelineCenter.trim() !== ""));
 
 
 
@@ -235,27 +240,67 @@ export default function AddArtwork() {
               </div>
               <div className={styles.inputWrapper}>
                 <p>Required</p>
-                <input
-                  type="text"
+                <select
                   name="timelineCenter"
-                  placeholder="Era Of Origin"
-                  className={styles.input}
+                  className={`${styles.input} ${styles.select}`}
                   value={formData.timelineCenter}
-                  onChange={handleInputChange}
-                />
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setFormData((prev) => ({
+                      ...prev,
+                      timelineCenter: value,
+                      customTimelineCenter: value !== "custom" ? "" : prev.customTimelineCenter, // Reset customTimelineCenter if not "custom"
+                    }));
+                  }}
+                >
+                  <option value="">Select Era of Origin</option>
+                  <option value="Renaissance">Renaissance</option>
+                  <option value="Baroque">Baroque</option>
+                  <option value="Modernism">Modernism</option>
+                  <option value="Postmodernism">Postmodernism</option>
+                  <option value="Contemporary">Contemporary</option>
+                  <option value="custom">Other (Specify below)</option>
+                </select>
+
+                {formData.timelineCenter === "custom" && (
+                  <input
+                    type="text"
+                    name="customTimelineCenter"
+                    placeholder="Specify Era of Origin"
+                    className={`${styles.input} ${styles.customInput}`}
+                    value={formData.customTimelineCenter || ""} // Default to an empty string
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        customTimelineCenter: e.target.value,
+                      }))
+                    }
+                  />
+                )}
               </div>
 
               <div className={styles.inputWrapper}>
                 <p>Required</p>
-                <input
-                  type="text"
+                <select
                   name="artistName"
-                  placeholder="Select An Existing Artist"
-                  className={styles.input}
+                  className={`${styles.input} ${styles.select}`}
                   value={formData.artistName}
-                  onChange={handleInputChange}
-                />
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      artistName: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">Select An Existing Artist</option>
+                  <option value="Leonardo da Vinci">Leonardo da Vinci</option>
+                  <option value="Vincent van Gogh">Vincent van Gogh</option>
+                  <option value="Pablo Picasso">Pablo Picasso</option>
+                  <option value="Claude Monet">Claude Monet</option>
+                  <option value="Salvador Dalí">Salvador Dalí</option>
+                </select>
               </div>
+
               <div className={styles.inputWrapper}>
                 <input
                   type="number"
