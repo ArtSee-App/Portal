@@ -357,7 +357,7 @@ export default function AddArtwork() {
                 <input
                   type="text"
                   name="artworkDimensions"
-                  placeholder="W x H cm"
+                  placeholder="Example: 10 x 10 cm"
                   className={styles.input}
                   value={formData.artworkDimensions}
                   onChange={handleInputChange}

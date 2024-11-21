@@ -254,6 +254,29 @@
   width: 100%;
 }
 
+.inputWrapperRequired {
+  margin-bottom: 16px;
+  width: 100%;
+  font-size: 1rem;
+}
+
+
+.inputWrapperRequired p::after {
+  content: "*";
+  color: red;
+  /* Slightly larger to make it noticeable */
+  margin-left: 2px;
+}
+
+.inputWrapper .inputWrapperRequired p {
+  font-size: 0.875rem;
+  /* Slightly smaller text for descriptions */
+  color: #555;
+  /* Subtle color for description text */
+  margin-bottom: 4px;
+}
+
+
 .input {
   padding: 12px 16px;
   border: 1px solid #ddd;
@@ -270,13 +293,8 @@
   box-shadow: 0 0 4px rgba(0, 112, 243, 0.2);
 }
 
-
-.inputWrapper p {
-  font-size: 0.875rem;
-  /* Slightly smaller text for descriptions */
-  color: #555;
-  /* Subtle color for description text */
-  margin-bottom: 4px;
+.input::placeholder {
+  font-style: italic;
 }
 
 .textarea {

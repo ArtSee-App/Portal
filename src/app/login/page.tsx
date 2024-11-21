@@ -265,8 +265,8 @@ export default function Login() {
                 <>
                   {registerAsArtist ? (
                     <>
-                      <div className={styles.inputWrapper}>
-                        <p>Required: Upload an artist profile image</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Upload an artist profile image</p>
                         <div className={styles.imageUploadWrapper}>
                           <input
                             type="file"
@@ -289,195 +289,195 @@ export default function Login() {
                           </label>
                         </div>
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Name (short version or nickname)</p>
                         <input
                           type="text"
                           name="name"
-                          placeholder="Name"
                           className={styles.input}
                           value={formData.name}
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Full Name (can be the same as name)</p>
                         <input
                           type="text"
                           name="fullName"
-                          placeholder="Full Name"
                           className={styles.input}
                           value={formData.fullName}
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>About</p>
                         <textarea
                           name="about"
-                          placeholder="About"
                           className={`${styles.input} ${styles.textarea}`}
                           value={formData.about}
                           onChange={(e) => {
                             handleInputChange(e);
-                            e.target.style.height = "auto"; // Reset height to auto
-                            e.target.style.height = `${e.target.scrollHeight}px`; // Adjust height based on scroll height
+                            e.target.style.height = "auto";
+                            e.target.style.height = `${e.target.scrollHeight}px`;
                           }}
-                          rows={1} // Initial height of 1 row
+                          rows={1}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Date of Birth</p>
                         <input
                           type="text"
                           name="dateOfBirth"
-                          placeholder="Date of Birth"
+                          placeholder="Example: January 1, 1990"
                           className={styles.input}
                           value={formData.dateOfBirth}
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Year of Birth</p>
                         <input
                           type="number"
                           name="birthYear"
-                          placeholder="Year of Birth"
                           className={styles.input}
                           value={formData.birthYear}
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Nationality</p>
                         <input
                           type="text"
                           name="nationality"
-                          placeholder="Nationality"
                           className={styles.input}
                           value={formData.nationality}
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Art Movement</p>
                         <input
                           type="text"
                           name="artMovement"
-                          placeholder="Art Movement"
+                          placeholder="Example: Realism"
                           className={styles.input}
                           value={formData.artMovement}
                           onChange={handleInputChange}
                         />
                       </div>
+
                       <div className={styles.inputWrapper}>
+                        <p>Date Of Death</p>
                         <input
                           type="text"
                           name="dateOfDeath"
-                          placeholder="Date Of Death"
+                          placeholder="Example: January 1, 1990"
                           className={styles.input}
                           value={formData.dateOfDeath}
                           onChange={handleInputChange}
                         />
                       </div>
                       <div className={styles.inputWrapper}>
+                        <p>Year Of Death</p>
                         <input
                           type="number"
                           name="deathYear"
-                          placeholder="Year Of Death"
                           className={styles.input}
                           value={formData.deathYear}
                           onChange={handleInputChange}
                         />
                       </div>
                       <div className={styles.inputWrapper}>
+                        <p>Influenced By (multiple possible)</p>
                         <input
                           type="text"
                           name="influencedBy"
-                          placeholder="Influenced By"
+                          placeholder="Example: Leonardo DaVinci, Michael Jackson"
                           className={styles.input}
                           value={formData.influencedBy}
                           onChange={handleInputChange}
                         />
                       </div>
                       <div className={styles.inputWrapper}>
+                        <p>Had An Impact On (multiple possible)</p>
                         <input
                           type="text"
                           name="influencedOn"
-                          placeholder="Influenced On"
+                          placeholder="Example: Leonardo DaVinci, Michael Jackson"
                           className={styles.input}
                           value={formData.influencedOn}
                           onChange={handleInputChange}
                         />
                       </div>
                       <div className={styles.inputWrapper}>
+                        <p>Art Institution Attended by the Individual</p>
                         <input
                           type="text"
                           name="artInstitution"
-                          placeholder="Art Institution"
                           className={styles.input}
                           value={formData.artInstitution}
                           onChange={handleInputChange}
                         />
                       </div>
                       <div className={styles.inputWrapper}>
+                        <p>Friends/ Co-workers (multiple possible)</p>
                         <input
                           type="text"
                           name="friendsOrCoworkers"
-                          placeholder="Friends/Co-workers"
+                          placeholder="Example: Leonardo DaVinci, Michael Jackson"
                           className={styles.input}
                           value={formData.friendsOrCoworkers}
                           onChange={handleInputChange}
                         />
                       </div>
                       <div className={styles.inputWrapper}>
+                        <p>Wikipedia Link</p>
                         <input
                           type="url"
                           name="wikipediaLink"
-                          placeholder="Wikipedia Link"
+                          placeholder="Example: https://artvista.app/"
                           className={styles.input}
                           value={formData.wikipediaLink}
                           onChange={handleInputChange}
                         />
                       </div>
                       <div className={styles.inputWrapper}>
+                        <p>Official Site Link</p>
                         <input
                           type="url"
                           name="officialSiteLink"
-                          placeholder="Official Site Link"
+                          placeholder="Example: https://artvista.app/"
                           className={styles.input}
                           value={formData.officialSiteLink}
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Email</p>
                         <input
                           type="email"
                           name="email"
-                          placeholder="Email"
                           className={styles.input}
                           value={formData.email}
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Password</p>
                         <input
                           type="password"
                           name="password"
-                          placeholder="Create Password"
                           className={styles.input}
                           value={formData.password}
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Confirm Password</p>
                         <input
                           type="password"
                           name="confirmPassword"
-                          placeholder="Confirm Password"
                           className={styles.input}
                           value={formData.confirmPassword}
                           onChange={handleInputChange}
@@ -486,8 +486,8 @@ export default function Login() {
                     </>
                   ) : (
                     <>
-                      <div className={styles.inputWrapper}>
-                        <p>Required: Upload a museum profile image</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Upload a museum profile image</p>
                         <div className={styles.imageUploadWrapper}>
                           <input
                             type="file"
@@ -510,44 +510,43 @@ export default function Login() {
                           </label>
                         </div>
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Museum's Name</p>
                         <input
                           type="text"
                           name="name"
-                          placeholder="Museum's Name"
+                          placeholder="Example: DAF Museum"
                           className={styles.input}
                           value={museumFormData.name}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Latitude</p>
                         <input
                           type="number"
                           name="latitude"
-                          placeholder="Latitude"
+                          placeholder="Example: 40.7128"
                           className={styles.input}
                           value={museumFormData.latitude}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
+                      <div className={styles.inputWrapperRequired}>
                         <p>Required</p>
                         <input
                           type="number"
                           name="longitude"
-                          placeholder="Longitude"
+                          placeholder="Example: -74.0060"
                           className={styles.input}
                           value={museumFormData.longitude}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>About</p>
                         <textarea
                           name="about"
-                          placeholder="About"
                           className={`${styles.input} ${styles.textarea}`}
                           value={museumFormData.about}
                           onChange={(e) => {
@@ -558,108 +557,104 @@ export default function Login() {
                           rows={1} // Initial height of 1 row
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>City</p>
                         <input
                           type="text"
                           name="city"
-                          placeholder="City"
                           className={styles.input}
                           value={museumFormData.city}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Province</p>
                         <input
                           type="text"
                           name="province"
-                          placeholder="Province"
                           className={styles.input}
                           value={museumFormData.province}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Country</p>
                         <input
                           type="text"
                           name="country"
-                          placeholder="Country"
                           className={styles.input}
                           value={museumFormData.country}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Type</p>
                         <input
                           type="text"
                           name="type"
-                          placeholder="Type"
+                          placeholder="Example: Museum"
                           className={styles.input}
                           value={museumFormData.type}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
                       <div className={styles.inputWrapper}>
+                        <p>Number Of Visitors Per Year</p>
                         <input
                           type="number"
                           name="visitorsPerYear"
-                          placeholder="Number Of Visitors Per Year"
                           className={styles.input}
                           value={museumFormData.visitorsPerYear}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
                       <div className={styles.inputWrapper}>
+                        <p>Website Link</p>
                         <input
                           type="url"
                           name="websiteLink"
-                          placeholder="Website Link"
+                          placeholder="Example: https://artvista.app/"
                           className={styles.input}
                           value={museumFormData.websiteLink}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
                       <div className={styles.inputWrapper}>
+                        <p>Wikipedia Link</p>
                         <input
                           type="url"
                           name="wikipediaLink"
-                          placeholder="Wikipedia Link"
+                          placeholder="Example: https://artvista.app/"
                           className={styles.input}
                           value={museumFormData.wikipediaLink}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Email</p>
                         <input
                           type="email"
                           name="email"
-                          placeholder="Email"
                           className={styles.input}
                           value={museumFormData.email}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Password</p>
                         <input
                           type="password"
                           name="password"
-                          placeholder="Create Password"
                           className={styles.input}
                           value={museumFormData.password}
                           onChange={handleMuseumInputChange}
                         />
                       </div>
-                      <div className={styles.inputWrapper}>
-                        <p>Required</p>
+                      <div className={styles.inputWrapperRequired}>
+                        <p>Confirm Password</p>
                         <input
                           type="password"
                           name="confirmPassword"
-                          placeholder="Confirm Password"
                           className={styles.input}
                           value={museumFormData.confirmPassword}
                           onChange={handleMuseumInputChange}

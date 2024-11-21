@@ -156,7 +156,7 @@ export default function AddArtist() {
                 <input
                   type="text"
                   name="dateOfBirth"
-                  placeholder="January 1, 1990"
+                  placeholder="Example: January 1, 1990"
                   className={styles.input}
                   value={formData.dateOfBirth}
                   onChange={handleInputChange}
@@ -191,7 +191,7 @@ export default function AddArtist() {
                 <input
                   type="text"
                   name="artMovement"
-                  placeholder="Realism"
+                  placeholder="Example: Realism"
                   className={styles.input}
                   value={formData.artMovement}
                   onChange={handleInputChange}
@@ -203,7 +203,7 @@ export default function AddArtist() {
                 <input
                   type="text"
                   name="dateOfDeath"
-                  placeholder="January 1, 1990"
+                  placeholder="Example: January 1, 1990"
                   className={styles.input}
                   value={formData.dateOfDeath}
                   onChange={handleInputChange}
@@ -224,7 +224,7 @@ export default function AddArtist() {
                 <input
                   type="text"
                   name="influencedBy"
-                  placeholder="Leonardo DaVinci, Michael Jackson"
+                  placeholder="Example: Leonardo DaVinci, Michael Jackson"
                   className={styles.input}
                   value={formData.influencedBy}
                   onChange={handleInputChange}
@@ -235,14 +235,14 @@ export default function AddArtist() {
                 <input
                   type="text"
                   name="influencedOn"
-                  placeholder="Leonardo DaVinci, Michael Jackson"
+                  placeholder="Example: Leonardo DaVinci, Michael Jackson"
                   className={styles.input}
                   value={formData.influencedOn}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
-                <p>Art Institution</p>
+                Art Institution Attended by the Individual
                 <input
                   type="text"
                   name="artInstitution"
@@ -256,6 +256,7 @@ export default function AddArtist() {
                 <input
                   type="text"
                   name="friendsOrCoworkers"
+                  placeholder="Example: Leonardo DaVinci, Michael Jackson"
                   className={styles.input}
                   value={formData.friendsOrCoworkers}
                   onChange={handleInputChange}
@@ -266,7 +267,7 @@ export default function AddArtist() {
                 <input
                   type="url"
                   name="wikipediaLink"
-                  placeholder="https://artvista.app/"
+                  placeholder="Example: https://artvista.app/"
                   className={styles.input}
                   value={formData.wikipediaLink}
                   onChange={handleInputChange}
@@ -277,7 +278,7 @@ export default function AddArtist() {
                 <input
                   type="url"
                   name="officialSiteLink"
-                  placeholder="https://artvista.app/"
+                  placeholder="Example: https://artvista.app/"
                   className={styles.input}
                   value={formData.officialSiteLink}
                   onChange={handleInputChange}
