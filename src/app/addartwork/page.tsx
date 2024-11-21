@@ -65,11 +65,11 @@ export default function AddArtwork() {
   const isFormValid =
     formData.artworkTitle &&
     formData.artistName &&
-    formData.artistName !== "Select An Existing Artist" && // Exclude the placeholder option
+    formData.artistName !== "None Chosen" && // Exclude the placeholder option
     formData.artworkAbout &&
     formData.artworkImage &&
     formData.timelineCenter &&
-    formData.timelineCenter !== "Select Era of Origin" && // Exclude the placeholder option
+    formData.timelineCenter !== "None Chosen" && // Exclude the placeholder option
     (formData.timelineCenter !== "custom" || (formData.timelineCenter === "custom" && formData.customTimelineCenter && formData.customTimelineCenter.trim() !== ""));
 
 
@@ -104,8 +104,8 @@ export default function AddArtwork() {
         >
           <div className={styles.formRow}>
             <div className={styles.leftColumn}>
-              <div className={styles.inputWrapper}>
-                <p>Required: Upload an artwork profile image</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Upload an artwork profile image</p>
                 <div className={styles.imageUploadWrapper}>
                   <input
                     type="file"
@@ -212,22 +212,20 @@ export default function AddArtwork() {
 
             </div>
             <div className={styles.rightColumn}>
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Artwork Title</p>
                 <input
                   type="text"
                   name="artworkTitle"
-                  placeholder="Artwork Title"
                   className={styles.input}
                   value={formData.artworkTitle}
                   onChange={handleInputChange}
                 />
               </div>
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>About</p>
                 <textarea
                   name="artworkAbout"
-                  placeholder="About"
                   className={`${styles.input} ${styles.textarea}`}
                   value={formData.artworkAbout}
                   onChange={(e) => {
@@ -238,8 +236,8 @@ export default function AddArtwork() {
                   rows={1}
                 />
               </div>
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Select Era of Origin</p>
                 <select
                   name="timelineCenter"
                   className={`${styles.input} ${styles.select}`}
@@ -253,7 +251,7 @@ export default function AddArtwork() {
                     }));
                   }}
                 >
-                  <option value="">Select Era of Origin</option>
+                  <option value="">None Chosen</option>
                   <option value="Renaissance">Renaissance</option>
                   <option value="Baroque">Baroque</option>
                   <option value="Modernism">Modernism</option>
@@ -266,7 +264,7 @@ export default function AddArtwork() {
                   <input
                     type="text"
                     name="customTimelineCenter"
-                    placeholder="Specify Era of Origin"
+                    placeholder=""
                     className={`${styles.input} ${styles.customInput}`}
                     value={formData.customTimelineCenter || ""} // Default to an empty string
                     onChange={(e) =>
@@ -279,8 +277,8 @@ export default function AddArtwork() {
                 )}
               </div>
 
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Select An Existing Artist</p>
                 <select
                   name="artistName"
                   className={`${styles.input} ${styles.select}`}
@@ -292,7 +290,7 @@ export default function AddArtwork() {
                     }))
                   }
                 >
-                  <option value="">Select An Existing Artist</option>
+                  <option value="">None Chosen</option>
                   <option value="Leonardo da Vinci">Leonardo da Vinci</option>
                   <option value="Vincent van Gogh">Vincent van Gogh</option>
                   <option value="Pablo Picasso">Pablo Picasso</option>
@@ -302,10 +300,10 @@ export default function AddArtwork() {
               </div>
 
               <div className={styles.inputWrapper}>
+                <p>Year the Artwork Was Created</p>
                 <input
                   type="number"
                   name="artworkYear"
-                  placeholder="Year the Artwork Was Created"
                   className={styles.input}
                   value={formData.artworkYear}
                   onChange={handleInputChange}
@@ -313,50 +311,53 @@ export default function AddArtwork() {
               </div>
 
               <div className={styles.inputWrapper}>
+                <p>Era Prior to the Artwork's Creation</p>
                 <input
                   type="text"
                   name="timelineLeft"
-                  placeholder="Era Prior to the Artwork's Creation"
                   className={styles.input}
                   value={formData.timelineLeft}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>Era After the Artwork's Creation</p>
                 <input
                   type="text"
                   name="timelineRight"
-                  placeholder="Era After the Artwork's Creation"
                   className={styles.input}
                   value={formData.timelineRight}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>Artwork's Genre</p>
                 <input
                   type="text"
                   name="artworkGenre"
-                  placeholder="Artwork's Genre"
+                  placeholder="Examples: Photo, Sculpture, etc."
                   className={styles.input}
                   value={formData.artworkGenre}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>What Is The Artwork Created With/Of/On</p>
                 <input
                   type="text"
                   name="artworkMedia"
-                  placeholder="What Is The Artwork Created With/Of/On"
+                  placeholder="Examples: Canvas, Oil; Photo Print; etc."
                   className={styles.input}
                   value={formData.artworkMedia}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>Artwork's Dimensions</p>
                 <input
                   type="text"
                   name="artworkDimensions"
-                  placeholder="Artwork's Dimensions"
+                  placeholder="W x H cm"
                   className={styles.input}
                   value={formData.artworkDimensions}
                   onChange={handleInputChange}

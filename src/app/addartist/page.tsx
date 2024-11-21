@@ -93,8 +93,8 @@ export default function AddArtist() {
         >
           <div className={styles.formRow}>
             <div className={styles.leftColumn}>
-              <div className={styles.inputWrapper}>
-                <p>Required: Upload an artist profile image</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Upload an artist profile image</p>
                 <div className={styles.imageUploadWrapper}>
                   <input
                     type="file"
@@ -117,33 +117,30 @@ export default function AddArtist() {
                   </label>
                 </div>
               </div>
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Name (short version or nickname)</p>
                 <input
                   type="text"
                   name="name"
-                  placeholder="Name"
                   className={styles.input}
                   value={formData.name}
                   onChange={handleInputChange}
                 />
               </div>
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Full Name (can be the same as name)</p>
                 <input
                   type="text"
                   name="fullName"
-                  placeholder="Full Name"
                   className={styles.input}
                   value={formData.fullName}
                   onChange={handleInputChange}
                 />
               </div>
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>About</p>
                 <textarea
                   name="about"
-                  placeholder="About"
                   className={`${styles.input} ${styles.textarea}`}
                   value={formData.about}
                   onChange={(e) => {
@@ -154,12 +151,12 @@ export default function AddArtist() {
                   rows={1}
                 />
               </div>
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Date of Birth</p>
                 <input
                   type="text"
                   name="dateOfBirth"
-                  placeholder="Date of Birth"
+                  placeholder="January 1, 1990"
                   className={styles.input}
                   value={formData.dateOfBirth}
                   onChange={handleInputChange}
@@ -168,35 +165,33 @@ export default function AddArtist() {
 
             </div>
             <div className={styles.rightColumn}>
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Year of Birth</p>
                 <input
                   type="number"
                   name="birthYear"
-                  placeholder="Year of Birth"
                   className={styles.input}
                   value={formData.birthYear}
                   onChange={handleInputChange}
                 />
               </div>
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Nationality</p>
                 <input
                   type="text"
                   name="nationality"
-                  placeholder="Nationality"
                   className={styles.input}
                   value={formData.nationality}
                   onChange={handleInputChange}
                 />
               </div>
 
-              <div className={styles.inputWrapper}>
-                <p>Required</p>
+              <div className={styles.inputWrapperRequired}>
+                <p>Art Movement</p>
                 <input
                   type="text"
                   name="artMovement"
-                  placeholder="Art Movement"
+                  placeholder="Realism"
                   className={styles.input}
                   value={formData.artMovement}
                   onChange={handleInputChange}
@@ -204,80 +199,85 @@ export default function AddArtist() {
               </div>
 
               <div className={styles.inputWrapper}>
+                <p>Date Of Death</p>
                 <input
                   type="text"
                   name="dateOfDeath"
-                  placeholder="Date Of Death"
+                  placeholder="January 1, 1990"
                   className={styles.input}
                   value={formData.dateOfDeath}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>Year Of Death</p>
                 <input
                   type="number"
                   name="deathYear"
-                  placeholder="Year Of Death"
                   className={styles.input}
                   value={formData.deathYear}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>Influenced By (multiple possible)</p>
                 <input
                   type="text"
                   name="influencedBy"
-                  placeholder="Influenced By"
+                  placeholder="Leonardo DaVinci, Michael Jackson"
                   className={styles.input}
                   value={formData.influencedBy}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>Had An Impact On (multiple possible)</p>
                 <input
                   type="text"
                   name="influencedOn"
-                  placeholder="Influenced On"
+                  placeholder="Leonardo DaVinci, Michael Jackson"
                   className={styles.input}
                   value={formData.influencedOn}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>Art Institution</p>
                 <input
                   type="text"
                   name="artInstitution"
-                  placeholder="Art Institution"
                   className={styles.input}
                   value={formData.artInstitution}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>Friends/ Co-workers (multiple possible)</p>
                 <input
                   type="text"
                   name="friendsOrCoworkers"
-                  placeholder="Friends/Co-workers"
                   className={styles.input}
                   value={formData.friendsOrCoworkers}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>Wikipedia Link</p>
                 <input
                   type="url"
                   name="wikipediaLink"
-                  placeholder="Wikipedia Link"
+                  placeholder="https://artvista.app/"
                   className={styles.input}
                   value={formData.wikipediaLink}
                   onChange={handleInputChange}
                 />
               </div>
               <div className={styles.inputWrapper}>
+                <p>Official Site Link</p>
                 <input
                   type="url"
                   name="officialSiteLink"
-                  placeholder="Official Site Link"
+                  placeholder="https://artvista.app/"
                   className={styles.input}
                   value={formData.officialSiteLink}
                   onChange={handleInputChange}
