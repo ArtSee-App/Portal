@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import { useRouter } from "next/navigation"; // Import useRouter
+import Footer from "../../components/footer/footer";
 
 export default function Home() {
   const router = useRouter(); // Initialize router
@@ -187,6 +188,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
+import Footer from "@/components/footer/footer";
 
 export default function AddArtist() {
   const [formData, setFormData] = useState<{
@@ -293,6 +294,7 @@ export default function AddArtist() {
           </div>
         </form>
       </div>
+      <Footer />
     </>
   );
 }
