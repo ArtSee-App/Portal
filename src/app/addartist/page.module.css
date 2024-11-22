@@ -12,6 +12,43 @@
   margin-bottom: 20px;
 }
 
+.thankYouMessage {
+  text-align: center;
+  margin-top: 50px;
+  padding: 20px;
+  background: #f8f8f8;
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+}
+
+.thankYouMessage h1 {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin-bottom: 12px;
+}
+
+.thankYouMessage p {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.resetButton {
+  margin-top: 20px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.resetButton:hover {
+  background-color: var(--primary-color);
+}
+
 
 .header {
   display: flex;
@@ -375,6 +412,107 @@
 @media (max-width: 768px) {
   .page {
     padding-top: 60px;
+  }
+
+  .header {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .headerTitle {
+    font-size: 1.5rem;
+    /* Slightly smaller for smaller screens */
+  }
+
+  .divider {
+    display: none;
+    /* Remove the divider for mobile */
+  }
+
+  .headerHelp {
+    font-size: 0.9rem;
+    /* Smaller text size for the help text */
+  }
+
+  .form {
+    gap: 12px;
+    /* Reduce gap between form elements */
+    padding: 12px;
+    /* Add some padding for better alignment */
+  }
+
+  .formRow {
+    flex-direction: column;
+    /* Stack columns on smaller screens */
+    gap: 24px;
+    /* Add space between stacked sections */
+  }
+
+  .leftColumn,
+  .rightColumn {
+    flex: none;
+    /* Remove flex for consistent stacking */
+    width: 100%;
+    /* Use full width for each column */
+    align-items: stretch;
+  }
+
+  .inputWrapper,
+  .inputWrapperRequired {
+    margin-bottom: 12px;
+    /* Reduce margin for smaller spacing */
+  }
+
+  .textarea {
+    max-height: 150px;
+    /* Adjust textarea height for smaller screens */
+  }
+
+  .imageUploadBox {
+    height: 300px;
+    /* Reduce height for better mobile fit */
+  }
+
+  .smallImageUploadBox {
+    height: 120px;
+    /* Smaller size for additional images */
+  }
+
+  .guideContainer {
+    flex-direction: column;
+    /* Stack guide elements */
+    text-align: center;
+    gap: 16px;
+    /* Adjust spacing */
+  }
+
+  .guideActions {
+    justify-content: center;
+    /* Center buttons and actions */
+  }
+
+  .thankYouMessage {
+    margin-top: 20px;
+    /* Reduce margin for better alignment */
+    padding: 16px;
+  }
+
+  .thankYouMessage h1 {
+    font-size: 1.5rem;
+    /* Smaller font size */
+  }
+
+  .thankYouMessage p {
+    font-size: 1rem;
+    /* Adjust paragraph size */
+  }
+
+  .resetButton {
+    padding: 10px 14px;
+    /* Reduce button padding */
+    font-size: 0.9rem;
+    /* Adjust font size for mobile */
   }
 
 
