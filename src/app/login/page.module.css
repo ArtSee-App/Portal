@@ -124,7 +124,7 @@
 .mainWrapper .main {
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
-  background-color: #EAE9EE;
+  background-color: var(--background-container);
   padding: 32px;
 }
 
@@ -366,7 +366,7 @@
 }
 
 .forgotPassword:hover {
-  color: var(--secondary-color);
+  color: #003366;
 }
 
 .registerButtonWrapper {

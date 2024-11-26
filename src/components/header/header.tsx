@@ -74,7 +74,12 @@ const Header = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link href="https://artvista.app/" onClick={closeSidebar}>
+                        <Link
+                            href="https://artvista.app/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={closeSidebar}
+                        >
                             ArtVista Website
                         </Link>
                     </li>
@@ -112,7 +117,12 @@ const Header = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="https://artvista.app/" onClick={closeSidebar}>
+                                <Link
+                                    href="https://artvista.app/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={closeSidebar}
+                                >
                                     ArtVista Website
                                 </Link>
                             </li>

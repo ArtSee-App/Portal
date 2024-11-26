@@ -1,19 +1,13 @@
 :root {
-  --background: linear-gradient(180deg, #00081E 0%, #40005F 100%);
-  /* Gradient background */
+  --background: linear-gradient(180deg, #0D0D0D 0%, #1A1320 50%, #25132B 100%);
+  /* Blackish/grayish/purpleish gradient background */
   --foreground: #171717;
   --primary-color: #1D88F0;
   --secondary-color: #BF03B0;
+  --background-container: #E6DFF2;
+  /* Very light purple-gray for strong contrast */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: linear-gradient(180deg, #00081E 0%, #40005F 100%);
-    --foreground: #171717;
-    --primary-color: #1D88F0;
-    --secondary-color: #BF03B0;
-  }
-}
 
 html,
 body {
@@ -43,26 +37,29 @@ a {
 }
 
 /* Webkit browsers (Chrome, Edge, Safari) */
+/* Webkit browsers (Chrome, Edge, Safari) */
 body::-webkit-scrollbar {
   width: 8px;
   /* Adjust scrollbar width */
 }
 
 body::-webkit-scrollbar-track {
-  background: #1a0933;
-  /* Background of the scrollbar track */
+  background: #1A1320;
+  /* Match the darker gradient tones of the background */
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: #6f2da8;
-  /* Deep purple for the scrollbar thumb */
+  background-color: #3A1F4A;
+  /* Deep purple-gray for the scrollbar thumb */
   border-radius: 10px;
   /* Rounded corners for a smoother look */
+  border: 2px solid #1A1320;
+  /* Border matches the scrollbar track for a subtle contrast */
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background-color: #5a2299;
-  /* Darker purple on hover */
+  background-color: #4C275C;
+  /* Slightly lighter purple on hover for better visibility */
 }
 
 

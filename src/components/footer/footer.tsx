@@ -9,7 +9,11 @@ const Footer = () => {
             <p>&copy; 2024 Vista Technologies BV</p>
             <ul className={styles.navLinks}>
                 <li>
-                    <Link href="https://artvista.app/terms">
+                    <Link
+                        href="https://artvista.app/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         Terms and Conditions
                     </Link>
                 </li>

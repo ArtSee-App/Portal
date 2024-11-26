@@ -86,6 +86,13 @@
   color: white;
   text-decoration: none;
   font-size: 18px;
+  position: relative;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.navLinks a:hover {
+  color: var(--secondary-color);
+  /* Matches the theme's secondary gradient */
 }
 
 .hamburger {
