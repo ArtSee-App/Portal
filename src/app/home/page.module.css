@@ -205,22 +205,18 @@
 
 
 
-.refreshButton {
-  flex-shrink: 0;
-  /* Prevents shrinking of the button */
-  padding: 8px 16px;
-  background-color: transparent;
-  color: var(--primary-color);
-  border: none;
-  border-radius: 8px;
+.refreshIcon {
+  font-size: 1.5rem;
   cursor: pointer;
-  font-size: 0.875rem;
-  /* 14px */
+  color: black;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center; /* Ensures the icon spins around its center */
 }
 
-.refreshButton:hover {
-  color: #003366;
-
+.refreshIcon:hover {
+  color: var(--primary-color); /* Slightly darker on hover */
 }
 
 .artworkList {

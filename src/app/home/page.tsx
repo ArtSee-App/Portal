@@ -5,6 +5,7 @@ import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import { useRouter } from "next/navigation"; // Import useRouter
 import Footer from "../../components/footer/footer";
+import { FiRefreshCw } from "react-icons/fi"; // Import a simple, symmetric refresh icon
 
 export default function Home() {
   const router = useRouter(); // Initialize router
@@ -54,6 +55,7 @@ export default function Home() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
 
 
 
@@ -129,7 +131,11 @@ export default function Home() {
               />
               <span className={styles.searchIcon}>🔍</span>
             </div>
-            <button className={styles.refreshButton}>Refresh</button>
+            <div
+              className={styles.refreshIcon}
+            >
+              <FiRefreshCw />
+            </div>
           </div>
           <div className={styles.artworkList}>
             {activeTab === "artworks" ? (
