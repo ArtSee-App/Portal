@@ -3,10 +3,23 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./header.module.css";
+import { signOut } from "firebase/auth"; // Import signOut from Firebase Auth
+import { auth } from "../../../firebase"; // Import your Firebase configuration
+import { useUser } from "@/context/UserContext";
 
 const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { user, setUser } = useUser(); // Access setUser from the UserContext
+
+    const handleSignOut = async () => {
+        try {
+            await signOut(auth); // Firebase sign-out
+            setUser(null); // Clear user context
+        } catch (error) {
+            console.error("Error during sign-out:", error);
+        }
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -60,7 +73,9 @@ const Header = () => {
             <nav className={styles.nav}>
                 <div className={styles.logoContainer}>
                     <img src="favicon.png" alt="ArtVista Logo" className={styles.logo} />
-                    <span className={styles.logoText}>ArtVista</span>
+                    <span className={styles.logoText}>
+                        ArtVista {user?.type && `(${user.type})`}
+                    </span>
                 </div>
                 <ul className={styles.navLinks}>
                     <li>
@@ -84,7 +99,11 @@ const Header = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/login" onClick={closeSidebar}>
+                        <Link href="/login" onClick={() => {
+                            closeSidebar(); // Close the sidebar if open
+                            handleSignOut(); // Sign out the user
+                        }}
+                        >
                             Sign Out
                         </Link>
                     </li>
@@ -127,7 +146,11 @@ const Header = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/login" onClick={closeSidebar}>
+                                <Link href="/login" onClick={() => {
+                                    closeSidebar(); // Close the sidebar if open
+                                    handleSignOut(); // Sign out the user
+                                }}
+                                >
                                     Sign Out
                                 </Link>
                             </li>

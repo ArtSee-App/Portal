@@ -1,16 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import { useRouter } from "next/navigation"; // Import useRouter
 import Footer from "../../components/footer/footer";
 import { FiRefreshCw } from "react-icons/fi"; // Import a simple, symmetric refresh icon
+import { useUser } from "@/context/UserContext";
+import { FiCheck, FiX, FiEdit } from "react-icons/fi";
 
 export default function Home() {
   const router = useRouter(); // Initialize router
+  const { user } = useUser(); // Access user from context
 
-  const [activeTab, setActiveTab] = useState("artworks");
+  const [isClient, setIsClient] = useState(false); // Track if the component is client-side
+
+  useEffect(() => {
+    setIsClient(true); // Ensure we're on the client
+  }, []);
+
+
+  const [activeTab, setActiveTab] = useState<"artworks" | "artists" | "museums">("artworks");
   const [searchText, setSearchText] = useState(""); // State to manage search input
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
@@ -29,11 +39,20 @@ export default function Home() {
     { id: 2, name: "Artist 2", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
     { id: 3, name: "Artist 3", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
     { id: 4, name: "Artist 4", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
-    { id: 5, name: "Artist 5", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
+    { id: 5, name: "Artist 5", imasge: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
     { id: 6, name: "Artist 6", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
     { id: 7, name: "Artist 7", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
     // Add as many artists as needed
   ]);
+
+  const [museums, setMuseums] = useState([
+    { id: 1, name: "Museum 1", location: "City 1", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
+    { id: 2, name: "Museum 2", location: "City 2", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
+    { id: 3, name: "Museum 3", location: "City 3", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
+    { id: 4, name: "Museum 4", location: "City 4", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
+    { id: 5, name: "Museum 5", location: "City 5", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
+  ]);
+
 
 
   const filteredArtworks = artworks.filter((artwork) =>
@@ -43,8 +62,14 @@ export default function Home() {
     artist.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  const filteredMuseums = museums.filter((museum) =>
+    museum.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+
   const totalArtworkPages = Math.ceil(filteredArtworks.length / itemsPerPage);
   const totalArtistPages = Math.ceil(filteredArtists.length / itemsPerPage);
+  const totalMuseumPages = Math.ceil(filteredMuseums.length / itemsPerPage);
 
 
   const paginatedArtworks = filteredArtworks.slice(
@@ -57,11 +82,15 @@ export default function Home() {
   );
 
 
+  const paginatedMuseums = filteredMuseums.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
 
 
 
-  const handleToggle = (tab: string) => {
+  const handleToggle = (tab: "artworks" | "artists" | "museums") => {
     setActiveTab(tab);
     setSearchText(""); // Clear search input when toggling
     setCurrentPage(1); // Reset to the first page
@@ -82,43 +111,86 @@ export default function Home() {
     <>
       <Header />
       <div className={styles.page}>
-        <div className={styles.headerList}>
-          <div className={styles.headerLeft}>
-            <div className={styles.shapeWhite}>Published:</div>
-            <div className={styles.shapeWhite}>Pending:</div>
+        {user?.type !== "admin" && (
+          <div className={styles.headerList}>
+            <div className={styles.headerLeft}>
+              <div className={styles.shapeWhite}>Published:</div>
+              <div className={styles.shapeWhite}>Pending:</div>
+            </div>
+            <div className={styles.headerRight}>
+              {user?.type === "museum" && (
+                <button
+                  className={styles.shapePrimary}
+                  onClick={() => router.push("/addartist")} // Navigate to /addartist
+                >
+                  Add Artist
+                </button>
+              )}
+              <button
+                className={styles.shapeSecondary}
+                onClick={() => router.push("/addartwork")} // Navigate to /addartwork
+              >
+                Add Artwork
+              </button>
+            </div>
           </div>
-          <div className={styles.headerRight}>
-            <button
-              className={styles.shapePrimary}
-              onClick={() => router.push("/addartist")} // Navigate to /addartist
-            >
-              Add Artist
-            </button>
-            <button
-              className={styles.shapeSecondary}
-              onClick={() => router.push("/addartwork")} // Navigate to /addartwork
-            >
-              Add Artwork
-            </button>
-          </div>
-        </div>
+        )}
         <div className={styles.listContainer}>
           <div className={styles.listHeader}>
             <div className={styles.toggleContainer}>
-              <button
-                className={`${styles.toggleButton} ${activeTab === "artworks" ? styles.active : ""
-                  }`}
-                onClick={() => handleToggle("artworks")}
-              >
-                Artworks
-              </button>
-              <button
-                className={`${styles.toggleButton} ${activeTab === "artists" ? styles.active : ""
-                  }`}
-                onClick={() => handleToggle("artists")}
-              >
-                Artists
-              </button>
+              {user?.type === "admin" ? (
+                <>
+                  <button
+                    className={`${styles.toggleButton} ${activeTab === "museums" ? styles.active : ""
+                      }`}
+                    onClick={() => handleToggle("museums")}
+                  >
+                    Museums
+                  </button>
+                  <button
+                    className={`${styles.toggleButton} ${activeTab === "artists" ? styles.active : ""
+                      }`}
+                    onClick={() => handleToggle("artists")}
+                  >
+                    Artists
+                  </button>
+
+                  <button
+                    className={`${styles.toggleButton} ${activeTab === "artworks" ? styles.active : ""
+                      }`}
+                    onClick={() => handleToggle("artworks")}
+                  >
+                    Artworks
+                  </button>
+                </>
+              ) : user?.type === "museum" ? (
+                <>
+                  <button
+                    className={`${styles.toggleButton} ${activeTab === "artworks" ? styles.active : ""
+                      }`}
+                    onClick={() => handleToggle("artworks")}
+                  >
+                    Artworks
+                  </button>
+                  <button
+                    className={`${styles.toggleButton} ${activeTab === "artists" ? styles.active : ""
+                      }`}
+                    onClick={() => handleToggle("artists")}
+                  >
+                    Artists
+                  </button>
+                </>
+              ) : (
+                user?.type === "artist" && (
+                  <button
+                    className={`${styles.toggleButton} ${activeTab === "artworks" ? styles.active : ""
+                      }`}
+                    onClick={() => handleToggle("artworks")}
+                  >
+                    Artworks
+                  </button>
+                )
+              )}
             </div>
             <div className={styles.searchWrapper}>
               <input
@@ -126,7 +198,11 @@ export default function Home() {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)} // Update search text
                 className={styles.searchBar}
-                placeholder={`Search for a specific ${activeTab === "artworks" ? "artwork" : "artist"
+                placeholder={`Search for a specific ${activeTab === "artworks"
+                  ? "artwork"
+                  : activeTab === "artists"
+                    ? "artist"
+                    : "museum"
                   }...`}
               />
               <span className={styles.searchIcon}>🔍</span>
@@ -143,40 +219,44 @@ export default function Home() {
                 <div className={styles.artworkList}>
                   {paginatedArtworks.map((artwork) => (
                     <div key={artwork.id} className={styles.artworkItem}>
-                      <img src={artwork.image} alt={artwork.title} className={styles.artworkImage} />
+                      <img
+                        src={artwork.image}
+                        alt={artwork.title}
+                        className={styles.artworkImage}
+                      />
                       <span className={styles.artworkTitle}>{artwork.title}</span>
-                      <button className={styles.viewDetails}>View artwork's details →</button>
-                    </div>
-                  ))}
-                </div>
-                <div className={styles.pagination}>
-                  {Array.from({ length: totalArtworkPages }, (_, index) => index + 1).map((page) => (
-                    <button
-                      key={page}
-                      className={`${styles.pageButton} ${page === currentPage ? styles.activePage : ""}`}
-                      onClick={() => handlePageChange(page)}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <div className={styles.artworkList}>
-                  {paginatedArtists.map((artist) => (
-                    <div key={artist.id} className={styles.artworkItem}>
-                      <img src={artist.image} alt={artist.name} className={styles.artworkImage} />
-                      <span className={styles.artworkTitle}>{artist.name}</span>
-                      <button className={styles.viewDetails}>View artist's details →</button>
+                      {user?.type === "admin" ? (
+                        <div className={styles.adminButtons}>
+                          <button className={styles.approveButton}>
+                            <FiCheck />
+                          </button>
+                          <button className={styles.rejectButton}>
+                            <FiX />
+                          </button>
+                          <button
+                            className={styles.editButton}
+                            onClick={() => {
+                              if (activeTab === "artworks") {
+                                router.push("/addartwork");
+                              } else if (activeTab === "artists") {
+                                router.push("/addartist");
+                              }
+                            }}
+                          >
+                            <FiEdit />
+                          </button>
+                        </div>
+                      ) : (
+                        <button className={styles.viewDetails}>
+                          View artwork's details →
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
                 <div className={styles.pagination}>
                   {Array.from(
-                    {
-                      length: activeTab === "artworks" ? totalArtworkPages : totalArtistPages,
-                    },
+                    { length: totalArtworkPages },
                     (_, index) => index + 1
                   ).map((page) => (
                     <button
@@ -190,6 +270,110 @@ export default function Home() {
                   ))}
                 </div>
               </>
+            ) : activeTab === "artists" ? (
+              <>
+                <div className={styles.artworkList}>
+                  {paginatedArtists.map((artist) => (
+                    <div key={artist.id} className={styles.artworkItem}>
+                      <img
+                        src={artist.image}
+                        alt={artist.name}
+                        className={styles.artworkImage}
+                      />
+                      <span className={styles.artworkTitle}>{artist.name}</span>
+                      {user?.type === "admin" ? (
+                        <div className={styles.adminButtons}>
+                          <button className={styles.approveButton}>
+                            <FiCheck />
+                          </button>
+                          <button className={styles.rejectButton}>
+                            <FiX />
+                          </button>
+                          <button
+                            className={styles.editButton}
+                            onClick={() => {
+                              if (activeTab === "artists") {
+                                router.push("/addartist");
+                              }
+                            }}
+                          >
+                            <FiEdit />
+                          </button>
+                        </div>
+                      ) : (
+                        <button className={styles.viewDetails}>
+                          View artist's details →
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.pagination}>
+                  {Array.from(
+                    { length: totalArtistPages },
+                    (_, index) => index + 1
+                  ).map((page) => (
+                    <button
+                      key={page}
+                      className={`${styles.pageButton} ${page === currentPage ? styles.activePage : ""
+                        }`}
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              activeTab === "museums" && (
+                <>
+                  <div className={styles.artworkList}>
+                    {paginatedMuseums.map((museum) => (
+                      <div key={museum.id} className={styles.artworkItem}>
+                        <img
+                          src={museum.image}
+                          alt={museum.name}
+                          className={styles.artworkImage}
+                        />
+                        <span className={styles.artworkTitle}>{museum.name}</span>
+                        <span>{museum.location}</span>
+                        {user?.type === "admin" ? (
+                          <div className={styles.adminButtons}>
+                            <button className={styles.approveButton}>
+                              <FiCheck />
+                            </button>
+                            <button className={styles.rejectButton}>
+                              <FiX />
+                            </button>
+                            <button className={styles.editButton}>
+                              <FiEdit />
+                            </button>
+                          </div>
+                        ) : (
+                          <button className={styles.viewDetails}>
+                            View museum's details →
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className={styles.pagination}>
+                    {Array.from(
+                      { length: totalMuseumPages },
+                      (_, index) => index + 1
+                    ).map((page) => (
+                      <button
+                        key={page}
+                        className={`${styles.pageButton} ${page === currentPage ? styles.activePage : ""
+                          }`}
+                        onClick={() => handlePageChange(page)}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )
             )}
           </div>
         </div>

@@ -212,11 +212,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transform-origin: center; /* Ensures the icon spins around its center */
+  transform-origin: center;
+  /* Ensures the icon spins around its center */
 }
 
 .refreshIcon:hover {
-  color: var(--primary-color); /* Slightly darker on hover */
+  color: var(--primary-color);
+  /* Slightly darker on hover */
 }
 
 .artworkList {
@@ -271,6 +273,56 @@
 .viewDetails:hover {
   color: #5a189a;
 }
+
+.adminButtons {
+  display: flex;
+  gap: 10px;
+  margin-right: 10px;
+  justify-content: flex-end;
+}
+
+.approveButton,
+.rejectButton,
+.editButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  font-size: 1rem;
+  /* Icon size */
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.approveButton {
+  background-color: #1b8e5e;
+  color: white;
+}
+
+.approveButton:hover {
+  background-color: #146946;
+}
+
+.rejectButton {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.rejectButton:hover {
+  background-color: #9a2323;
+}
+
+.editButton {
+  background-color: #0288d1;
+  color: white;
+}
+
+.editButton:hover {
+  background-color: #01579b;
+}
+
 
 .pagination {
   display: flex;
