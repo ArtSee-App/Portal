@@ -243,4 +243,17 @@
     top: 0;
   }
 
+  .logoText {
+    white-space: nowrap;
+    /* Prevent the text from wrapping */
+    overflow: hidden;
+    /* Hide any overflow */
+    text-overflow: ellipsis;
+    /* Add ellipsis (...) if the text is too long */
+    max-width: 200px;
+    /* Set a maximum width for the text container */
+    display: inline-block;
+    /* Ensure the text behaves as a single block */
+  }
+
 }
