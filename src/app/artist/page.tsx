@@ -1,11 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
-import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
+
+function SearchParamsHandler({ setIsEditMode }: { setIsEditMode: React.Dispatch<React.SetStateAction<boolean>> }) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const editMode = searchParams.get("edit") === "true";
+    setIsEditMode(editMode);
+  }, [searchParams, setIsEditMode]);
+
+  return null; // This component only handles state updates
+}
+
 
 export default function Artist() {
   const [formData, setFormData] = useState<{
@@ -103,7 +113,6 @@ export default function Artist() {
     }
   };
 
-  const searchParams = useSearchParams(); // Safer way to access query params
   const [isEditMode, setIsEditMode] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
   const [artistStatus, setArtistStatus] = useState<"pending" | "published" | null>(null);
@@ -142,16 +151,15 @@ export default function Artist() {
     }
   };
 
-  useEffect(() => {
-    const editMode = searchParams.get("edit") === "true";
-    setIsEditMode(editMode);
-  }, [searchParams]);
 
 
   return (
     <>
       <Header />
       <div className={styles.page}>
+        <Suspense fallback={<div>Loading search params...</div>}>
+          <SearchParamsHandler setIsEditMode={setIsEditMode} />
+        </Suspense>
         {isSubmitted ? (
           <div className={styles.thankYouMessage}>
             <h1>Thank You for Submitting a New Artist!</h1>

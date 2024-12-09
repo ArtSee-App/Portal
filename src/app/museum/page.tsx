@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
-import { useSearchParams } from "next/navigation";
 
 export default function Museum() {
   const [formData, setFormData] = useState<{

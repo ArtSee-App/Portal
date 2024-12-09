@@ -1,10 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
 import { useSearchParams } from "next/navigation";
+
+function SearchParamsHandler({ setIsEditMode }: { setIsEditMode: React.Dispatch<React.SetStateAction<boolean>> }) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const editMode = searchParams.get("edit") === "true";
+    setIsEditMode(editMode);
+  }, [searchParams, setIsEditMode]);
+
+  return null; // This component only handles state updates
+}
+
 
 export default function Artwork() {
   const [formData, setFormData] = useState<{
@@ -80,7 +91,6 @@ export default function Artwork() {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const searchParams = useSearchParams(); // Safer way to access query params
   const [isEditMode, setIsEditMode] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
   const [artworkStatus, setArtworkStatus] = useState<"pending" | "published" | null>(null);
@@ -118,12 +128,6 @@ export default function Artwork() {
       alert("Artwork deleted!");
     }
   };
-
-  useEffect(() => {
-    const editMode = searchParams.get("edit") === "true";
-    setIsEditMode(editMode);
-  }, [searchParams]);
-
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -163,6 +167,9 @@ export default function Artwork() {
     <>
       <Header />
       <div className={styles.page}>
+        <Suspense fallback={<div>Loading search params...</div>}>
+          <SearchParamsHandler setIsEditMode={setIsEditMode} />
+        </Suspense>
         {isSubmitted ? (
           <div className={styles.thankYouMessage}>
             <h1>Thank You for Submitting a New Artwork!</h1>
@@ -533,7 +540,6 @@ export default function Artwork() {
             </div>
           </>
         )}
-
       </div>
       <Footer />
     </>
