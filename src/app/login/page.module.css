@@ -360,6 +360,41 @@
   font-size: 1rem;
 }
 
+.infoSection {
+  overflow-y: auto;
+  /* Enable vertical scrolling if content exceeds */
+  border-radius: 8px;
+  /* Optional: Rounded corners */
+  scrollbar-width: thin;
+  /* For Firefox: thinner scrollbar */
+  scrollbar-color: var(--primary-color) #f0f0f0;
+  /* Custom colors for scrollbar */
+}
+
+/* Custom scrollbar styles for Webkit-based browsers */
+.infoSection::-webkit-scrollbar {
+  width: 6px;
+  /* Customize scrollbar width */
+}
+
+.infoSection::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  /* Customize scrollbar thumb color */
+  border-radius: 8px;
+  /* Round scrollbar edges */
+}
+
+.infoSection::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+  /* Change color on hover */
+}
+
+.infoSection::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  /* Customize track background color */
+}
+
+
 .registrationInfo {
   text-align: left;
   margin-top: 20px;
