@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
+import { useSearchParams } from "next/navigation";
 
-export default function AddArtwork() {
+export default function Artwork() {
   const [formData, setFormData] = useState<{
     artworkTitle: string;
     artistName: string;
@@ -79,6 +80,50 @@ export default function AddArtwork() {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const searchParams = useSearchParams(); // Safer way to access query params
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
+  const [artworkStatus, setArtworkStatus] = useState<"pending" | "published" | null>(null);
+
+  const handleEditClick = () => {
+    setIsEditing(true); // Enable editing
+  };
+
+  const handleCancelEdit = () => {
+    const confirmCancel = window.confirm(
+      "Are you sure you want to cancel changes? Any unsaved changes will be lost."
+    );
+    if (confirmCancel) {
+      setIsEditing(false); // Cancel editing
+    }
+  };
+
+  const handleSaveChanges = () => {
+    const confirmSave = window.confirm(
+      "Do you want to save the changes to this artwork? Saved changes will be pending and will have to be verified."
+    );
+    if (confirmSave) {
+      // Implement logic to save changes here
+      alert("Changes saved successfully!");
+      setIsEditing(false);
+    }
+  };
+
+  const handleDelete = () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this artwork? This action cannot be undone."
+    );
+    if (confirmDelete) {
+      // Implement logic to delete the artwork here
+      alert("Artwork deleted!");
+    }
+  };
+
+  useEffect(() => {
+    const editMode = searchParams.get("edit") === "true";
+    setIsEditMode(editMode);
+  }, [searchParams]);
+
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -130,16 +175,34 @@ export default function AddArtwork() {
           </div>
         ) : (
           <>
-
             <div className={styles.header}>
-              <h1 className={styles.headerTitle}>Add a New Artwork</h1>
-              <span className={styles.divider}></span>
-              <p className={styles.headerHelp}>
-                Need help? Check our guide on how to add artworks{" "}
-                <a href="/guide" className={`${styles.link} ${styles.gradientText}`}>
-                  here!
-                </a>
-              </p>
+              <h1 className={styles.headerTitle}>
+                {isEditMode ? "Edit Artwork" : "Add a New Artwork"}
+              </h1>
+              {isEditMode && (
+                <>
+                  <span className={styles.divider}></span>
+                  <p
+                    className={`${styles.headerHelp} ${artworkStatus === "pending" ? styles.pendingStatus : styles.publishedStatus
+                      }`}
+                  >
+                    {artworkStatus === "pending"
+                      ? "There are pending changes to the artwork"
+                      : "This artwork has been published"}
+                  </p>
+                </>
+              )}
+              {!isEditMode && (
+                <>
+                  <span className={styles.divider}></span>
+                  <p className={styles.headerHelp}>
+                    Need help? Check our guide on how to add artworks{" "}
+                    <a href="/guide" className={`${styles.link} ${styles.gradientText}`}>
+                      here!
+                    </a>
+                  </p>
+                </>
+              )}
             </div>
             <form
               id="artwork-register-form"
@@ -158,6 +221,7 @@ export default function AddArtwork() {
                         accept="image/*"
                         className={styles.hiddenInput}
                         onChange={handleInputChange}
+                        disabled={isEditMode && !isEditing}
                       />
                       <label htmlFor="artworkImageInput" className={styles.imageUploadBox}>
                         {formData.artworkImage ? (
@@ -187,6 +251,7 @@ export default function AddArtwork() {
                           accept="image/*"
                           className={styles.hiddenInput}
                           onChange={handleInputChange}
+                          disabled={isEditMode && !isEditing}
                         />
                         <label
                           htmlFor="additionalImage1"
@@ -211,6 +276,7 @@ export default function AddArtwork() {
                           accept="image/*"
                           className={styles.hiddenInput}
                           onChange={handleInputChange}
+                          disabled={isEditMode && !isEditing}
                         />
                         <label
                           htmlFor="additionalImage2"
@@ -235,6 +301,7 @@ export default function AddArtwork() {
                           accept="image/*"
                           className={styles.hiddenInput}
                           onChange={handleInputChange}
+                          disabled={isEditMode && !isEditing}
                         />
                         <label
                           htmlFor="additionalImage3"
@@ -264,6 +331,7 @@ export default function AddArtwork() {
                       className={styles.input}
                       value={formData.artworkTitle}
                       onChange={handleInputChange}
+                      disabled={isEditMode && !isEditing}
                     />
                   </div>
                   <div className={styles.inputWrapperRequired}>
@@ -278,6 +346,7 @@ export default function AddArtwork() {
                         e.target.style.height = `${e.target.scrollHeight}px`;
                       }}
                       rows={1}
+                      disabled={isEditMode && !isEditing}
                     />
                   </div>
                   <div className={styles.inputWrapperRequired}>
@@ -294,6 +363,7 @@ export default function AddArtwork() {
                           customTimelineCenter: value !== "custom" ? "" : prev.customTimelineCenter, // Reset customTimelineCenter if not "custom"
                         }));
                       }}
+                      disabled={isEditMode && !isEditing}
                     >
                       <option value="">None Chosen</option>
                       <option value="Renaissance">Renaissance</option>
@@ -311,6 +381,7 @@ export default function AddArtwork() {
                         placeholder=""
                         className={`${styles.input} ${styles.customInput}`}
                         value={formData.customTimelineCenter || ""} // Default to an empty string
+                        disabled={isEditMode && !isEditing}
                         onChange={(e) =>
                           setFormData((prev) => ({
                             ...prev,
@@ -333,6 +404,7 @@ export default function AddArtwork() {
                           artistName: e.target.value,
                         }))
                       }
+                      disabled={isEditMode && !isEditing}
                     >
                       <option value="">None Chosen</option>
                       <option value="Leonardo da Vinci">Leonardo da Vinci</option>
@@ -351,49 +423,42 @@ export default function AddArtwork() {
                       className={styles.input}
                       value={formData.artworkYear}
                       onChange={handleInputChange}
-                    />
-                  </div>
-
-                  <div className={styles.inputWrapper}>
-                    <p>Era Prior to the Artwork's Creation</p>
-                    <input
-                      type="text"
-                      name="timelineLeft"
-                      className={styles.input}
-                      value={formData.timelineLeft}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className={styles.inputWrapper}>
-                    <p>Era After the Artwork's Creation</p>
-                    <input
-                      type="text"
-                      name="timelineRight"
-                      className={styles.input}
-                      value={formData.timelineRight}
-                      onChange={handleInputChange}
+                      disabled={isEditMode && !isEditing}
                     />
                   </div>
                   <div className={styles.inputWrapper}>
                     <p>Artwork's Genre</p>
-                    <input
-                      type="text"
+                    <select
                       name="artworkGenre"
-                      placeholder="Examples: Photo, Sculpture, etc."
-                      className={styles.input}
+                      className={`${styles.input} ${styles.select}`}
                       value={formData.artworkGenre}
-                      onChange={handleInputChange}
-                    />
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          artworkGenre: e.target.value,
+                        }))
+                      }
+                      disabled={isEditMode && !isEditing}
+                    >
+                      <option value="">None Chosen</option>
+                      <option value="Photo">Photo</option>
+                      <option value="Sculpture">Sculpture</option>
+                      <option value="Painting">Painting</option>
+                      <option value="Digital Art">Digital Art</option>
+                      <option value="Installation">Installation</option>
+                      <option value="Mixed Media">Mixed Media</option>
+                    </select>
                   </div>
                   <div className={styles.inputWrapper}>
-                    <p>What Is The Artwork Created With/Of/On</p>
+                    <p>What Materials or Mediums Were Used to Create the Artwork?</p>
                     <input
                       type="text"
                       name="artworkMedia"
-                      placeholder="Examples: Canvas, Oil; Photo Print; etc."
+                      placeholder="Examples: oil, canvas | photo print | engraving etc."
                       className={styles.input}
                       value={formData.artworkMedia}
                       onChange={handleInputChange}
+                      disabled={isEditMode && !isEditing}
                     />
                   </div>
                   <div className={styles.inputWrapper}>
@@ -405,14 +470,53 @@ export default function AddArtwork() {
                       className={styles.input}
                       value={formData.artworkDimensions}
                       onChange={handleInputChange}
+                      disabled={isEditMode && !isEditing}
                     />
                   </div>
                 </div>
               </div>
-              <div className={styles.registerButtonWrapper}>
-                <button type="submit" form="artwork-register-form" className={styles.button}>
-                  Submit Artwork For Approval
-                </button>
+              <div className={`${styles.buttonRow} ${styles.registerButtonWrapper}`}>
+                {isEditMode ? (
+                  isEditing ? (
+                    <>
+                      <button
+                        type="button"
+                        className={styles.button}
+                        onClick={handleSaveChanges}
+                      >
+                        Save Changes
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.button} ${styles.cancelButton}`}
+                        onClick={handleCancelEdit}
+                      >
+                        Cancel Changes
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        className={styles.button}
+                        onClick={handleEditClick}
+                      >
+                        Edit Artwork
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.button} ${styles.deleteButton}`}
+                        onClick={handleDelete}
+                      >
+                        Delete Artwork
+                      </button>
+                    </>
+                  )
+                ) : (
+                  <button type="submit" form="artwork-register-form" className={styles.button}>
+                    Submit Artwork For Approval
+                  </button>
+                )}
               </div>
             </form>
 

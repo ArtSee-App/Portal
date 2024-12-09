@@ -121,14 +121,14 @@ export default function Home() {
               {user?.type === "museum" && (
                 <button
                   className={styles.shapePrimary}
-                  onClick={() => router.push("/addartist")} // Navigate to /addartist
+                  onClick={() => router.push("/artist")} // Navigate to /artist
                 >
                   Add Artist
                 </button>
               )}
               <button
                 className={styles.shapeSecondary}
-                onClick={() => router.push("/addartwork")} // Navigate to /addartwork
+                onClick={() => router.push("/artwork")} // Navigate to /artwork
               >
                 Add Artwork
               </button>
@@ -145,14 +145,14 @@ export default function Home() {
                       }`}
                     onClick={() => handleToggle("museums")}
                   >
-                    Museums
+                    Museums(20)
                   </button>
                   <button
                     className={`${styles.toggleButton} ${activeTab === "artists" ? styles.active : ""
                       }`}
                     onClick={() => handleToggle("artists")}
                   >
-                    Artists
+                    Artists(15)
                   </button>
 
                   <button
@@ -160,7 +160,7 @@ export default function Home() {
                       }`}
                     onClick={() => handleToggle("artworks")}
                   >
-                    Artworks
+                    Artworks(19)
                   </button>
                 </>
               ) : user?.type === "museum" ? (
@@ -237,9 +237,11 @@ export default function Home() {
                             className={styles.editButton}
                             onClick={() => {
                               if (activeTab === "artworks") {
-                                router.push("/addartwork");
+                                router.push("/artwork?edit=true");
                               } else if (activeTab === "artists") {
-                                router.push("/addartist");
+                                router.push("/artist?edit=true");
+                              } else if (activeTab === "museums") {
+                                router.push("/museum");
                               }
                             }}
                           >
@@ -247,7 +249,13 @@ export default function Home() {
                           </button>
                         </div>
                       ) : (
-                        <button className={styles.viewDetails}>
+                        <button
+                          className={styles.viewDetails}
+                          onClick={() => {
+                            if (user?.type === "artist" || user?.type === "museum")
+                              router.push(`/artwork?edit=true`);
+                          }}
+                        >
                           View artwork's details →
                         </button>
                       )}
@@ -293,7 +301,8 @@ export default function Home() {
                             className={styles.editButton}
                             onClick={() => {
                               if (activeTab === "artists") {
-                                router.push("/addartist");
+                                router.push("/artist?edit=true");
+
                               }
                             }}
                           >
@@ -301,7 +310,13 @@ export default function Home() {
                           </button>
                         </div>
                       ) : (
-                        <button className={styles.viewDetails}>
+                        <button
+                          className={styles.viewDetails}
+                          onClick={() => {
+                            if (user?.type === "artist" || user?.type === "museum")
+                              router.push(`/artist?edit=true`);
+                          }}
+                        >
                           View artist's details →
                         </button>
                       )}
@@ -345,7 +360,14 @@ export default function Home() {
                             <button className={styles.rejectButton}>
                               <FiX />
                             </button>
-                            <button className={styles.editButton}>
+                            <button
+                              className={styles.editButton}
+                              onClick={() => {
+                                if (activeTab === "museums") {
+                                  router.push("/museum");
+                                }
+                              }}
+                            >
                               <FiEdit />
                             </button>
                           </div>

@@ -26,6 +26,7 @@ export default function Login() {
   const [usedEmail, setUsedEmail] = useState(""); // Store the email used during registration
   const [loading, setLoading] = useState(false);
   const { setUser } = useUser();
+  const [showRegisterInfo, setShowRegisterInfo] = useState(false);
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -370,7 +371,32 @@ export default function Login() {
           >
             <LoadingOverlay isVisible={loading} />
 
-            {isForgotPassword ? (
+            {showRegisterInfo ? (
+              <main className={styles.main}>
+                <h1 className={styles.heading}>What Should I Register As?</h1>
+                <div className={styles.infoSection}>
+                  <h2 className={styles.infoHeader}>🎨 Artist Registration</h2>
+                  <p className={styles.infoParagraph}>
+                    Register as an artist if you are an independent creator or professional
+                    who wants to showcase and manage your artworks. This option is ideal for
+                    individuals who wish to build a personal portfolio and connect with art
+                    enthusiasts.
+                  </p>
+                  <h2 className={styles.infoHeader}>🏛️ Museum Registration</h2>
+                  <p className={styles.infoParagraph}>
+                    Register as a museum if you represent an art institution. 
+                    This option allows you to manage multiple artists and artworks under a single account. 
+                    Most likely, ArtVista has already reached out to discuss a potential collaboration, making this the ideal option for you.
+                  </p>
+                  <button
+                    className={styles.button}
+                    onClick={() => setShowRegisterInfo(false)}
+                  >
+                    Back to Login
+                  </button>
+                </div>
+              </main>
+            ) : isForgotPassword ? (
               <main className={styles.main}>
                 <h1 className={styles.heading}>Forgot Password</h1>
                 <p className={styles.forgotPasswordExplanation}>
@@ -678,7 +704,7 @@ export default function Login() {
                             />
                           </div>
                           <div className={styles.inputWrapperRequired}>
-                            <p>Required</p>
+                            <p>Longitude</p>
                             <input
                               type="number"
                               name="longitude"
@@ -880,6 +906,18 @@ export default function Login() {
                         >
                           🏛️ Register as Museum
                         </button>
+                      </div>
+                      <div className={styles.linkWrapper}>
+                        <a
+                          href="#"
+                          className={styles.infoLink}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setShowRegisterInfo(true); // Show "What should I register as?" information
+                          }}
+                        >
+                          What should I register as?
+                        </a>
                       </div>
                     </>
                   )}

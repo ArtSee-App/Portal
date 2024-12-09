@@ -11,7 +11,7 @@ const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { user, setUser } = useUser(); // Access setUser from the UserContext
-
+    console.log(user?.type)
     const handleSignOut = async () => {
         try {
             await signOut(auth); // Firebase sign-out
@@ -84,7 +84,16 @@ const Header = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/home" onClick={closeSidebar}>
+                        <Link
+                            href={
+                                user?.type === "museum"
+                                    ? "/museum?edit=true"
+                                    : user?.type === "artist"
+                                        ? "/artist?edit=true"
+                                        : "/home"
+                            }
+                            onClick={closeSidebar}
+                        >
                             Account Settings
                         </Link>
                     </li>
@@ -131,7 +140,16 @@ const Header = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/home" onClick={closeSidebar}>
+                                <Link
+                                    href={
+                                        user?.type === "museum"
+                                            ? "/museum?edit=true"
+                                            : user?.type === "artist"
+                                                ? "/artist?edit=true"
+                                                : "/home"
+                                    }
+                                    onClick={closeSidebar}
+                                >
                                     Account Settings
                                 </Link>
                             </li>

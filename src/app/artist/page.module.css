@@ -49,6 +49,7 @@
   background-color: var(--primary-color);
 }
 
+
 .header {
   display: flex;
   align-items: center;
@@ -203,8 +204,6 @@
 }
 
 .imageUploadWrapper {
-  flex: 1;
-  /* Distribute equal space between the three boxes */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -229,11 +228,6 @@
   transition: border-color 0.3s ease;
 }
 
-.smallImageUploadBox {
-  height: 150px;
-}
-
-
 .imageUploadBox:hover {
   border-color: var(--primary-color);
 }
@@ -252,24 +246,6 @@
   left: 0;
 }
 
-.additionalInfo {
-  margin-top: 16px;
-  font-size: 0.875rem;
-  color: #555;
-}
-
-.additionalInfo a {
-  color: var(--primary-color);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.extraImagesRow {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: 16px;
-}
 
 
 .inputWrapper {
@@ -300,6 +276,8 @@
   margin-bottom: 4px;
 }
 
+
+
 .input {
   padding: 12px 16px;
   border: 1px solid #ddd;
@@ -319,7 +297,6 @@
 .input::placeholder {
   font-style: italic;
 }
-
 
 .textarea {
   resize: none;
@@ -359,28 +336,15 @@
   /* Change color on hover */
 }
 
-.select {
-  appearance: none;
-  /* Remove native dropdown styles */
-  background: #f8f8f8;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 12px 16px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
 
-.select:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 4px rgba(0, 112, 243, 0.2);
+.buttonRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  /* Space between buttons */
+  width: 100%;
 }
-
-.customInput {
-  margin-top: 8px;
-  /* Add some spacing from the dropdown */
-}
-
 
 
 .button {
@@ -395,11 +359,48 @@
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
+  flex: 1;
+  /* Optional: Make buttons take equal space */
+  text-align: center;
+  /* Center align text inside buttons */
 }
 
 .button:hover {
   background-color: var(--primary-color);
 }
+
+.button.cancelButton {
+  background-color: #ccc !important;
+  /* Gray for cancel */
+  color: #333;
+  background: none;
+  /* Remove the linear gradient */
+}
+
+.button.cancelButton:hover {
+  background-color: #aaa;
+}
+
+.button.deleteButton {
+  background-color: red !important;
+  /* Red for delete */
+  color: white;
+  background: none;
+  /* Remove the linear gradient */
+}
+
+.button.deleteButton:hover {
+  background-color: darkred;
+}
+
+.pendingStatus {
+  color: yellow;
+}
+
+.publishedStatus {
+  color: green;
+}
+
 
 .guideContainer {
   display: flex;
