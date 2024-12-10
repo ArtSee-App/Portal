@@ -17,7 +17,7 @@
 .confirmationWrapper p {
   font-size: 1.2rem;
   margin-bottom: 20px;
-  color: white;
+  color: var(--text);
 }
 
 .backToLoginButton {
@@ -270,11 +270,17 @@
 
 .inputWrapper .inputWrapperRequired p {
   font-size: 0.875rem;
-  /* Slightly smaller text for descriptions */
-  color: #555;
-  /* Subtle color for description text */
   margin-bottom: 4px;
 }
+
+.inputWrapperRequired p {
+  color: var(--text);
+}
+
+.inputWrapper p {
+  color: var(--text);
+}
+
 
 
 .input {
@@ -356,7 +362,7 @@
 
 .forgotPasswordExplanation {
   margin-bottom: 16px;
-  color: #555;
+  color: var(--text);
   font-size: 1rem;
 }
 
@@ -403,11 +409,13 @@
 .infoHeader {
   font-size: 1.5rem;
   margin-bottom: 10px;
+  color: var(--text);
 }
 
 .infoParagraph {
   font-size: 1rem;
   margin-bottom: 20px;
+  color: var(--text);
 }
 
 .linkWrapper {

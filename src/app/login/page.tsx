@@ -234,11 +234,11 @@ export default function Login() {
           }
 
           const userType = userDoc.data()?.type || "unknown"; // Default to "unknown" if `type` is missing
-
+          const token = await userCredential.user.getIdToken();
+          console.log('test ' + token);
           // Set user in the context
           setUser({
-            userId: userCredential.user.uid, // Unique user ID from Firebase
-            email: userCredential.user.email, // Guaranteed to be non-null
+            ...userCredential.user,
             type: userType, // Fetched from Firestore
             approved: userApproved, // User is approved
           });
@@ -384,8 +384,8 @@ export default function Login() {
                   </p>
                   <h2 className={styles.infoHeader}>🏛️ Museum Registration</h2>
                   <p className={styles.infoParagraph}>
-                    Register as a museum if you represent an art institution. 
-                    This option allows you to manage multiple artists and artworks under a single account. 
+                    Register as a museum if you represent an art institution.
+                    This option allows you to manage multiple artists and artworks under a single account.
                     Most likely, ArtVista has already reached out to discuss a potential collaboration, making this the ideal option for you.
                   </p>
                   <button

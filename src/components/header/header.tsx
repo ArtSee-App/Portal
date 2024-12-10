@@ -11,7 +11,6 @@ const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { user, setUser } = useUser(); // Access setUser from the UserContext
-    console.log(user?.type)
     const handleSignOut = async () => {
         try {
             await signOut(auth); // Firebase sign-out

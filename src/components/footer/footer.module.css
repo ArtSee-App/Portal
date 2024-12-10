@@ -2,7 +2,7 @@
 .footer {
   margin-top: 50px;
   padding: 20px 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--text-gray);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -10,7 +10,7 @@
 }
 
 .footer p {
-  color: white;
+  color: var(--text);
   /* Set text color to white */
 }
 
@@ -29,7 +29,7 @@
 
 /* Navigation Links Styling */
 .navLinks a {
-  color: white;
+  color: var(--text);
   text-decoration: none;
   font-size: 16px;
   transition: color 0.3s ease;

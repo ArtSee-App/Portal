@@ -270,12 +270,16 @@
 
 .inputWrapper .inputWrapperRequired p {
   font-size: 0.875rem;
-  /* Slightly smaller text for descriptions */
-  color: #555;
-  /* Subtle color for description text */
   margin-bottom: 4px;
 }
 
+.inputWrapper p {
+  color: var(--text);
+}
+
+.inputWrapperRequired p {
+  color: var(--text);
+}
 
 
 .input {

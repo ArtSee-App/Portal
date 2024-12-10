@@ -5,6 +5,7 @@ import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
 import { useSearchParams } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 
 function SearchParamsHandler({ setIsEditMode }: { setIsEditMode: React.Dispatch<React.SetStateAction<boolean>> }) {
   const searchParams = useSearchParams();
@@ -14,6 +15,10 @@ function SearchParamsHandler({ setIsEditMode }: { setIsEditMode: React.Dispatch<
   }, [searchParams, setIsEditMode]);
 
   return null; // This component only handles state updates
+}
+
+interface Era {
+  era_name: string;
 }
 
 
@@ -39,6 +44,8 @@ export default function Artwork() {
     additionalImage1: File | null;
     additionalImage2: File | null;
     additionalImage3: File | null;
+    nsfw: boolean | null;
+    priority: boolean | null;
   }>({
     artworkTitle: "",
     artistName: "",
@@ -60,6 +67,8 @@ export default function Artwork() {
     additionalImage1: null,
     additionalImage2: null,
     additionalImage3: null,
+    nsfw: null, // Default to "No Option Selected"
+    priority: null, // Default to "No Option Selected"
   });
 
   const resetForm = () => {
@@ -84,13 +93,16 @@ export default function Artwork() {
       additionalImage1: null,
       additionalImage2: null,
       additionalImage3: null,
+      nsfw: null, // Default to "No Option Selected"
+      priority: null, // Default to "No Option Selected"    
     });
     setIsSubmitted(false);
   };
 
 
   const [isSubmitted, setIsSubmitted] = useState(false);
-
+  const [eraOptions, setEraOptions] = useState<string[]>([]);
+  const { user, getIdToken } = useUser(); // Access setUser from the UserContext
   const [isEditMode, setIsEditMode] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
   const [artworkStatus, setArtworkStatus] = useState<"pending" | "published" | null>(null);
@@ -145,11 +157,11 @@ export default function Artwork() {
   const isFormValid =
     formData.artworkTitle &&
     formData.artistName &&
-    formData.artistName !== "None Chosen" && // Exclude the placeholder option
+    formData.artistName !== "No Option Selected" && // Exclude the placeholder option
     formData.artworkAbout &&
     formData.artworkImage &&
     formData.timelineCenter &&
-    formData.timelineCenter !== "None Chosen" && // Exclude the placeholder option
+    formData.timelineCenter !== "No Option Selected" && // Exclude the placeholder option
     (formData.timelineCenter !== "custom" || (formData.timelineCenter === "custom" && formData.customTimelineCenter && formData.customTimelineCenter.trim() !== ""));
 
 
@@ -162,6 +174,34 @@ export default function Artwork() {
       alert("Please fill in all required fields.");
     }
   };
+
+  useEffect(() => {
+    const fetchEraOptions = async () => {
+      try {
+        if (user) {
+          const token = await getIdToken();
+          console.log('aici: ' + token);
+          const response = await fetch(`https://api.artvista.app/get_list_of_eras/?artist_portal_token=${token}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          // Explicitly type the response data
+          const data: Era[] = await response.json();
+          // Map to extract the era names
+          const eraNames = data.map((item) => item.era_name);
+          setEraOptions(eraNames);
+        } else {
+          console.error("User is not logged in.");
+        }
+      } catch (error) {
+        console.error("Error fetching era options:", error);
+      }
+    };
+
+    fetchEraOptions();
+  }, [user]);
+
 
   return (
     <>
@@ -247,7 +287,6 @@ export default function Artwork() {
                     <p>
                       In case you are uploading a 3D artwork (anything that can be scanned from various angles),
                       you probably want to provide us more images for scanning purposes. This is not mandatory and not needed if you are uploading a 2D art.
-                      To see an example, <a href="/example" className={styles.link}>click here</a>.
                     </p>
                     <div className={styles.extraImagesRow}>
                       <div className={styles.imageUploadWrapper}>
@@ -372,12 +411,12 @@ export default function Artwork() {
                       }}
                       disabled={isEditMode && !isEditing}
                     >
-                      <option value="">None Chosen</option>
-                      <option value="Renaissance">Renaissance</option>
-                      <option value="Baroque">Baroque</option>
-                      <option value="Modernism">Modernism</option>
-                      <option value="Postmodernism">Postmodernism</option>
-                      <option value="Contemporary">Contemporary</option>
+                      <option value="">No Option Selected</option>
+                      {eraOptions.map((era, index) => (
+                        <option key={index} value={era}>
+                          {era}
+                        </option>
+                      ))}
                       <option value="custom">Other (Specify below)</option>
                     </select>
 
@@ -413,7 +452,7 @@ export default function Artwork() {
                       }
                       disabled={isEditMode && !isEditing}
                     >
-                      <option value="">None Chosen</option>
+                      <option value="">No Option Selected</option>
                       <option value="Leonardo da Vinci">Leonardo da Vinci</option>
                       <option value="Vincent van Gogh">Vincent van Gogh</option>
                       <option value="Pablo Picasso">Pablo Picasso</option>
@@ -447,7 +486,7 @@ export default function Artwork() {
                       }
                       disabled={isEditMode && !isEditing}
                     >
-                      <option value="">None Chosen</option>
+                      <option value="">No Option Selected</option>
                       <option value="Photo">Photo</option>
                       <option value="Sculpture">Sculpture</option>
                       <option value="Painting">Painting</option>
@@ -479,6 +518,42 @@ export default function Artwork() {
                       onChange={handleInputChange}
                       disabled={isEditMode && !isEditing}
                     />
+                  </div>
+                  <div className={styles.inputWrapper}>
+                    <p>Is the Artwork NSFW?</p>
+                    <select
+                      name="nsfw"
+                      className={`${styles.input} ${styles.select}`}
+                      value={formData.nsfw === null ? "" : formData.nsfw.toString()}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          nsfw: e.target.value === "true" ? true : e.target.value === "false" ? false : null,
+                        }))
+                      }
+                      disabled={isEditMode && !isEditing}
+                    >
+                      <option value="false">No</option>
+                      <option value="true">Yes</option>
+                    </select>
+                  </div>
+                  <div className={styles.inputWrapper}>
+                    <p>Prioritize This Artwork Over Other Artworks From the Same Artist? (it will appear on the artist's profile page and be suggested more overall)</p>
+                    <select
+                      name="priority"
+                      className={`${styles.input} ${styles.select}`}
+                      value={formData.priority === null ? "" : formData.priority.toString()}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          priority: e.target.value === "true" ? true : e.target.value === "false" ? false : null,
+                        }))
+                      }
+                      disabled={isEditMode && !isEditing}
+                    >
+                      <option value="false">No</option>
+                      <option value="true">Yes</option>
+                    </select>
                   </div>
                 </div>
               </div>

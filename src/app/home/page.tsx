@@ -135,7 +135,10 @@ export default function Home() {
             </div>
           </div>
         )}
-        <div className={styles.listContainer}>
+        <div
+          className={`${styles.listContainer} ${user?.type === "admin" ? styles.adminBorderRadius : ""
+            }`}
+        >
           <div className={styles.listHeader}>
             <div className={styles.toggleContainer}>
               {user?.type === "admin" ? (
@@ -351,7 +354,7 @@ export default function Home() {
                           className={styles.artworkImage}
                         />
                         <span className={styles.artworkTitle}>{museum.name}</span>
-                        <span>{museum.location}</span>
+                        <span className={styles.artworkTitle}>{museum.location}</span>
                         {user?.type === "admin" ? (
                           <div className={styles.adminButtons}>
                             <button className={styles.approveButton}>
