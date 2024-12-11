@@ -8,10 +8,19 @@ import Footer from "../../components/footer/footer";
 import { FiRefreshCw } from "react-icons/fi"; // Import a simple, symmetric refresh icon
 import { useUser } from "@/context/UserContext";
 import { FiCheck, FiX, FiEdit } from "react-icons/fi";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../../../firebase"; // Update this with your Firebase setup
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+
+type AdminData = {
+  id: string;
+  name: string;
+};
 
 export default function Home() {
   const router = useRouter(); // Initialize router
   const { user } = useUser(); // Access user from context
+  const [adminData, setAdminData] = useState<AdminData[]>([]);
 
   const [isClient, setIsClient] = useState(false); // Track if the component is client-side
 
@@ -53,6 +62,52 @@ export default function Home() {
     { id: 5, name: "Museum 5", location: "City 5", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
   ]);
 
+  const fetchFirestoreData = async (type: "artist" | "museum") => {
+    try {
+      const q = query(
+        collection(db, "users"),
+        where("approved", "==", false),
+        where("type", "==", type)
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.id, // Use document name for now
+      }));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+
+  const handleApprove = async (id: string) => {
+    try {
+      const docRef = doc(db, "users", id);
+      await updateDoc(docRef, { approved: true });
+      console.log(`Document ${id} approved.`);
+      // Optionally, remove it from adminData for UI update
+      setAdminData((prevData) => prevData.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error approving document:", error);
+    }
+  };
+
+  // Reject action
+  const handleReject = async (id: string) => {
+    try {
+
+      // Delete the document from Firestore
+      const docRef = doc(db, "users", id);
+      await deleteDoc(docRef);
+      console.log(`Document ${id} deleted.`);
+
+      // Optionally, update the UI to remove the document from adminData
+      setAdminData((prevData) => prevData.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error rejecting document:", error);
+    }
+  };
+
 
 
   const filteredArtworks = artworks.filter((artwork) =>
@@ -66,10 +121,13 @@ export default function Home() {
     museum.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  const filteredAdminData = adminData.filter((item) =>
+    item.name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   const totalArtworkPages = Math.ceil(filteredArtworks.length / itemsPerPage);
   const totalArtistPages = Math.ceil(filteredArtists.length / itemsPerPage);
-  const totalMuseumPages = Math.ceil(filteredMuseums.length / itemsPerPage);
+  const totalMuseumPages = Math.ceil(adminData.length / itemsPerPage);
 
 
   const paginatedArtworks = filteredArtworks.slice(
@@ -105,6 +163,16 @@ export default function Home() {
       console.log(`Navigated to page ${page}`);
     }
   };
+
+  useEffect(() => {
+    if (user?.type === "admin") {
+      const type = activeTab === "artists" ? "artist" : activeTab === "museums" ? "museum" : null;
+      if (type) {
+        fetchFirestoreData(type).then((data) => setAdminData(data)); // No more type errors
+      }
+    }
+  }, [activeTab, user?.type]);
+
 
 
   return (
@@ -148,14 +216,14 @@ export default function Home() {
                       }`}
                     onClick={() => handleToggle("museums")}
                   >
-                    Museums(20)
+                    Museums
                   </button>
                   <button
                     className={`${styles.toggleButton} ${activeTab === "artists" ? styles.active : ""
                       }`}
                     onClick={() => handleToggle("artists")}
                   >
-                    Artists(15)
+                    Artists
                   </button>
 
                   <button
@@ -163,7 +231,7 @@ export default function Home() {
                       }`}
                     onClick={() => handleToggle("artworks")}
                   >
-                    Artworks(19)
+                    Artworks
                   </button>
                 </>
               ) : user?.type === "museum" ? (
@@ -231,6 +299,7 @@ export default function Home() {
                       {user?.type === "admin" ? (
                         <div className={styles.adminButtons}>
                           <button className={styles.approveButton}>
+
                             <FiCheck />
                           </button>
                           <button className={styles.rejectButton}>
@@ -281,54 +350,65 @@ export default function Home() {
                   ))}
                 </div>
               </>
+
             ) : activeTab === "artists" ? (
               <>
                 <div className={styles.artworkList}>
-                  {paginatedArtists.map((artist) => (
-                    <div key={artist.id} className={styles.artworkItem}>
-                      <img
-                        src={artist.image}
-                        alt={artist.name}
-                        className={styles.artworkImage}
-                      />
-                      <span className={styles.artworkTitle}>{artist.name}</span>
-                      {user?.type === "admin" ? (
-                        <div className={styles.adminButtons}>
-                          <button className={styles.approveButton}>
-                            <FiCheck />
-                          </button>
-                          <button className={styles.rejectButton}>
-                            <FiX />
-                          </button>
+                  {user?.type === "admin"
+                    ? filteredAdminData
+                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                      .map((artist) => (
+                        <div key={artist.id} className={styles.artworkItem}>
+                          <span className={styles.artworkTitle}>{artist.name}</span>
+                          <div className={styles.adminButtons}>
+                            <button
+                              className={styles.approveButton}
+                              onClick={() => handleApprove(artist.id)} // Approve artist
+                            >
+                              <FiCheck />
+                            </button>
+                            <button
+                              className={styles.rejectButton}
+                              onClick={() => handleReject(artist.id)} // Reject artist
+                            >
+                              <FiX />
+                            </button>
+                            <button
+                              className={styles.editButton}
+                              onClick={() => router.push("/artist?edit=true")}
+                            >
+                              <FiEdit />
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    : filteredArtists
+                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                      .map((artist) => (
+                        <div key={artist.id} className={styles.artworkItem}>
+                          <img
+                            src={artist.image}
+                            alt={artist.name}
+                            className={styles.artworkImage}
+                          />
+                          <span className={styles.artworkTitle}>{artist.name}</span>
                           <button
-                            className={styles.editButton}
-                            onClick={() => {
-                              if (activeTab === "artists") {
-                                router.push("/artist?edit=true");
-
-                              }
-                            }}
+                            className={styles.viewDetails}
+                            onClick={() => router.push(`/artist/${artist.id}`)}
                           >
-                            <FiEdit />
+                            View artist's details →
                           </button>
                         </div>
-                      ) : (
-                        <button
-                          className={styles.viewDetails}
-                          onClick={() => {
-                            if (user?.type === "artist" || user?.type === "museum")
-                              router.push(`/artist?edit=true`);
-                          }}
-                        >
-                          View artist's details →
-                        </button>
-                      )}
-                    </div>
-                  ))}
+                      ))}
                 </div>
                 <div className={styles.pagination}>
                   {Array.from(
-                    { length: totalArtistPages },
+                    {
+                      length:
+                        user?.type === "admin"
+                          ? Math.ceil(filteredAdminData.length / itemsPerPage)
+                          : Math.ceil(filteredArtists.length / itemsPerPage),
+                    },
                     (_, index) => index + 1
                   ).map((page) => (
                     <button
@@ -342,34 +422,32 @@ export default function Home() {
                   ))}
                 </div>
               </>
-            ) : (
-              activeTab === "museums" && (
-                <>
-                  <div className={styles.artworkList}>
-                    {paginatedMuseums.map((museum) => (
+
+            ) : activeTab === "museums" ? (
+              <>
+                <div className={styles.artworkList}>
+                  {filteredAdminData
+                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                    .map((museum) => (
                       <div key={museum.id} className={styles.artworkItem}>
-                        <img
-                          src={museum.image}
-                          alt={museum.name}
-                          className={styles.artworkImage}
-                        />
                         <span className={styles.artworkTitle}>{museum.name}</span>
-                        <span className={styles.artworkTitle}>{museum.location}</span>
                         {user?.type === "admin" ? (
                           <div className={styles.adminButtons}>
-                            <button className={styles.approveButton}>
+                            <button
+                              className={styles.approveButton}
+                              onClick={() => handleApprove(museum.id)}
+                            >
                               <FiCheck />
                             </button>
-                            <button className={styles.rejectButton}>
+                            <button
+                              className={styles.rejectButton}
+                              onClick={() => handleReject(museum.id)}
+                            >
                               <FiX />
                             </button>
                             <button
                               className={styles.editButton}
-                              onClick={() => {
-                                if (activeTab === "museums") {
-                                  router.push("/museum");
-                                }
-                              }}
+                              onClick={() => router.push("/museum")}
                             >
                               <FiEdit />
                             </button>
@@ -381,25 +459,26 @@ export default function Home() {
                         )}
                       </div>
                     ))}
-                  </div>
-                  <div className={styles.pagination}>
-                    {Array.from(
-                      { length: totalMuseumPages },
-                      (_, index) => index + 1
-                    ).map((page) => (
-                      <button
-                        key={page}
-                        className={`${styles.pageButton} ${page === currentPage ? styles.activePage : ""
-                          }`}
-                        onClick={() => handlePageChange(page)}
-                      >
-                        {page}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )
-            )}
+                </div>
+                <div className={styles.pagination}>
+                  {Array.from(
+                    {
+                      length:
+                        Math.ceil(filteredAdminData.length / itemsPerPage),
+                    },
+                    (_, index) => index + 1
+                  ).map((page) => (
+                    <button
+                      key={page}
+                      className={`${styles.pageButton} ${page === currentPage ? styles.activePage : ""}`}
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : null}
           </div>
         </div>
       </div>

@@ -220,7 +220,7 @@ export default function Login() {
           const userDoc = await getDoc(userDocRef);
 
           if (!userDoc.exists()) {
-            throw new Error("User not found in Firestore");
+            throw new Error("This user has been rejected");
           }
 
           const userApproved = userDoc.data()?.approved || false; // Default to false if `approved` is missing

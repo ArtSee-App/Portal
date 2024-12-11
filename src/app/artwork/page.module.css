@@ -108,6 +108,8 @@
 }
 
 .form {
+  position: relative;
+  /* Add relative positioning */
   display: flex;
   flex-direction: column;
   gap: 16px;

@@ -6,6 +6,7 @@ import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
 import { useSearchParams } from "next/navigation";
 import { useUser } from "@/context/UserContext";
+import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
 
 function SearchParamsHandler({ setIsEditMode }: { setIsEditMode: React.Dispatch<React.SetStateAction<boolean>> }) {
   const searchParams = useSearchParams();
@@ -106,7 +107,7 @@ export default function Artwork() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
   const [artworkStatus, setArtworkStatus] = useState<"pending" | "published" | null>(null);
-
+  const [loading, setLoading] = useState(true);
   const handleEditClick = () => {
     setIsEditing(true); // Enable editing
   };
@@ -186,9 +187,7 @@ export default function Artwork() {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
-          // Explicitly type the response data
           const data: Era[] = await response.json();
-          // Map to extract the era names
           const eraNames = data.map((item) => item.era_name);
           setEraOptions(eraNames);
         } else {
@@ -196,6 +195,8 @@ export default function Artwork() {
         }
       } catch (error) {
         console.error("Error fetching era options:", error);
+      } finally {
+        setLoading(false); // Set loading to false regardless of success or error
       }
     };
 
@@ -256,6 +257,9 @@ export default function Artwork() {
               className={`${styles.form} ${styles.registeringForm}`}
               onSubmit={handleSubmit}
             >
+
+              <LoadingOverlay isVisible={loading} />
+
               <div className={styles.formRow}>
                 <div className={styles.leftColumn}>
                   <div className={styles.inputWrapperRequired}>
@@ -438,28 +442,30 @@ export default function Artwork() {
                     )}
                   </div>
 
-                  <div className={styles.inputWrapperRequired}>
-                    <p>Select An Existing Artist</p>
-                    <select
-                      name="artistName"
-                      className={`${styles.input} ${styles.select}`}
-                      value={formData.artistName}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          artistName: e.target.value,
-                        }))
-                      }
-                      disabled={isEditMode && !isEditing}
-                    >
-                      <option value="">No Option Selected</option>
-                      <option value="Leonardo da Vinci">Leonardo da Vinci</option>
-                      <option value="Vincent van Gogh">Vincent van Gogh</option>
-                      <option value="Pablo Picasso">Pablo Picasso</option>
-                      <option value="Claude Monet">Claude Monet</option>
-                      <option value="Salvador Dalí">Salvador Dalí</option>
-                    </select>
-                  </div>
+                  {user?.type !== "artist" && (
+                    <div className={styles.inputWrapperRequired}>
+                      <p>Select An Existing Artist</p>
+                      <select
+                        name="artistName"
+                        className={`${styles.input} ${styles.select}`}
+                        value={formData.artistName}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            artistName: e.target.value,
+                          }))
+                        }
+                        disabled={isEditMode && !isEditing}
+                      >
+                        <option value="">No Option Selected</option>
+                        <option value="Leonardo da Vinci">Leonardo da Vinci</option>
+                        <option value="Vincent van Gogh">Vincent van Gogh</option>
+                        <option value="Pablo Picasso">Pablo Picasso</option>
+                        <option value="Claude Monet">Claude Monet</option>
+                        <option value="Salvador Dalí">Salvador Dalí</option>
+                      </select>
+                    </div>
+                  )}
 
                   <div className={styles.inputWrapper}>
                     <p>Year the Artwork Was Created</p>
