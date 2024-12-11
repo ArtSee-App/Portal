@@ -5,6 +5,8 @@ import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
 import { useSearchParams } from "next/navigation";
+import { useUser } from "@/context/UserContext";
+import router from "next/router";
 
 function SearchParamsHandler({ setIsEditMode }: { setIsEditMode: React.Dispatch<React.SetStateAction<boolean>> }) {
   const searchParams = useSearchParams();
@@ -116,6 +118,7 @@ export default function Artist() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
   const [artistStatus, setArtistStatus] = useState<"pending" | "published" | null>(null);
+  const { user } = useUser(); // Access setUser from the UserContext
 
   const handleEditClick = () => {
     setIsEditing(true); // Enable editing
@@ -151,6 +154,11 @@ export default function Artist() {
     }
   };
 
+  useEffect(() => {
+    if (user === undefined || user?.type === undefined) {
+      router.push("/login"); // Redirect to login if user type is not determined
+    }
+  }, [user, router]);
 
 
   return (

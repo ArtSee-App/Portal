@@ -7,6 +7,7 @@ import Footer from "@/components/footer/footer";
 import { useSearchParams } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
+import router from "next/router";
 
 function SearchParamsHandler({ setIsEditMode }: { setIsEditMode: React.Dispatch<React.SetStateAction<boolean>> }) {
   const searchParams = useSearchParams();
@@ -202,6 +203,13 @@ export default function Artwork() {
 
     fetchEraOptions();
   }, [user]);
+
+  useEffect(() => {
+    if (user === undefined || user?.type === undefined) {
+      router.push("/login"); // Redirect to login if user type is not determined
+    }
+  }, [user, router]);
+
 
 
   return (

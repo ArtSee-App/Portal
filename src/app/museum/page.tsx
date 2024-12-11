@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
+import router from "next/router";
+import { useUser } from "@/context/UserContext";
 
 export default function Museum() {
   const [formData, setFormData] = useState<{
@@ -56,6 +58,7 @@ export default function Museum() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
   const [museumStatus, setMuseumStatus] = useState<"pending" | "published" | null>(null);
+  const { user } = useUser();
 
   const handleEditClick = () => {
     setIsEditing(true); // Enable editing
@@ -124,6 +127,14 @@ export default function Museum() {
       alert("Please fill in all required fields.");
     }
   };
+
+  useEffect(() => {
+    if (user === undefined || user?.type === undefined) {
+      router.push("/login"); // Redirect to login if user type is not determined
+    }
+  }, [user, router]);
+
+
 
   return (
     <>

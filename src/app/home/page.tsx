@@ -173,6 +173,13 @@ export default function Home() {
     }
   }, [activeTab, user?.type]);
 
+  useEffect(() => {
+    if (user === undefined || user?.type === undefined) {
+      router.push("/login"); // Redirect to login if user type is not determined
+    }
+  }, [user, router]);
+
+
 
 
   return (
@@ -394,8 +401,8 @@ export default function Home() {
                           <span className={styles.artworkTitle}>{artist.name}</span>
                           <button
                             className={styles.viewDetails}
-                            onClick={() => router.push(`/artist/${artist.id}`)}
-                          >
+                            onClick={() => router.push("/artist?edit=true")}
+                            >
                             View artist's details →
                           </button>
                         </div>
