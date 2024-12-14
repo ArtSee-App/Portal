@@ -17,6 +17,13 @@ type AdminData = {
   name: string;
 };
 
+type Artwork = {
+  id: number;
+  title: string;
+  image: string;
+};
+
+
 export default function Home() {
   const router = useRouter(); // Initialize router
   const { user, getIdToken, isLoadingUser } = useUser(); // Access user from context
@@ -175,13 +182,13 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
+        const data: { artwork_id: number; title: string; spaces_dir: string }[] = await response.json();
 
         // Filter out the first JSON object (time_taken)
-        const artworksData = data.filter((item: any) => item.artwork_id);
+        const artworksData = data.filter((item) => item.artwork_id);
 
         // Map the API response to the expected structure
-        const formattedArtworks = artworksData.map((item: any) => ({
+        const formattedArtworks: Artwork[] = artworksData.map((item) => ({
           id: item.artwork_id,
           title: item.title,
           image: item.spaces_dir,
