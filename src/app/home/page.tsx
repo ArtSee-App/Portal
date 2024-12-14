@@ -19,8 +19,9 @@ type AdminData = {
 
 export default function Home() {
   const router = useRouter(); // Initialize router
-  const { user } = useUser(); // Access user from context
+  const { user, getIdToken, isLoadingUser } = useUser(); // Access user from context
   const [adminData, setAdminData] = useState<AdminData[]>([]);
+  const [isLoading, setIsLoading] = useState(false); //TODO set to true in the future
 
   const [isClient, setIsClient] = useState(false); // Track if the component is client-side
 
@@ -164,6 +165,40 @@ export default function Home() {
     }
   };
 
+  const fetchArtworksFromAPI = async () => {
+    setIsLoading(true); // Set loading to true
+    try {
+      if (user) {
+        const token = await getIdToken(); // Get the artist_portal_token
+        const response = await fetch(`https://api.artvista.app/get_artworks_to_portal/?artist_portal_token=${token}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Filter out the first JSON object (time_taken)
+        const artworksData = data.filter((item: any) => item.artwork_id);
+
+        // Map the API response to the expected structure
+        const formattedArtworks = artworksData.map((item: any) => ({
+          id: item.artwork_id,
+          title: item.title,
+          image: item.spaces_dir,
+        }));
+
+        setArtworks(formattedArtworks); // Update the state with the fetched artworks
+      } else {
+        console.error("User is not logged in.");
+      }
+    } catch (error) {
+      console.error("Error fetching artworks:", error);
+    } finally {
+      setIsLoading(false); // Set loading to false
+    }
+  };
+
+
   useEffect(() => {
     if (user?.type === "admin") {
       const type = activeTab === "artists" ? "artist" : activeTab === "museums" ? "museum" : null;
@@ -174,10 +209,18 @@ export default function Home() {
   }, [activeTab, user?.type]);
 
   useEffect(() => {
-    if (user === undefined || user?.type === undefined) {
-      router.push("/login"); // Redirect to login if user type is not determined
+    if (!isLoadingUser && (user === undefined || user?.type === undefined)) {
+      router.push("/login"); // Redirect to login only after isLoadingUser is false
     }
-  }, [user, router]);
+  }, [user, isLoadingUser, router]);
+
+
+  useEffect(() => {
+    if (user?.type === "artist" && activeTab === "artworks" && !isLoading) {
+      fetchArtworksFromAPI();
+    }
+  }, [user?.type, activeTab]);
+
 
 
 
@@ -295,51 +338,57 @@ export default function Home() {
             {activeTab === "artworks" ? (
               <>
                 <div className={styles.artworkList}>
-                  {paginatedArtworks.map((artwork) => (
-                    <div key={artwork.id} className={styles.artworkItem}>
-                      <img
-                        src={artwork.image}
-                        alt={artwork.title}
-                        className={styles.artworkImage}
-                      />
-                      <span className={styles.artworkTitle}>{artwork.title}</span>
-                      {user?.type === "admin" ? (
-                        <div className={styles.adminButtons}>
-                          <button className={styles.approveButton}>
-
-                            <FiCheck />
-                          </button>
-                          <button className={styles.rejectButton}>
-                            <FiX />
-                          </button>
+                  {isLoadingUser || isLoading ? (
+                    <div className={styles.loaderWrapper}>
+                      <div className={styles.loader}></div>
+                    </div>
+                  ) : (
+                    paginatedArtworks.map((artwork) => (
+                      <div key={artwork.id} className={styles.artworkItem}>
+                        <img
+                          src={artwork.image}
+                          alt={artwork.title}
+                          className={styles.artworkImage}
+                        />
+                        <span className={styles.artworkTitle}>{artwork.title}</span>
+                        {user?.type === "admin" ? (
+                          <div className={styles.adminButtons}>
+                            <button className={styles.approveButton}>
+                              <FiCheck />
+                            </button>
+                            <button className={styles.rejectButton}>
+                              <FiX />
+                            </button>
+                            <button
+                              className={styles.editButton}
+                              onClick={() => {
+                                if (activeTab === "artworks") {
+                                  router.push("/artwork?edit=true");
+                                } else if (activeTab === "artists") {
+                                  router.push("/artist?edit=true");
+                                } else if (activeTab === "museums") {
+                                  router.push("/museum");
+                                }
+                              }}
+                            >
+                              <FiEdit />
+                            </button>
+                          </div>
+                        ) : (
                           <button
-                            className={styles.editButton}
+                            className={styles.viewDetails}
                             onClick={() => {
-                              if (activeTab === "artworks") {
-                                router.push("/artwork?edit=true");
-                              } else if (activeTab === "artists") {
-                                router.push("/artist?edit=true");
-                              } else if (activeTab === "museums") {
-                                router.push("/museum");
+                              if (user?.type === "artist" || user?.type === "museum") {
+                                router.push(`/artwork?edit=true&artworkId=${artwork.id}`);
                               }
                             }}
                           >
-                            <FiEdit />
+                            View artwork's details →
                           </button>
-                        </div>
-                      ) : (
-                        <button
-                          className={styles.viewDetails}
-                          onClick={() => {
-                            if (user?.type === "artist" || user?.type === "museum")
-                              router.push(`/artwork?edit=true`);
-                          }}
-                        >
-                          View artwork's details →
-                        </button>
-                      )}
-                    </div>
-                  ))}
+                        )}
+                      </div>
+                    ))
+                  )}
                 </div>
                 <div className={styles.pagination}>
                   {Array.from(
@@ -402,7 +451,7 @@ export default function Home() {
                           <button
                             className={styles.viewDetails}
                             onClick={() => router.push("/artist?edit=true")}
-                            >
+                          >
                             View artist's details →
                           </button>
                         </div>

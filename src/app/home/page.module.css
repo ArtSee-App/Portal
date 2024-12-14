@@ -233,6 +233,40 @@
   /* Slightly darker on hover */
 }
 
+.loaderWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100px; /* Adjust based on layout */
+  gap: 10px; /* Space between loader and text */
+}
+
+.loader {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid var(--primary-color); /* Use primary color */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loaderWrapper span {
+  font-size: 1rem;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+
 .artworkList {
   display: flex;
   flex-direction: column;

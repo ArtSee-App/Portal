@@ -9,12 +9,22 @@ import { useUser } from "@/context/UserContext";
 import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
 import router from "next/router";
 
-function SearchParamsHandler({ setIsEditMode }: { setIsEditMode: React.Dispatch<React.SetStateAction<boolean>> }) {
+function SearchParamsHandler({
+  setIsEditMode,
+  setArtworkId,
+}: {
+  setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setArtworkId: React.Dispatch<React.SetStateAction<number | null>>;
+}) {
   const searchParams = useSearchParams();
   useEffect(() => {
     const editMode = searchParams.get("edit") === "true";
+    const artworkId = searchParams.get("artworkId")
+      ? parseInt(searchParams.get("artworkId")!, 10)
+      : null;
     setIsEditMode(editMode);
-  }, [searchParams, setIsEditMode]);
+    setArtworkId(artworkId);
+  }, [searchParams, setIsEditMode, setArtworkId]);
 
   return null; // This component only handles state updates
 }
@@ -22,6 +32,11 @@ function SearchParamsHandler({ setIsEditMode }: { setIsEditMode: React.Dispatch<
 interface Era {
   era_name: string;
 }
+
+interface VectorImage {
+  presigned_url: string; // Adjust this based on the actual structure
+}
+
 
 
 export default function Artwork() {
@@ -42,10 +57,8 @@ export default function Artwork() {
     museumID: string;
     artistBornYear: string;
     artistDiedYear: string;
-    artworkImage: File | null;
-    additionalImage1: File | null;
-    additionalImage2: File | null;
-    additionalImage3: File | null;
+    artworkImage: string | File | null;
+    additionalImages: (string | File | null)[];
     nsfw: boolean | null;
     priority: boolean | null;
   }>({
@@ -66,9 +79,7 @@ export default function Artwork() {
     artistBornYear: "",
     artistDiedYear: "",
     artworkImage: null,
-    additionalImage1: null,
-    additionalImage2: null,
-    additionalImage3: null,
+    additionalImages: [null, null, null], // Start with 3 empty slots
     nsfw: null, // Default to "No Option Selected"
     priority: null, // Default to "No Option Selected"
   });
@@ -92,23 +103,26 @@ export default function Artwork() {
       artistBornYear: "",
       artistDiedYear: "",
       artworkImage: null,
-      additionalImage1: null,
-      additionalImage2: null,
-      additionalImage3: null,
+      additionalImages: [null, null, null], // Start with 3 empty slots
       nsfw: null, // Default to "No Option Selected"
       priority: null, // Default to "No Option Selected"    
     });
     setIsSubmitted(false);
   };
 
-
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [initialFormData, setInitialFormData] = useState<typeof formData | null>(null);
   const [eraOptions, setEraOptions] = useState<string[]>([]);
-  const { user, getIdToken } = useUser(); // Access setUser from the UserContext
+
+  const { user, getIdToken, isLoadingUser } = useUser(); // Access setUser from the UserContext
   const [isEditMode, setIsEditMode] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [artworkId, setArtworkId] = useState<number | null>(null); // Define artworkId state
   const [artworkStatus, setArtworkStatus] = useState<"pending" | "published" | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  const [loadingEras, setLoadingEras] = useState(true);
+  const [loadingFormData, setLoadingFormData] = useState(true);
   const handleEditClick = () => {
     setIsEditing(true); // Enable editing
   };
@@ -118,7 +132,10 @@ export default function Artwork() {
       "Are you sure you want to cancel changes? Any unsaved changes will be lost."
     );
     if (confirmCancel) {
-      setIsEditing(false); // Cancel editing
+      if (initialFormData) {
+        setFormData(initialFormData); // Reset form data to the initial state
+      }
+      setIsEditing(false); // Exit editing mode
     }
   };
 
@@ -128,6 +145,7 @@ export default function Artwork() {
     );
     if (confirmSave) {
       // Implement logic to save changes here
+      setInitialFormData(formData); // Update initial state to match current form data
       alert("Changes saved successfully!");
       setIsEditing(false);
     }
@@ -156,6 +174,40 @@ export default function Artwork() {
     }));
   };
 
+  const handleAdditionalImageChange = (index: number, file: File | null) => {
+    if (!formData.artworkImage) {
+      alert("Please upload the main artwork image first before adding additional images.");
+      return; // Prevent changes to additional images if artworkImage is not filled
+    }
+
+    setFormData((prev) => {
+      const updatedImages = [...prev.additionalImages];
+      updatedImages[index] = file;
+
+      // Only add a new slot if the last slot is filled and it's not already at the array limit
+      if (
+        updatedImages[updatedImages.length - 1] !== null
+      ) {
+        updatedImages.push(null);
+      }
+
+      return { ...prev, additionalImages: updatedImages };
+    });
+  };
+
+  const handleRemoveAdditionalImage = (index: number) => {
+    setFormData((prev) => {
+      const updatedImages = [...prev.additionalImages];
+      updatedImages.splice(index, 1); // Remove the specific image
+      // Ensure at least 3 boxes are present
+      while (updatedImages.length < 3) {
+        updatedImages.push(null); // Add empty slots if necessary
+      }
+      return { ...prev, additionalImages: updatedImages };
+    });
+  };
+
+
   const isFormValid =
     formData.artworkTitle &&
     formData.artistName &&
@@ -182,7 +234,6 @@ export default function Artwork() {
       try {
         if (user) {
           const token = await getIdToken();
-          console.log('aici: ' + token);
           const response = await fetch(`https://api.artvista.app/get_list_of_eras/?artist_portal_token=${token}`);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -197,15 +248,72 @@ export default function Artwork() {
       } catch (error) {
         console.error("Error fetching era options:", error);
       } finally {
-        setLoading(false); // Set loading to false regardless of success or error
+        setLoadingEras(false); // Set loading to false regardless of success or error
       }
     };
 
     fetchEraOptions();
   }, [user]);
 
+
   useEffect(() => {
-    if (user === undefined || user?.type === undefined) {
+    const fetchArtworkDetails = async () => {
+      try {
+        if (user && artworkId !== null) {
+          const token = await getIdToken();
+          const response = await fetch(
+            `https://api.artvista.app/get_artwork_details_to_portal/?artist_portal_token=${token}&artwork_id=${artworkId}`
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const artworkDetails = await response.json();
+          const { image_links, text_information } = artworkDetails;
+
+          const fetchedData = {
+            artworkTitle: text_information.title || "",
+            artistName: text_information.artist || "",
+            artistID: text_information.artist_id?.toString() || "",
+            artworkYear: text_information.creation_date || "",
+            timelineLeft: text_information.pre_style || "",
+            timelineCenter: text_information.style || "",
+            customTimelineCenter: "",
+            timelineRight: text_information.post_style || "",
+            artworkGenre: text_information.genre || "",
+            artworkMedia: text_information.media || "",
+            artworkDimensions: text_information.dimensions || "",
+            artworkAbout: text_information.description || "",
+            artworkArtistPicture: "",
+            museumID: text_information.museum_id?.toString() || "",
+            artistBornYear: "", // Populate if available in the API response
+            artistDiedYear: "", // Populate if available in the API response
+            artworkImage: image_links?.header_image || null,
+            additionalImages: [
+              ...(image_links?.vector_images?.map((img: VectorImage) => img.presigned_url) || []),
+              null, // Always add an empty slot for a new image
+            ],
+            nsfw: null,
+            priority: null,
+          };
+
+          setFormData(fetchedData);
+          setInitialFormData(fetchedData); // Store the fetched data as the initial state
+        }
+      } catch (error) {
+        console.error("Error fetching artwork details:", error);
+      } finally {
+        setLoadingFormData(false);
+      }
+    };
+
+    fetchArtworkDetails();
+  }, [artworkId, user, getIdToken]);
+
+
+  useEffect(() => {
+    if (!isLoadingUser && (user === undefined || user?.type === undefined)) {
       router.push("/login"); // Redirect to login if user type is not determined
     }
   }, [user, router]);
@@ -217,7 +325,7 @@ export default function Artwork() {
       <Header />
       <div className={styles.page}>
         <Suspense fallback={<div>Loading search params...</div>}>
-          <SearchParamsHandler setIsEditMode={setIsEditMode} />
+          <SearchParamsHandler setIsEditMode={setIsEditMode} setArtworkId={setArtworkId} />
         </Suspense>
         {isSubmitted ? (
           <div className={styles.thankYouMessage}>
@@ -266,13 +374,27 @@ export default function Artwork() {
               onSubmit={handleSubmit}
             >
 
-              <LoadingOverlay isVisible={loading} />
+              <LoadingOverlay isVisible={loadingEras || loadingFormData || isLoadingUser} />
 
               <div className={styles.formRow}>
                 <div className={styles.leftColumn}>
                   <div className={styles.inputWrapperRequired}>
                     <p>Upload an artwork profile image</p>
                     <div className={styles.imageUploadWrapper}>
+                      {formData.artworkImage && (!isEditMode || isEditing) && (
+                        <button
+                          type="button"
+                          className={styles.closeButton}
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              artworkImage: null, // Set the header image to null
+                            }))
+                          }
+                        >
+                          &times;
+                        </button>
+                      )}
                       <input
                         type="file"
                         id="artworkImageInput"
@@ -285,7 +407,11 @@ export default function Artwork() {
                       <label htmlFor="artworkImageInput" className={styles.imageUploadBox}>
                         {formData.artworkImage ? (
                           <img
-                            src={formData.artworkImage instanceof File ? URL.createObjectURL(formData.artworkImage) : ""}
+                            src={
+                              formData.artworkImage instanceof File
+                                ? URL.createObjectURL(formData.artworkImage)
+                                : formData.artworkImage // Use the URL string if it's not a File
+                            }
                             alt="Artwork Profile"
                             className={styles.uploadedImage}
                           />
@@ -300,82 +426,45 @@ export default function Artwork() {
                       In case you are uploading a 3D artwork (anything that can be scanned from various angles),
                       you probably want to provide us more images for scanning purposes. This is not mandatory and not needed if you are uploading a 2D art.
                     </p>
-                    <div className={styles.extraImagesRow}>
-                      <div className={styles.imageUploadWrapper}>
-                        <input
-                          type="file"
-                          id="additionalImage1"
-                          name="additionalImage1"
-                          accept="image/*"
-                          className={styles.hiddenInput}
-                          onChange={handleInputChange}
-                          disabled={isEditMode && !isEditing}
-                        />
-                        <label
-                          htmlFor="additionalImage1"
-                          className={`${styles.imageUploadBox} ${styles.smallImageUploadBox}`}
-                        >
-                          {formData.additionalImage1 && formData.additionalImage1 instanceof File ? (
-                            <img
-                              src={URL.createObjectURL(formData.additionalImage1)}
-                              alt="Additional Image 1"
-                              className={styles.uploadedImage}
+                    <div className={styles.extraImagesContainer}>
+                      {formData.additionalImages.map((image, index) => (
+                        <div key={index} className={styles.additionalImageUploadWrapper}>
+                          <div className={styles.imageBox}>
+                            {image && (!isEditMode || isEditing) && (
+                              <button
+                                type="button"
+                                className={styles.closeButton}
+                                onClick={() => handleRemoveAdditionalImage(index)}
+                              >
+                                &times;
+                              </button>
+                            )}
+                            <input
+                              type="file"
+                              id={`additionalImage${index}`}
+                              name={`additionalImage${index}`}
+                              accept="image/*"
+                              className={styles.hiddenInput}
+                              onChange={(e) => handleAdditionalImageChange(index, e.target.files?.[0] || null)}
+                              disabled={isEditMode && !isEditing} // Allow editing only when in edit mode and editing is enabled
                             />
-                          ) : (
-                            <span className={styles.plusIcon}>+</span>
-                          )}
-                        </label>
-                      </div>
-                      <div className={styles.imageUploadWrapper}>
-                        <input
-                          type="file"
-                          id="additionalImage2"
-                          name="additionalImage2"
-                          accept="image/*"
-                          className={styles.hiddenInput}
-                          onChange={handleInputChange}
-                          disabled={isEditMode && !isEditing}
-                        />
-                        <label
-                          htmlFor="additionalImage2"
-                          className={`${styles.imageUploadBox} ${styles.smallImageUploadBox}`}
-                        >
-                          {formData.additionalImage2 && formData.additionalImage2 instanceof File ? (
-                            <img
-                              src={URL.createObjectURL(formData.additionalImage2)}
-                              alt="Additional Image 2"
-                              className={styles.uploadedImage}
-                            />
-                          ) : (
-                            <span className={styles.plusIcon}>+</span>
-                          )}
-                        </label>
-                      </div>
-                      <div className={styles.imageUploadWrapper}>
-                        <input
-                          type="file"
-                          id="additionalImage3"
-                          name="additionalImage3"
-                          accept="image/*"
-                          className={styles.hiddenInput}
-                          onChange={handleInputChange}
-                          disabled={isEditMode && !isEditing}
-                        />
-                        <label
-                          htmlFor="additionalImage3"
-                          className={`${styles.imageUploadBox} ${styles.smallImageUploadBox}`}
-                        >
-                          {formData.additionalImage3 && formData.additionalImage3 instanceof File ? (
-                            <img
-                              src={URL.createObjectURL(formData.additionalImage3)}
-                              alt="Additional Image 3"
-                              className={styles.uploadedImage}
-                            />
-                          ) : (
-                            <span className={styles.plusIcon}>+</span>
-                          )}
-                        </label>
-                      </div>
+                            <label
+                              htmlFor={`additionalImage${index}`}
+                              className={`${styles.imageUploadBox} ${styles.smallImageUploadBox}`}
+                            >
+                              {image ? (
+                                <img
+                                  src={image instanceof File ? URL.createObjectURL(image) : (image as string)}
+                                  alt={`Additional Image ${index + 1}`}
+                                  className={styles.uploadedImage}
+                                />
+                              ) : (
+                                <span className={styles.plusIcon}>+</span>
+                              )}
+                            </label>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
 

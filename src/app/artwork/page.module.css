@@ -205,6 +205,7 @@
 }
 
 .imageUploadWrapper {
+  position: relative; /* Ensure positioning for the button */
   flex: 1;
   /* Distribute equal space between the three boxes */
   display: flex;
@@ -264,6 +265,53 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.extraImagesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.additionalImageUploadWrapper {
+  position: relative;
+  /* Set relative positioning for the container */
+  flex: 1 1 calc(33.33% - 16px);
+  /* 3 items per row with gaps */
+  max-width: calc(33.33% - 16px);
+}
+
+.closeButton {
+  position: absolute;
+  /* Position the button absolutely */
+  top: 8px;
+  /* Place it in the top-right corner */
+  right: 8px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+  z-index: 10;
+  /* Ensure it's above other elements */
+}
+
+.closeButton:hover {
+  background-color: darkred;
+}
+
+.imageBox {
+  position: relative;
+  /* Ensure child elements are positioned correctly */
+}
+
 
 .extraImagesRow {
   display: flex;

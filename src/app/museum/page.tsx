@@ -58,7 +58,7 @@ export default function Museum() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
   const [museumStatus, setMuseumStatus] = useState<"pending" | "published" | null>(null);
-  const { user } = useUser();
+  const { user, isLoadingUser } = useUser();
 
   const handleEditClick = () => {
     setIsEditing(true); // Enable editing
@@ -129,7 +129,7 @@ export default function Museum() {
   };
 
   useEffect(() => {
-    if (user === undefined || user?.type === undefined) {
+    if (!isLoadingUser && (user === undefined || user?.type === undefined)) {
       router.push("/login"); // Redirect to login if user type is not determined
     }
   }, [user, router]);
