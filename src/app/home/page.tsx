@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import { useRouter } from "next/navigation"; // Import useRouter
@@ -40,17 +40,14 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"artworks" | "artists" | "museums">("artworks");
   const [searchText, setSearchText] = useState(""); // State to manage search input
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
 
-  const [artworks, setArtworks] = useState([
-    { id: 1, title: "Artwork 1 | Artist", image: "https://collectionapi.metmuseum.org/api/collection/v1/iiif/45434/134438/main-image" },
-    { id: 2, title: "Artwork 2 | Artist", image: "https://collectionapi.metmuseum.org/api/collection/v1/iiif/45434/134438/main-image" },
-    { id: 3, title: "Artwork 3 | Artist", image: "https://collectionapi.metmuseum.org/api/collection/v1/iiif/45434/134438/main-image" },
-    { id: 4, title: "Artwork 4 | Artist", image: "https://collectionapi.metmuseum.org/api/collection/v1/iiif/45434/134438/main-image" },
-    { id: 5, title: "Artwork 5 | Artist", image: "https://collectionapi.metmuseum.org/api/collection/v1/iiif/45434/134438/main-image" },
-    { id: 6, title: "Artwork 6 | Artist", image: "https://collectionapi.metmuseum.org/api/collection/v1/iiif/45434/134438/main-image" },
-    // Add as many artworks as needed
-  ]);
+  const [pageCount, setPageCount] = useState(1);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [isLoadingMore, setIsLoadingMore] = useState(false); // Loader for "Load More"
+  const [hasMoreData, setHasMoreData] = useState(true); // Tracks if there's more data to load
+  const [isRefreshing, setIsRefreshing] = useState(false); // Track refresh state
+  const [isSearchActive, setIsSearchActive] = useState(false);
+
   const [artists, setArtists] = useState([
     { id: 1, name: "Artist 1", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
     { id: 2, name: "Artist 2", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
@@ -118,9 +115,6 @@ export default function Home() {
 
 
 
-  const filteredArtworks = artworks.filter((artwork) =>
-    artwork.title.toLowerCase().includes(searchText.toLowerCase())
-  );
   const filteredArtists = artists.filter((artist) =>
     artist.name.toLowerCase().includes(searchText.toLowerCase())
   );
@@ -133,25 +127,7 @@ export default function Home() {
     item.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const totalArtworkPages = Math.ceil(filteredArtworks.length / itemsPerPage);
-  const totalArtistPages = Math.ceil(filteredArtists.length / itemsPerPage);
-  const totalMuseumPages = Math.ceil(adminData.length / itemsPerPage);
 
-
-  const paginatedArtworks = filteredArtworks.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-  const paginatedArtists = filteredArtists.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-
-  const paginatedMuseums = filteredMuseums.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
 
 
 
@@ -163,47 +139,131 @@ export default function Home() {
     console.log(`Switched to: ${tab}`);
   };
 
-  const handlePageChange = (page: number) => {
-    const maxPages =
-      activeTab === "artworks" ? totalArtworkPages : totalArtistPages;
-    if (page >= 1 && page <= maxPages) {
-      setCurrentPage(page);
-      console.log(`Navigated to page ${page}`);
-    }
-  };
-
-  const fetchArtworksFromAPI = async () => {
-    setIsLoading(true); // Set loading to true
+  const fetchArtworksFromAPI = async (page = 1) => {
+    if (page === 1) setIsLoading(true); // Set loading to true initially
     try {
       if (user) {
-        const token = await getIdToken(); // Get the artist_portal_token
-        const response = await fetch(`https://api.artvista.app/get_artworks_to_portal/?artist_portal_token=${token}`);
+        const token = await getIdToken();
+        const response = await fetch(
+          `https://api.artvista.app/get_artworks_to_portal/?artist_portal_token=${token}&page_count=${page}`
+        );
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data: { artwork_id: number; title: string; spaces_dir: string }[] = await response.json();
+        console.log(`API Response for Page ${page}:`, data);
 
-        // Filter out the first JSON object (time_taken)
+        // Filter valid artworks
         const artworksData = data.filter((item) => item.artwork_id);
 
-        // Map the API response to the expected structure
+        if (artworksData.length === 0 && page > 1) {
+          setHasMoreData(false); // No more data
+          alert("No more artworks to load.");
+        } else {
+          setHasMoreData(true); // Data is available
+        }
+
         const formattedArtworks: Artwork[] = artworksData.map((item) => ({
           id: item.artwork_id,
           title: item.title,
           image: item.spaces_dir,
         }));
 
-        setArtworks(formattedArtworks); // Update the state with the fetched artworks
+        setArtworks((prev) => [...prev, ...formattedArtworks]);
       } else {
         console.error("User is not logged in.");
       }
     } catch (error) {
       console.error("Error fetching artworks:", error);
     } finally {
-      setIsLoading(false); // Set loading to false
+      setIsLoading(false);
+      setIsLoadingMore(false);
     }
   };
+
+  const fetchArtworksFromSearchAPI = async (title: string) => {
+    setIsLoading(true); // Start loading
+    try {
+      if (user) {
+        const token = await getIdToken(); // Get token for authentication
+        const response = await fetch(
+          `https://api.artvista.app/search_for_artworks_to_portal/?artist_portal_token=${token}&title=${encodeURIComponent(
+            title
+          )}&return_count=4`,
+          {
+            method: "POST",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: { artwork_id: number; title: string; spaces_dir: string }[] = await response.json();
+        console.log(`Search API Response:`, data);
+
+        const formattedArtworks: Artwork[] = data.map((item) => ({
+          id: item.artwork_id,
+          title: item.title,
+          image: item.spaces_dir,
+        }));
+
+        setArtworks(formattedArtworks); // Update artworks with search results
+      } else {
+        console.error("User is not logged in.");
+      }
+    } catch (error) {
+      console.error("Error fetching artworks from search API:", error);
+    } finally {
+      setIsLoading(false); // Stop loading
+    }
+  };
+
+  // Debounce search effect
+  useEffect(() => {
+    const resetToPageOne = async () => {
+      setPageCount(1); // Reset to page 1
+      setArtworks([]); // Clear current artworks
+      setHasMoreData(true); // Reset "has more data"
+      await fetchArtworksFromAPI(1); // Fetch page 1 explicitly
+    };
+
+    if (searchText.length >= 1) {
+      fetchArtworksFromSearchAPI(searchText); // Trigger search API call
+      setIsSearchActive(true);
+    } else if (searchText.length === 0 && !isRefreshing && isSearchActive) {
+      resetToPageOne(); // Reset and fetch page 1 when search is cleared
+    }
+  }, [searchText]);
+
+  const handleRefresh = () => {
+    setPageCount(1); // Reset to page 1
+    setArtworks([]); // Clear the current artworks
+    setHasMoreData(true); // Reset "has more data"
+    setSearchText(""); // Clear search text
+    setIsRefreshing(true); // Indicate refresh state
+
+    // Fetch data explicitly for page 1
+    fetchArtworksFromAPI(1).finally(() => {
+      setIsRefreshing(false); // Reset refreshing state after fetch
+    });
+  };
+
+
+  const handleLoadMore = () => {
+    setIsLoadingMore(true);
+    const nextPage = pageCount + 1; // Calculate the next page
+    setPageCount(nextPage); // Update the page count
+    fetchArtworksFromAPI(nextPage); // Pass the next page explicitly
+  };
+
+  useEffect(() => {
+    if (isRefreshing) {
+      setIsRefreshing(false); // Reset refreshing state after the refresh logic is complete
+    }
+  }, [isRefreshing]);
 
 
   useEffect(() => {
@@ -222,11 +282,15 @@ export default function Home() {
   }, [user, isLoadingUser, router]);
 
 
+  const fetchCalled = useRef(false); // Track if initial fetch has been called
+
   useEffect(() => {
-    if (user?.type === "artist" && activeTab === "artworks" && !isLoading) {
+    if (user?.type === "artist" && activeTab === "artworks" && !fetchCalled.current) {
+      console.log("FETCHED HERE");
       fetchArtworksFromAPI();
+      fetchCalled.current = true; // Mark as fetched
     }
-  }, [user?.type, activeTab]);
+  }, [user?.type, activeTab]); // Removed `pageCount` from dependency array
 
 
 
@@ -337,6 +401,7 @@ export default function Home() {
             </div>
             <div
               className={styles.refreshIcon}
+              onClick={handleRefresh}
             >
               <FiRefreshCw />
             </div>
@@ -350,7 +415,7 @@ export default function Home() {
                       <div className={styles.loader}></div>
                     </div>
                   ) : (
-                    paginatedArtworks.map((artwork) => (
+                    artworks.map((artwork) => (
                       <div key={artwork.id} className={styles.artworkItem}>
                         <img
                           src={artwork.image}
@@ -398,19 +463,15 @@ export default function Home() {
                   )}
                 </div>
                 <div className={styles.pagination}>
-                  {Array.from(
-                    { length: totalArtworkPages },
-                    (_, index) => index + 1
-                  ).map((page) => (
+                  {hasMoreData && !isLoading && !isLoadingUser && searchText.length === 0 && (
                     <button
-                      key={page}
-                      className={`${styles.pageButton} ${page === currentPage ? styles.activePage : ""
-                        }`}
-                      onClick={() => handlePageChange(page)}
+                      className={styles.loadMoreButton}
+                      onClick={handleLoadMore}
+                      disabled={isLoadingMore}
                     >
-                      {page}
+                      {isLoadingMore ? "Loading..." : "Load More"}
                     </button>
-                  ))}
+                  )}
                 </div>
               </>
 
@@ -419,7 +480,6 @@ export default function Home() {
                 <div className={styles.artworkList}>
                   {user?.type === "admin"
                     ? filteredAdminData
-                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                       .map((artist) => (
                         <div key={artist.id} className={styles.artworkItem}>
                           <span className={styles.artworkTitle}>{artist.name}</span>
@@ -446,7 +506,6 @@ export default function Home() {
                         </div>
                       ))
                     : filteredArtists
-                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                       .map((artist) => (
                         <div key={artist.id} className={styles.artworkItem}>
                           <img
@@ -465,24 +524,13 @@ export default function Home() {
                       ))}
                 </div>
                 <div className={styles.pagination}>
-                  {Array.from(
-                    {
-                      length:
-                        user?.type === "admin"
-                          ? Math.ceil(filteredAdminData.length / itemsPerPage)
-                          : Math.ceil(filteredArtists.length / itemsPerPage),
-                    },
-                    (_, index) => index + 1
-                  ).map((page) => (
-                    <button
-                      key={page}
-                      className={`${styles.pageButton} ${page === currentPage ? styles.activePage : ""
-                        }`}
-                      onClick={() => handlePageChange(page)}
-                    >
-                      {page}
-                    </button>
-                  ))}
+                  <button
+                    className={styles.loadMoreButton}
+                    onClick={handleLoadMore}
+                    disabled={isLoadingMore}
+                  >
+                    {isLoadingMore ? "Loading..." : "Load More"}
+                  </button>
                 </div>
               </>
 
@@ -490,7 +538,6 @@ export default function Home() {
               <>
                 <div className={styles.artworkList}>
                   {filteredAdminData
-                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                     .map((museum) => (
                       <div key={museum.id} className={styles.artworkItem}>
                         <span className={styles.artworkTitle}>{museum.name}</span>
@@ -524,21 +571,13 @@ export default function Home() {
                     ))}
                 </div>
                 <div className={styles.pagination}>
-                  {Array.from(
-                    {
-                      length:
-                        Math.ceil(filteredAdminData.length / itemsPerPage),
-                    },
-                    (_, index) => index + 1
-                  ).map((page) => (
-                    <button
-                      key={page}
-                      className={`${styles.pageButton} ${page === currentPage ? styles.activePage : ""}`}
-                      onClick={() => handlePageChange(page)}
-                    >
-                      {page}
-                    </button>
-                  ))}
+                  <button
+                    className={styles.loadMoreButton}
+                    onClick={handleLoadMore}
+                    disabled={isLoadingMore}
+                  >
+                    {isLoadingMore ? "Loading..." : "Load More"}
+                  </button>
                 </div>
               </>
             ) : null}

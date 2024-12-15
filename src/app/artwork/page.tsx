@@ -8,6 +8,8 @@ import { useSearchParams } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
 import router from "next/router";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebase"; // Adjust this path to match your project structure
 
 function SearchParamsHandler({
   setIsEditMode,
@@ -123,6 +125,8 @@ export default function Artwork() {
 
   const [loadingEras, setLoadingEras] = useState(true);
   const [loadingFormData, setLoadingFormData] = useState(true);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+
   const handleEditClick = () => {
     setIsEditing(true); // Enable editing
   };
@@ -210,20 +214,59 @@ export default function Artwork() {
 
   const isFormValid =
     formData.artworkTitle &&
-    formData.artistName &&
-    formData.artistName !== "No Option Selected" && // Exclude the placeholder option
+    (user?.type === "artist" || (formData.artistName && formData.artistName !== "No Option Selected")) && // Only require artistName if user is not an artist
     formData.artworkAbout &&
     formData.artworkImage &&
     formData.timelineCenter &&
     formData.timelineCenter !== "No Option Selected" && // Exclude the placeholder option
     (formData.timelineCenter !== "custom" || (formData.timelineCenter === "custom" && formData.customTimelineCenter && formData.customTimelineCenter.trim() !== ""));
 
+  // Function to fetch artist ID from Firestore
+  const fetchArtistId = async (): Promise<string | null> => {
+    try {
+      if (!user || !user.email) {
+        throw new Error("User email not found. Please log in again.");
+      }
+
+      const userDocRef = doc(db, "users", user.email);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (!userDocSnap.exists()) {
+        throw new Error("User document not found in Firestore.");
+      }
+
+      const artistIds = userDocSnap.data()?.artist_ids || [];
+      if (artistIds.length === 0) {
+        throw new Error("No artist IDs found for this user.");
+      }
+      return artistIds[0]; // Return the first artist ID
+    } catch (error) {
+      console.error("Error fetching artist ID:", error);
+      alert(error instanceof Error ? error.message : "Unknown error occurred.");
+      return null;
+    }
+  };
 
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isFormValid) {
-      setIsSubmitted(true); // Set submission status to true
+      try {
+        const artistId = await fetchArtistId(); // Fetch artist ID once
+        if (artistId) {
+          console.log('artist id ' + artistId);
+          setLoadingSubmit(true);
+          const artworkId = await submitArtworkForApproval(artistId);
+          if (artworkId) {
+            await submitAdditionalImages(artistId, artworkId);
+            setLoadingSubmit(false);
+            setIsSubmitted(true);
+          }
+        }
+      } catch (error) {
+        console.error("Error submitting artwork:", error);
+        alert("An error occurred while submitting your artwork.");
+      }
     } else {
       alert("Please fill in all required fields.");
     }
@@ -238,7 +281,6 @@ export default function Artwork() {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-
           const data: Era[] = await response.json();
           const eraNames = data.map((item) => item.era_name);
           setEraOptions(eraNames);
@@ -271,7 +313,6 @@ export default function Artwork() {
 
           const artworkDetails = await response.json();
           const { image_links, text_information } = artworkDetails;
-
           const fetchedData = {
             artworkTitle: text_information.title || "",
             artistName: text_information.artist || "",
@@ -290,12 +331,21 @@ export default function Artwork() {
             artistBornYear: "", // Populate if available in the API response
             artistDiedYear: "", // Populate if available in the API response
             artworkImage: image_links?.header_image || null,
-            additionalImages: [
-              ...(image_links?.vector_images?.map((img: VectorImage) => img.presigned_url) || []),
-              null, // Always add an empty slot for a new image
-            ],
-            nsfw: null,
-            priority: null,
+            additionalImages: (() => {
+              const vectorImages =
+                image_links?.vector_images?.map((img: VectorImage) => img.presigned_url) || [];
+              const numVectorImages = vectorImages.length;
+
+              if (numVectorImages >= 3) {
+                // If there are 3 or more vector images, add exactly one null at the end
+                return [...vectorImages, null];
+              } else {
+                // Otherwise, ensure the total length is 3 by adding enough nulls
+                return [...vectorImages, ...Array(3 - numVectorImages).fill(null)];
+              }
+            })(),
+            nsfw: text_information.is_nsfw || false,
+            priority: text_information.importance_factor || false,
           };
 
           setFormData(fetchedData);
@@ -310,6 +360,91 @@ export default function Artwork() {
 
     fetchArtworkDetails();
   }, [artworkId, user, getIdToken]);
+
+
+  const submitArtworkForApproval = async (artistId: string): Promise<number | null> => {
+    try {
+      const params = new URLSearchParams({
+        artist_portal_token: (await getIdToken()) ?? "",
+        artist_id: artistId,
+        artwork_title: formData.artworkTitle,
+        about_description: formData.artworkAbout,
+        year_created: formData.artworkYear,
+        era_id: "2",
+        genre: formData.artworkGenre,
+        media: formData.artworkMedia,
+        dimensions: formData.artworkDimensions,
+        is_nsfw: formData.nsfw ? "true" : "false",
+        importance_factor: formData.priority ? "true" : "false",
+      });
+
+      const formDataToSend = new FormData();
+      if (formData.artworkImage instanceof File) {
+        formDataToSend.append("header_image", formData.artworkImage);
+      } else {
+        throw new Error("Artwork image is required.");
+      }
+
+      const response = await fetch(
+        `https://api.artvista.app/submit_artwork_for_approval/?${params.toString()}`,
+        {
+          method: "POST",
+          body: formDataToSend,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to submit artwork: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log("First Endpoint Response:", result);
+      return result.artwork_id; // Return artwork_id for the next step
+    } catch (error) {
+      console.error("Error submitting artwork:", error);
+      alert(error instanceof Error ? error.message : "An error occurred.");
+      return null;
+    } finally {
+    }
+  };
+
+  const submitAdditionalImages = async (artistId: string, artworkId: number) => {
+    try {
+      for (const image of formData.additionalImages) {
+        if (image instanceof File) {
+          const formDataToSend = new FormData();
+          formDataToSend.append("additional_image", image);
+
+          const params = new URLSearchParams({
+            artist_portal_token: (await getIdToken()) ?? "",
+            artist_id: artistId,
+            artwork_id: artworkId.toString(),
+          });
+
+          const response = await fetch(
+            `https://api.artvista.app/submit_additional_image_of_given_artwork/?${params.toString()}`,
+            {
+              method: "POST",
+              body: formDataToSend,
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(
+              `Failed to submit additional image: ${response.statusText}`
+            );
+          }
+
+          console.log(`Uploaded additional image for artwork ID ${artworkId}`);
+        }
+      }
+      alert("Artwork submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting additional images:", error);
+      alert("An error occurred while uploading additional images.");
+    }
+  };
+
 
 
   useEffect(() => {
@@ -374,13 +509,16 @@ export default function Artwork() {
               onSubmit={handleSubmit}
             >
 
-              <LoadingOverlay isVisible={loadingEras || loadingFormData || isLoadingUser} />
+              <LoadingOverlay isVisible={loadingEras || loadingFormData || isLoadingUser || loadingSubmit} />
 
               <div className={styles.formRow}>
                 <div className={styles.leftColumn}>
                   <div className={styles.inputWrapperRequired}>
                     <p>Upload an artwork profile image</p>
-                    <div className={styles.imageUploadWrapper}>
+                    <div
+                      className={`${styles.imageUploadWrapper} ${isEditMode && !isEditing ? styles.overlay : ""
+                        }`}
+                    >
                       {formData.artworkImage && (!isEditMode || isEditing) && (
                         <button
                           type="button"
@@ -428,7 +566,11 @@ export default function Artwork() {
                     </p>
                     <div className={styles.extraImagesContainer}>
                       {formData.additionalImages.map((image, index) => (
-                        <div key={index} className={styles.additionalImageUploadWrapper}>
+                        <div
+                          key={index}
+                          className={`${styles.additionalImageUploadWrapper} ${isEditMode && !isEditing ? styles.overlay : ""
+                            }`}
+                        >
                           <div className={styles.imageBox}>
                             {image && (!isEditMode || isEditing) && (
                               <button
