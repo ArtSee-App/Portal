@@ -447,16 +447,12 @@ export default function Home() {
                             </button>
                           </div>
                         ) : (
-                          <button
+                          <a
                             className={styles.viewDetails}
-                            onClick={() => {
-                              if (user?.type === "artist" || user?.type === "museum") {
-                                router.push(`/artwork?edit=true&artworkId=${artwork.id}`);
-                              }
-                            }}
+                            href={`/artwork?edit=true&artworkId=${artwork.id}`} // Use href for link functionality
                           >
                             View artwork's details →
-                          </button>
+                          </a>
                         )}
                       </div>
                     ))
