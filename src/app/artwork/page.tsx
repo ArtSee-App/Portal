@@ -511,6 +511,12 @@ export default function Artwork() {
 
               <LoadingOverlay isVisible={loadingEras || loadingFormData || isLoadingUser || loadingSubmit} />
 
+              {loadingSubmit && (
+                <div className={styles.uploadingText}>
+                  Uploading images...
+                </div>
+              )}
+
               <div className={styles.formRow}>
                 <div className={styles.leftColumn}>
                   <div className={styles.inputWrapperRequired}>
