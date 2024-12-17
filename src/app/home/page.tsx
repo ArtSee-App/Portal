@@ -11,6 +11,7 @@ import { FiCheck, FiX, FiEdit } from "react-icons/fi";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../../firebase"; // Update this with your Firebase setup
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import Link from "next/link";
 
 type AdminData = {
   id: string;
@@ -447,12 +448,9 @@ export default function Home() {
                             </button>
                           </div>
                         ) : (
-                          <a
-                            className={styles.viewDetails}
-                            href={`/artwork?edit=true&artworkId=${artwork.id}`} // Use href for link functionality
-                          >
-                            View artwork's details →
-                          </a>
+                          <Link href={`/artwork?edit=true&artworkId=${artwork.id}`}>
+                            <span className={styles.viewDetails}>View artwork's details →</span>
+                          </Link>
                         )}
                       </div>
                     ))

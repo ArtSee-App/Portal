@@ -7,7 +7,7 @@ import Footer from "@/components/footer/footer";
 import { useSearchParams } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase"; // Adjust this path to match your project structure
 
@@ -33,6 +33,7 @@ function SearchParamsHandler({
 
 interface Era {
   era_name: string;
+  era_id: number;
 }
 
 interface VectorImage {
@@ -112,8 +113,11 @@ export default function Artwork() {
     setIsSubmitted(false);
   };
 
+
+  const router = useRouter();
+
   const [initialFormData, setInitialFormData] = useState<typeof formData | null>(null);
-  const [eraOptions, setEraOptions] = useState<string[]>([]);
+  const [eraOptions, setEraOptions] = useState<{ id: number; name: string }[]>([]);
 
   const { user, getIdToken, isLoadingUser } = useUser(); // Access setUser from the UserContext
   const [isEditMode, setIsEditMode] = useState(false);
@@ -126,6 +130,7 @@ export default function Artwork() {
   const [loadingEras, setLoadingEras] = useState(true);
   const [loadingFormData, setLoadingFormData] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
   const handleEditClick = () => {
     setIsEditing(true); // Enable editing
@@ -155,13 +160,49 @@ export default function Artwork() {
     }
   };
 
-  const handleDelete = () => {
+  const deleteArtwork = async (artistId: string, artworkId: number) => {
+    try {
+      const token = await getIdToken();
+      const params = new URLSearchParams({
+        artist_portal_token: token ?? "",
+        artist_id: artistId,
+        artwork_id: artworkId.toString(),
+      });
+
+      const response = await fetch(
+        `https://api.artvista.app/delete_artwork/?${params.toString()}`,
+        { method: "DELETE" }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete artwork: ${response.statusText}`);
+      }
+
+      alert("Artwork deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting artwork:", error);
+      alert(error instanceof Error ? error.message : "An error occurred.");
+    }
+  };
+
+  const handleDelete = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this artwork? This action cannot be undone."
     );
-    if (confirmDelete) {
-      // Implement logic to delete the artwork here
-      alert("Artwork deleted!");
+    if (confirmDelete && artworkId) {
+      const artistId = await fetchArtistId();
+      if (artistId) {
+        try {
+          setLoadingDelete(true); // Start loading state
+          await deleteArtwork(artistId, artworkId);
+          router.push("/home"); // Redirect to /home after successful deletion
+        } catch (error) {
+          console.error("Error deleting artwork:", error);
+          alert("An error occurred while deleting the artwork.");
+        } finally {
+          setLoadingDelete(false); // Stop loading state
+        }
+      }
     }
   };
 
@@ -277,20 +318,27 @@ export default function Artwork() {
       try {
         if (user) {
           const token = await getIdToken();
-          const response = await fetch(`https://api.artvista.app/get_list_of_eras/?artist_portal_token=${token}`);
+          const response = await fetch(
+            `https://api.artvista.app/get_list_of_eras/?artist_portal_token=${token}`
+          );
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
+
           const data: Era[] = await response.json();
-          const eraNames = data.map((item) => item.era_name);
-          setEraOptions(eraNames);
+          // Store both era_id and era_name
+          const eraOptions = data.map((item) => ({
+            id: item.era_id,
+            name: item.era_name,
+          }));
+          setEraOptions(eraOptions);
         } else {
           console.error("User is not logged in.");
         }
       } catch (error) {
         console.error("Error fetching era options:", error);
       } finally {
-        setLoadingEras(false); // Set loading to false regardless of success or error
+        setLoadingEras(false);
       }
     };
 
@@ -301,7 +349,7 @@ export default function Artwork() {
   useEffect(() => {
     const fetchArtworkDetails = async () => {
       try {
-        if (user && artworkId !== null) {
+        if (user && artworkId !== null && !loadingEras) {
           const token = await getIdToken();
           const response = await fetch(
             `https://api.artvista.app/get_artwork_details_to_portal/?artist_portal_token=${token}&artwork_id=${artworkId}`
@@ -311,15 +359,20 @@ export default function Artwork() {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
+
+
           const artworkDetails = await response.json();
           const { image_links, text_information } = artworkDetails;
+
+          const matchedEra = eraOptions.find((era) => era.name === text_information.style);
+          console.log(text_information.importance_factor);
           const fetchedData = {
             artworkTitle: text_information.title || "",
             artistName: text_information.artist || "",
             artistID: text_information.artist_id?.toString() || "",
             artworkYear: text_information.creation_date || "",
             timelineLeft: text_information.pre_style || "",
-            timelineCenter: text_information.style || "",
+            timelineCenter: matchedEra ? matchedEra.id.toString() : "", // Set the matched ID or leave blank
             customTimelineCenter: "",
             timelineRight: text_information.post_style || "",
             artworkGenre: text_information.genre || "",
@@ -344,8 +397,8 @@ export default function Artwork() {
                 return [...vectorImages, ...Array(3 - numVectorImages).fill(null)];
               }
             })(),
-            nsfw: text_information.is_nsfw || false,
-            priority: text_information.importance_factor || false,
+            nsfw: text_information.is_nsfw,
+            priority: text_information.importance_factor === 10, // Convert to boolean
           };
 
           setFormData(fetchedData);
@@ -359,7 +412,7 @@ export default function Artwork() {
     };
 
     fetchArtworkDetails();
-  }, [artworkId, user, getIdToken]);
+  }, [eraOptions]);
 
 
   const submitArtworkForApproval = async (artistId: string): Promise<number | null> => {
@@ -370,12 +423,12 @@ export default function Artwork() {
         artwork_title: formData.artworkTitle,
         about_description: formData.artworkAbout,
         year_created: formData.artworkYear,
-        era_id: "2",
+        era_id: formData.timelineCenter,
         genre: formData.artworkGenre,
         media: formData.artworkMedia,
         dimensions: formData.artworkDimensions,
         is_nsfw: formData.nsfw ? "true" : "false",
-        importance_factor: formData.priority ? "true" : "false",
+        importance_factor: formData.priority ? "10" : "0", // Send 10 for true, 0 for false
       });
 
       const formDataToSend = new FormData();
@@ -509,7 +562,7 @@ export default function Artwork() {
               onSubmit={handleSubmit}
             >
 
-              <LoadingOverlay isVisible={loadingEras || loadingFormData || isLoadingUser || loadingSubmit} />
+              <LoadingOverlay isVisible={loadingEras || loadingFormData || isLoadingUser || loadingSubmit || loadingDelete} />
 
               {loadingSubmit && (
                 <div className={styles.uploadingText}>
@@ -655,15 +708,15 @@ export default function Artwork() {
                         setFormData((prev) => ({
                           ...prev,
                           timelineCenter: value,
-                          customTimelineCenter: value !== "custom" ? "" : prev.customTimelineCenter, // Reset customTimelineCenter if not "custom"
+                          customTimelineCenter: value !== "custom" ? "" : prev.customTimelineCenter,
                         }));
                       }}
                       disabled={isEditMode && !isEditing}
                     >
                       <option value="">No Option Selected</option>
-                      {eraOptions.map((era, index) => (
-                        <option key={index} value={era}>
-                          {era}
+                      {eraOptions.map((era) => (
+                        <option key={era.id} value={era.id}>
+                          {era.name}
                         </option>
                       ))}
                       <option value="custom">Other (Specify below)</option>
