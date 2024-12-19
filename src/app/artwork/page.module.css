@@ -334,7 +334,7 @@
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s;
-  z-index: 10;
+  z-index: 2;
   /* Ensure it's above other elements */
 }
 
@@ -528,7 +528,7 @@
 }
 
 .pendingStatus {
-  color: yellow;
+  color: #FF9800;
 }
 
 .publishedStatus {

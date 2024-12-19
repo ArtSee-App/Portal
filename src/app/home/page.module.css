@@ -54,6 +54,30 @@
   /* Bright yellow */
 }
 
+.headerLeft>div:nth-child(3) {
+  color: #d32f2f;
+  /* Muted orange */
+  /* Bright yellow */
+}
+
+.shapeWhite.selected {
+  background-color: #e0e0e0;
+  /* Light gray for a subtle highlight */
+  color: #333;
+  /* Darker text for better contrast */
+  font-weight: bold;
+  border: 2px solid #ccc;
+  /* Soft border to add definition */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  /* Gentle shadow for subtle emphasis */
+  transform: scale(1.05);
+  /* Slight zoom effect */
+  transition: all 0.3s ease;
+  /* Smooth transitions for hover and selection */
+}
+
+
+
 
 .shapeWhite,
 .shapePrimary,
@@ -199,7 +223,6 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 0.875rem;
-  /* 14px */
   text-align: left;
 }
 
@@ -209,9 +232,23 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 1rem;
-  /* Adjust size if needed */
   color: #999;
-  /* Adjust color to fit the theme */
+}
+
+.clearIcon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.clearIcon:hover {
+  color: var(--primary-color);
+  /* Add a hover color */
 }
 
 
@@ -274,16 +311,17 @@
 .artworkList {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
 .artworkItem {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 15px;
   background-color: #ffffff;
   border-radius: 25px;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   justify-content: space-between;
   transition: box-shadow 0.3s ease, filter 0.3s ease;
 }
@@ -307,6 +345,63 @@
   font-size: 1rem;
   font-weight: bold;
   color: var(--text);
+  white-space: nowrap;
+  /* Prevent wrapping */
+  overflow: hidden;
+  /* Hide overflow */
+  text-overflow: ellipsis;
+  /* Add ellipsis (...) for long text */
+  max-width: calc(100% - 150px);
+  /* Adjust based on other content's width */
+}
+
+.pendingStatus {
+  position: absolute;
+  top: -10px;
+  /* Places the sticker above the artwork item */
+  right: -10px;
+  /* Slightly outside the top-right corner */
+  font-size: 0.875rem;
+  /* 14px */
+  font-weight: bold;
+  text-align: center;
+  padding: 5px 15px;
+  border-radius: 15px;
+  color: white;
+  background-color: transparent;
+  transform: rotate(-10deg);
+  /* Rotates the sticker for a playful effect */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid white;
+  /* Adds a border around the sticker */
+}
+
+.pendingStatus.rejected {
+  background-color: #d32f2f;
+  border: 2px solid #b71c1c;
+  /* Slightly darker border for rejected status */
+}
+
+.pendingStatus.accepted {
+  background-color: #1b8e5e;
+  border: 2px solid #0d6533;
+  /* Slightly darker border for accepted status */
+}
+
+.pendingStatus.pending {
+  background-color: #ff9800;
+  border: 2px solid #e65100;
+  /* Slightly darker border for pending status */
+}
+
+.pendingStatus::after {
+  content: "✦";
+  /* Adds a decorative icon */
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 1.2rem;
+  color: white;
 }
 
 .viewDetails {
@@ -318,6 +413,8 @@
   cursor: pointer;
   font-size: 0.875rem;
   transition: color 0.3s ease, text-decoration 0.3s ease;
+  white-space: nowrap;
+  /* Prevent wrapping */
 }
 
 

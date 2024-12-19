@@ -125,12 +125,19 @@ export default function Artwork() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const [artworkId, setArtworkId] = useState<number | null>(null); // Define artworkId state
-  const [artworkStatus, setArtworkStatus] = useState<"pending" | "published" | null>(null);
+  const [artworkStatus, setArtworkStatus] = useState<"Rejected" | "Accepted" | "Pending" | null>(null);
 
   const [loadingEras, setLoadingEras] = useState(true);
   const [loadingFormData, setLoadingFormData] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+
+  const statusMap: { 0: "Rejected"; 1: "Accepted"; 2: "Pending" } = {
+    0: "Rejected",
+    1: "Accepted",
+    2: "Pending",
+  };
+
 
   const handleEditClick = () => {
     setIsEditing(true); // Enable editing
@@ -148,15 +155,35 @@ export default function Artwork() {
     }
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     const confirmSave = window.confirm(
-      "Do you want to save the changes to this artwork? Saved changes will be pending and will have to be verified."
+      "Do you want to save the changes to this artwork? The existing artwork will be replaced with your updated submission."
     );
-    if (confirmSave) {
-      // Implement logic to save changes here
-      setInitialFormData(formData); // Update initial state to match current form data
-      alert("Changes saved successfully!");
-      setIsEditing(false);
+    if (confirmSave && artworkId) {
+      const artistId = await fetchArtistId(); // Fetch artist ID
+
+      if (artistId) {
+        try {
+          setLoadingSubmit(true); // Start loading state for submission
+          // Delete the existing artwork
+          await deleteArtwork(artistId, artworkId);
+
+          // Submit the updated artwork
+          const newArtworkId = await submitArtworkForApproval(artistId);
+          if (newArtworkId) {
+            // Submit additional images only if the new artwork submission succeeds
+            await submitAdditionalImages(artistId, newArtworkId);
+            alert("Changes saved successfully!");
+            setInitialFormData(formData);
+            setIsEditing(false); // Exit editing mode
+          }
+        } catch (error) {
+          console.error("Error saving changes:", error);
+          alert("An error occurred while saving changes.");
+        } finally {
+          setLoadingSubmit(false); // Stop loading state
+        }
+      }
     }
   };
 
@@ -178,7 +205,6 @@ export default function Artwork() {
         throw new Error(`Failed to delete artwork: ${response.statusText}`);
       }
 
-      alert("Artwork deleted successfully!");
     } catch (error) {
       console.error("Error deleting artwork:", error);
       alert(error instanceof Error ? error.message : "An error occurred.");
@@ -195,7 +221,7 @@ export default function Artwork() {
         try {
           setLoadingDelete(true); // Start loading state
           await deleteArtwork(artistId, artworkId);
-          router.push("/home"); // Redirect to /home after successful deletion
+          router.replace("/home"); // Redirect to /home after successful deletion
         } catch (error) {
           console.error("Error deleting artwork:", error);
           alert("An error occurred while deleting the artwork.");
@@ -313,6 +339,20 @@ export default function Artwork() {
     }
   };
 
+  const fetchImageWithProxy = async (url: string, filename: string): Promise<File | null> => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch image via proxy");
+
+      const blob = await response.blob();
+      return new File([blob], filename, { type: blob.type });
+    } catch (error) {
+      console.error("Error fetching image via proxy:", error);
+      return null;
+    }
+  };
+
+
   useEffect(() => {
     const fetchEraOptions = async () => {
       try {
@@ -359,13 +399,30 @@ export default function Artwork() {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
-
-
           const artworkDetails = await response.json();
+
           const { image_links, text_information } = artworkDetails;
 
+
+          const headerImageFile = image_links?.header_image
+            ? await fetchImageWithProxy(image_links.header_image, "header_image.jpg")
+            : null;
+
+          const vectorImageFiles: (File | null)[] = await Promise.all(
+            image_links?.vector_images?.map(async (img: VectorImage, index: number) => {
+              return await fetchImageWithProxy(img.presigned_url, `vector_image_${index + 1}.jpg`);
+            }) || []
+          );
+
+          vectorImageFiles.push(null);
+
+          // Explicitly type pendingSituation
+          const pendingSituation = text_information.pending_situation as 0 | 1 | 2;
+
+          // Assert the returned type when setting artworkStatus
+          setArtworkStatus(statusMap[pendingSituation] || null);
+
           const matchedEra = eraOptions.find((era) => era.name === text_information.style);
-          console.log(text_information.importance_factor);
           const fetchedData = {
             artworkTitle: text_information.title || "",
             artistName: text_information.artist || "",
@@ -383,24 +440,17 @@ export default function Artwork() {
             museumID: text_information.museum_id?.toString() || "",
             artistBornYear: "", // Populate if available in the API response
             artistDiedYear: "", // Populate if available in the API response
-            artworkImage: image_links?.header_image || null,
+            artworkImage: headerImageFile,
             additionalImages: (() => {
-              const vectorImages =
-                image_links?.vector_images?.map((img: VectorImage) => img.presigned_url) || [];
-              const numVectorImages = vectorImages.length;
-
-              if (numVectorImages >= 3) {
-                // If there are 3 or more vector images, add exactly one null at the end
-                return [...vectorImages, null];
-              } else {
-                // Otherwise, ensure the total length is 3 by adding enough nulls
-                return [...vectorImages, ...Array(3 - numVectorImages).fill(null)];
-              }
+              const vectorImagesWithFallback = vectorImageFiles.length
+                ? vectorImageFiles
+                : [null, null, null]; // Default to three empty slots if none exist
+              return vectorImagesWithFallback;
             })(),
             nsfw: text_information.is_nsfw,
             priority: text_information.importance_factor === 10, // Convert to boolean
           };
-
+          console.log(headerImageFile);
           setFormData(fetchedData);
           setInitialFormData(fetchedData); // Store the fetched data as the initial state
         }
@@ -491,7 +541,6 @@ export default function Artwork() {
           console.log(`Uploaded additional image for artwork ID ${artworkId}`);
         }
       }
-      alert("Artwork submitted successfully!");
     } catch (error) {
       console.error("Error submitting additional images:", error);
       alert("An error occurred while uploading additional images.");
@@ -534,14 +583,24 @@ export default function Artwork() {
               {isEditMode && (
                 <>
                   <span className={styles.divider}></span>
-                  <p
-                    className={`${styles.headerHelp} ${artworkStatus === "pending" ? styles.pendingStatus : styles.publishedStatus
-                      }`}
-                  >
-                    {artworkStatus === "pending"
-                      ? "There are pending changes to the artwork"
-                      : "This artwork has been published"}
-                  </p>
+                  {!loadingFormData ? (
+                    artworkStatus ? (
+                      <p
+                        className={`${styles.headerHelp} ${artworkStatus === "Pending"
+                          ? styles.pendingStatus
+                          : artworkStatus === "Accepted"
+                            ? styles.acceptedStatus
+                            : styles.rejectedStatus
+                          }`}
+                      >
+                        {artworkStatus === "Pending"
+                          ? "This artwork is pending approval."
+                          : artworkStatus === "Accepted"
+                            ? "This artwork has been accepted and published."
+                            : "This artwork has been rejected."}
+                      </p>
+                    ) : null
+                  ) : null}
                 </>
               )}
               {!isEditMode && (

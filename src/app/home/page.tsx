@@ -22,6 +22,7 @@ type Artwork = {
   id: number;
   title: string;
   image: string;
+  pending_situation: string; // New field
 };
 
 
@@ -48,6 +49,7 @@ export default function Home() {
   const [hasMoreData, setHasMoreData] = useState(true); // Tracks if there's more data to load
   const [isRefreshing, setIsRefreshing] = useState(false); // Track refresh state
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [pendingSituationFilter, setPendingSituationFilter] = useState<number | null>(null);
 
   const [artists, setArtists] = useState([
     { id: 1, name: "Artist 1", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
@@ -145,34 +147,46 @@ export default function Home() {
     try {
       if (user) {
         const token = await getIdToken();
+
+        // Build query parameters conditionally
+        const params: Record<string, string> = {
+          page_count: page.toString(),
+        };
+        if (token) {
+          params["artist_portal_token"] = token;
+        }
+
+        console.log(pendingSituationFilter);
+        if (pendingSituationFilter !== null) {
+          params["filter_by_pending_situation"] = pendingSituationFilter.toString();
+        }
+
         const response = await fetch(
-          `https://api.artvista.app/get_artworks_to_portal/?artist_portal_token=${token}&page_count=${page}`
+          `https://api.artvista.app/get_artworks_to_portal/?${new URLSearchParams(params).toString()}`
         );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; title: string; spaces_dir: string }[] = await response.json();
-        console.log(`API Response for Page ${page}:`, data);
+        const data: { artwork_id: number; title: string; spaces_dir: string; pending_situation: string }[] = await response.json();
 
-        // Filter valid artworks
         const artworksData = data.filter((item) => item.artwork_id);
-
         if (artworksData.length === 0 && page > 1) {
-          setHasMoreData(false); // No more data
+          setHasMoreData(false);
           alert("No more artworks to load.");
         } else {
-          setHasMoreData(true); // Data is available
+          setHasMoreData(true);
         }
 
         const formattedArtworks: Artwork[] = artworksData.map((item) => ({
           id: item.artwork_id,
           title: item.title,
           image: item.spaces_dir,
+          pending_situation: item.pending_situation,
         }));
 
-        setArtworks((prev) => [...prev, ...formattedArtworks]);
+        setArtworks((prev) => (page === 1 ? formattedArtworks : [...prev, ...formattedArtworks]));
       } else {
         console.error("User is not logged in.");
       }
@@ -202,13 +216,14 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; title: string; spaces_dir: string }[] = await response.json();
+        const data: { artwork_id: number; title: string; spaces_dir: string; pending_situation: string }[] = await response.json();
         console.log(`Search API Response:`, data);
 
         const formattedArtworks: Artwork[] = data.map((item) => ({
           id: item.artwork_id,
           title: item.title,
           image: item.spaces_dir,
+          pending_situation: item.pending_situation, // Map the new field
         }));
 
         setArtworks(formattedArtworks); // Update artworks with search results
@@ -230,7 +245,7 @@ export default function Home() {
       setHasMoreData(true); // Reset "has more data"
       await fetchArtworksFromAPI(1); // Fetch page 1 explicitly
     };
-
+    setPendingSituationFilter(null);
     if (searchText.length >= 1) {
       fetchArtworksFromSearchAPI(searchText); // Trigger search API call
       setIsSearchActive(true);
@@ -251,6 +266,19 @@ export default function Home() {
       setIsRefreshing(false); // Reset refreshing state after fetch
     });
   };
+
+  const handleFilterClick = (filter: number | null) => {
+    setPendingSituationFilter((currentFilter) => (currentFilter === filter ? null : filter));
+
+  };
+
+  useEffect(() => {
+    if (!searchText) {
+      handleRefresh(); // Refresh data when filter changes, only if search text is empty
+    } else {
+      setPendingSituationFilter(null); // Set the filter to null without triggering a refresh
+    }
+  }, [pendingSituationFilter, searchText]);
 
 
   const handleLoadMore = () => {
@@ -304,24 +332,44 @@ export default function Home() {
         {user?.type !== "admin" && (
           <div className={styles.headerList}>
             <div className={styles.headerLeft}>
-              <div className={styles.shapeWhite}>Published:</div>
-              <div className={styles.shapeWhite}>Pending:</div>
+              <div
+                className={`${styles.shapeWhite} ${pendingSituationFilter === 1 ? styles.selected : ""
+                  }`}
+                onClick={() => handleFilterClick(1)} // Filter for Published
+                style={{ cursor: "pointer" }}
+              >
+                Published:
+              </div>
+              <div
+                className={`${styles.shapeWhite} ${pendingSituationFilter === 2 ? styles.selected : ""
+                  }`}
+                onClick={() => handleFilterClick(2)} // Filter for Pending
+                style={{ cursor: "pointer" }}
+              >
+                Pending:
+              </div>
+              <div
+                className={`${styles.shapeWhite} ${pendingSituationFilter === 0 ? styles.selected : ""
+                  }`}
+                onClick={() => handleFilterClick(0)} // Filter for Rejected
+                style={{ cursor: "pointer" }}
+              >
+                Rejected:
+              </div>
             </div>
             <div className={styles.headerRight}>
               {user?.type === "museum" && (
-                <button
-                  className={styles.shapePrimary}
-                  onClick={() => router.push("/artist")} // Navigate to /artist
-                >
-                  Add Artist
-                </button>
+                <Link href="/artist">
+                  <button className={styles.shapePrimary}>
+                    Add Artist
+                  </button>
+                </Link>
               )}
-              <button
-                className={styles.shapeSecondary}
-                onClick={() => router.push("/artwork")} // Navigate to /artwork
-              >
-                Add Artwork
-              </button>
+              <Link href="/artwork">
+                <button className={styles.shapeSecondary}>
+                  Add Artwork
+                </button>
+              </Link>
             </div>
           </div>
         )}
@@ -399,6 +447,14 @@ export default function Home() {
                   }...`}
               />
               <span className={styles.searchIcon}>🔍</span>
+              {searchText && (
+                <span
+                  className={styles.clearIcon}
+                  onClick={() => setSearchText("")} // Clear search text on click
+                >
+                  ✖
+                </span>
+              )}
             </div>
             <div
               className={styles.refreshIcon}
@@ -452,6 +508,20 @@ export default function Home() {
                             <span className={styles.viewDetails}>View artwork's details →</span>
                           </Link>
                         )}
+                        <div
+                          className={`${styles.pendingStatus} ${artwork.pending_situation === "0"
+                            ? styles.rejected
+                            : artwork.pending_situation === "1"
+                              ? styles.accepted
+                              : styles.pending
+                            }`}
+                        >
+                          {artwork.pending_situation === "0"
+                            ? "Rejected"
+                            : artwork.pending_situation === "1"
+                              ? "Accepted"
+                              : "Pending"}
+                        </div>
                       </div>
                     ))
                   )}
