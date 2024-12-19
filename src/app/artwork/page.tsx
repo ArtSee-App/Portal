@@ -156,15 +156,22 @@ export default function Artwork() {
   };
 
   const handleSaveChanges = async () => {
+    if (!isFormValid) {
+      alert("Please ensure all required fields are filled in correctly before saving changes.");
+      return;
+    }
+
     const confirmSave = window.confirm(
       "Do you want to save the changes to this artwork? The existing artwork will be replaced with your updated submission."
     );
+
     if (confirmSave && artworkId) {
       const artistId = await fetchArtistId(); // Fetch artist ID
 
       if (artistId) {
         try {
           setLoadingSubmit(true); // Start loading state for submission
+
           // Delete the existing artwork
           await deleteArtwork(artistId, artworkId);
 
@@ -408,13 +415,22 @@ export default function Artwork() {
             ? await fetchImageWithProxy(image_links.header_image, "header_image.jpg")
             : null;
 
-          const vectorImageFiles: (File | null)[] = await Promise.all(
+          const fetchedVectorImages = await Promise.all(
             image_links?.vector_images?.map(async (img: VectorImage, index: number) => {
               return await fetchImageWithProxy(img.presigned_url, `vector_image_${index + 1}.jpg`);
             }) || []
           );
 
-          vectorImageFiles.push(null);
+          // Calculate the number of null slots to add
+          const nullSlots =
+            fetchedVectorImages.length === 0
+              ? 3
+              : fetchedVectorImages.length === 1
+                ? 2
+                : 1;
+
+          const vectorImageFiles = [...fetchedVectorImages, ...Array(nullSlots).fill(null)];
+
 
           // Explicitly type pendingSituation
           const pendingSituation = text_information.pending_situation as 0 | 1 | 2;
@@ -441,12 +457,7 @@ export default function Artwork() {
             artistBornYear: "", // Populate if available in the API response
             artistDiedYear: "", // Populate if available in the API response
             artworkImage: headerImageFile,
-            additionalImages: (() => {
-              const vectorImagesWithFallback = vectorImageFiles.length
-                ? vectorImageFiles
-                : [null, null, null]; // Default to three empty slots if none exist
-              return vectorImagesWithFallback;
-            })(),
+            additionalImages: vectorImageFiles,
             nsfw: text_information.is_nsfw,
             priority: text_information.importance_factor === 10, // Convert to boolean
           };
@@ -655,7 +666,7 @@ export default function Artwork() {
                         type="file"
                         id="artworkImageInput"
                         name="artworkImage"
-                        accept="image/*"
+                        accept="image/jpeg, image/png, image/jpg" // Restrict to allowed formats
                         className={styles.hiddenInput}
                         onChange={handleInputChange}
                         disabled={isEditMode && !isEditing}
@@ -703,7 +714,7 @@ export default function Artwork() {
                               type="file"
                               id={`additionalImage${index}`}
                               name={`additionalImage${index}`}
-                              accept="image/*"
+                              accept="image/jpeg, image/png, image/jpg" // Restrict to allowed formats
                               className={styles.hiddenInput}
                               onChange={(e) => handleAdditionalImageChange(index, e.target.files?.[0] || null)}
                               disabled={isEditMode && !isEditing} // Allow editing only when in edit mode and editing is enabled

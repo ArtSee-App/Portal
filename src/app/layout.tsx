@@ -1,7 +1,8 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { UserProvider } from "@/context/UserContext"; // Import your context provider
-import "./globals.css";
+import { UserProvider } from "@/context/UserContext";
+import AppWrapper from "./AppWrapper"; // Import client component wrapper
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -17,18 +18,21 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "ArtVista Portal",
   description: "Vista Technologies BV",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <UserProvider>
-          {children}
+          <AppWrapper>{children}</AppWrapper>
         </UserProvider>
       </body>
     </html>

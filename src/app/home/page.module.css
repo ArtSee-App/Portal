@@ -60,6 +60,34 @@
   /* Bright yellow */
 }
 
+
+
+.shapeWhite,
+.shapePrimary,
+.shapeSecondary {
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: bold;
+  font-size: 1rem;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  /* Indicates the element is clickable */
+  transition: all 0.2s ease;
+  /* Smooth transitions */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  /* 1rem equals 16px based on the base font size */
+}
+
+.shapeWhite {
+  background-color: #ffffff;
+  border: 2px solid #ccc;
+  /* Subtle shadow */
+}
+
+
 .shapeWhite.selected {
   background-color: #e0e0e0;
   /* Light gray for a subtle highlight */
@@ -76,27 +104,6 @@
   /* Smooth transitions for hover and selection */
 }
 
-
-
-
-.shapeWhite,
-.shapePrimary,
-.shapeSecondary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 20px;
-  border-radius: 10px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 1rem;
-  /* 1rem equals 16px based on the base font size */
-}
-
-.shapeWhite {
-  background-color: #ffffff;
-  border: 2px solid #ccc;
-}
 
 .shapePrimary {
   background-color: var(--primary-color);
@@ -342,7 +349,7 @@
 }
 
 .artworkTitle {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: var(--text);
   white-space: nowrap;
