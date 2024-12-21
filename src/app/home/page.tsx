@@ -21,6 +21,7 @@ type AdminData = {
 type Artwork = {
   id: number;
   title: string;
+  artist: string;
   image: string;
   pending_situation: string; // New field
 };
@@ -70,51 +71,51 @@ export default function Home() {
     { id: 5, name: "Museum 5", location: "City 5", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
   ]);
 
-  const fetchFirestoreData = async (type: "artist" | "museum") => {
+
+  // Approve artwork function
+  const approveArtwork = async (artworkId: number) => {
     try {
-      const q = query(
-        collection(db, "users"),
-        where("approved", "==", false),
-        where("type", "==", type)
+      const token = await getIdToken();
+      if (!token) throw new Error("Admin token not found.");
+      const response = await fetch(
+        `https://api.artvista.app/accept_or_reject_artwork/?${new URLSearchParams({
+          admin_portal_token: token,
+          artwork_id: artworkId.toString(),
+          accept: "true", // Approve
+        })}`
       );
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.id, // Use document name for now
-      }));
+      if (!response.ok) {
+        throw new Error("Failed to approve artwork");
+      }
+      alert("Artwork approved successfully!");
     } catch (error) {
-      console.error("Error fetching data:", error);
-      return [];
+      console.error("Error approving artwork:", error);
+      alert("An error occurred while approving the artwork.");
     }
   };
 
-  const handleApprove = async (id: string) => {
+  // Reject artwork function
+  const rejectArtwork = async (artworkId: number) => {
     try {
-      const docRef = doc(db, "users", id);
-      await updateDoc(docRef, { approved: true });
-      console.log(`Document ${id} approved.`);
-      // Optionally, remove it from adminData for UI update
-      setAdminData((prevData) => prevData.filter((item) => item.id !== id));
+      const token = await getIdToken();
+      if (!token) throw new Error("Admin token not found.");
+      const response = await fetch(
+        `https://api.artvista.app/accept_or_reject_artwork/?${new URLSearchParams({
+          admin_portal_token: token,
+          artwork_id: artworkId.toString(),
+          accept: "false", // Reject
+        })}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to reject artwork");
+      }
+      alert("Artwork rejected successfully!");
     } catch (error) {
-      console.error("Error approving document:", error);
+      console.error("Error rejecting artwork:", error);
+      alert("An error occurred while rejecting the artwork.");
     }
   };
 
-  // Reject action
-  const handleReject = async (id: string) => {
-    try {
-
-      // Delete the document from Firestore
-      const docRef = doc(db, "users", id);
-      await deleteDoc(docRef);
-      console.log(`Document ${id} deleted.`);
-
-      // Optionally, update the UI to remove the document from adminData
-      setAdminData((prevData) => prevData.filter((item) => item.id !== id));
-    } catch (error) {
-      console.error("Error rejecting document:", error);
-    }
-  };
 
 
 
@@ -148,28 +149,39 @@ export default function Home() {
       if (user) {
         const token = await getIdToken();
 
-        // Build query parameters conditionally
+        // Determine endpoint and token parameter based on user type
+        const endpoint =
+          user?.type === "admin"
+            ? `/get_pending_artworks/`
+            : `/get_artworks_to_portal/`;
+
+        const tokenParamName = user?.type === "admin"
+          ? "admin_portal_token"
+          : "artist_portal_token";
+
+        // Build query parameters
         const params: Record<string, string> = {
           page_count: page.toString(),
         };
+
         if (token) {
-          params["artist_portal_token"] = token;
+          params[tokenParamName] = token;
         }
 
-        console.log(pendingSituationFilter);
-        if (pendingSituationFilter !== null) {
+        // Include `filter_by_pending_situation` only for non-admin users
+        if (user?.type !== "admin" && pendingSituationFilter !== null) {
           params["filter_by_pending_situation"] = pendingSituationFilter.toString();
         }
 
         const response = await fetch(
-          `https://api.artvista.app/get_artworks_to_portal/?${new URLSearchParams(params).toString()}`
+          `https://api.artvista.app${endpoint}?${new URLSearchParams(params).toString()}`
         );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; title: string; spaces_dir: string; pending_situation: string }[] = await response.json();
+        const data: { artwork_id: number; title: string; artist: string; spaces_dir: string; pending_situation: string }[] = await response.json();
 
         const artworksData = data.filter((item) => item.artwork_id);
         if (artworksData.length === 0 && page > 1) {
@@ -182,6 +194,7 @@ export default function Home() {
         const formattedArtworks: Artwork[] = artworksData.map((item) => ({
           id: item.artwork_id,
           title: item.title,
+          artist: item.artist,
           image: item.spaces_dir,
           pending_situation: item.pending_situation,
         }));
@@ -216,12 +229,13 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; title: string; spaces_dir: string; pending_situation: string }[] = await response.json();
+        const data: { artwork_id: number; title: string; artist: string; spaces_dir: string; pending_situation: string }[] = await response.json();
         console.log(`Search API Response:`, data);
 
         const formattedArtworks: Artwork[] = data.map((item) => ({
           id: item.artwork_id,
           title: item.title,
+          artist: item.artist,
           image: item.spaces_dir,
           pending_situation: item.pending_situation, // Map the new field
         }));
@@ -295,14 +309,6 @@ export default function Home() {
   }, [isRefreshing]);
 
 
-  useEffect(() => {
-    if (user?.type === "admin") {
-      const type = activeTab === "artists" ? "artist" : activeTab === "museums" ? "museum" : null;
-      if (type) {
-        fetchFirestoreData(type).then((data) => setAdminData(data)); // No more type errors
-      }
-    }
-  }, [activeTab, user?.type]);
 
   useEffect(() => {
     if (!isLoadingUser && (user === undefined || user?.type === undefined)) {
@@ -338,7 +344,7 @@ export default function Home() {
                 onClick={() => handleFilterClick(1)} // Filter for Published
                 style={{ cursor: "pointer" }}
               >
-                Published:
+                Published
               </div>
               <div
                 className={`${styles.shapeWhite} ${pendingSituationFilter === 2 ? styles.selected : ""
@@ -346,7 +352,7 @@ export default function Home() {
                 onClick={() => handleFilterClick(2)} // Filter for Pending
                 style={{ cursor: "pointer" }}
               >
-                Pending:
+                Pending
               </div>
               <div
                 className={`${styles.shapeWhite} ${pendingSituationFilter === 0 ? styles.selected : ""
@@ -354,7 +360,7 @@ export default function Home() {
                 onClick={() => handleFilterClick(0)} // Filter for Rejected
                 style={{ cursor: "pointer" }}
               >
-                Rejected:
+                Rejected
               </div>
             </div>
             <div className={styles.headerRight}>
@@ -479,29 +485,36 @@ export default function Home() {
                           alt={artwork.title}
                           className={styles.artworkImage}
                         />
-                        <span className={styles.artworkTitle}>{artwork.title}</span>
+                        <span className={styles.artworkTitle}>
+                          {artwork.title}
+                          {user?.type === "admin" && artwork.artist ? ` | ${artwork.artist}` : ""}
+                        </span>
                         {user?.type === "admin" ? (
                           <div className={styles.adminButtons}>
-                            <button className={styles.approveButton}>
+                            <button
+                              className={styles.approveButton}
+                              onClick={() => approveArtwork(artwork.id)} // Call approve function
+                            >
                               <FiCheck />
                             </button>
-                            <button className={styles.rejectButton}>
+                            <button
+                              className={styles.rejectButton}
+                              onClick={() => rejectArtwork(artwork.id)} // Call reject function
+                            >
                               <FiX />
                             </button>
-                            <button
-                              className={styles.editButton}
-                              onClick={() => {
-                                if (activeTab === "artworks") {
-                                  router.push("/artwork?edit=true");
-                                } else if (activeTab === "artists") {
-                                  router.push("/artist?edit=true");
-                                } else if (activeTab === "museums") {
-                                  router.push("/museum");
-                                }
-                              }}
+                            <Link
+                              href={
+                                activeTab === "artworks"
+                                  ? `/artwork?edit=true&artworkId=${artwork.id}`
+                                  : activeTab === "artists"
+                                    ? `/artist?edit=true`
+                                    : `/museum?edit=true`
+                              } // Dynamically set the path based on activeTab
+                              className={styles.editButton} // Apply button styling
                             >
                               <FiEdit />
-                            </button>
+                            </Link>
                           </div>
                         ) : (
                           <Link href={`/artwork?edit=true&artworkId=${artwork.id}`}>
@@ -550,13 +563,11 @@ export default function Home() {
                           <div className={styles.adminButtons}>
                             <button
                               className={styles.approveButton}
-                              onClick={() => handleApprove(artist.id)} // Approve artist
                             >
                               <FiCheck />
                             </button>
                             <button
                               className={styles.rejectButton}
-                              onClick={() => handleReject(artist.id)} // Reject artist
                             >
                               <FiX />
                             </button>
@@ -609,13 +620,11 @@ export default function Home() {
                           <div className={styles.adminButtons}>
                             <button
                               className={styles.approveButton}
-                              onClick={() => handleApprove(museum.id)}
                             >
                               <FiCheck />
                             </button>
                             <button
                               className={styles.rejectButton}
-                              onClick={() => handleReject(museum.id)}
                             >
                               <FiX />
                             </button>

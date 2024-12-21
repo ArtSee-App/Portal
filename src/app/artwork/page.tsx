@@ -183,6 +183,7 @@ export default function Artwork() {
             alert("Changes saved successfully!");
             setInitialFormData(formData);
             setIsEditing(false); // Exit editing mode
+            router.replace("/home"); // Redirect to /home after successful deletion
           }
         } catch (error) {
           console.error("Error saving changes:", error);
@@ -246,6 +247,15 @@ export default function Artwork() {
       files: FileList;
     };
 
+    if (name === "artworkImage" && files && files[0]) {
+      const file = files[0];
+      const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!validTypes.includes(file.type)) {
+        alert("Invalid file type. Please upload a JPEG or PNG image.");
+        return;
+      }
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: files && files.length > 0 ? files[0] : value,
@@ -253,6 +263,14 @@ export default function Artwork() {
   };
 
   const handleAdditionalImageChange = (index: number, file: File | null) => {
+    if (file) {
+      const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!validTypes.includes(file.type)) {
+        alert("Invalid file type. Please upload a JPEG or PNG image.");
+        return;
+      }
+    }
+
     if (!formData.artworkImage) {
       alert("Please upload the main artwork image first before adding additional images.");
       return; // Prevent changes to additional images if artworkImage is not filled
@@ -263,9 +281,7 @@ export default function Artwork() {
       updatedImages[index] = file;
 
       // Only add a new slot if the last slot is filled and it's not already at the array limit
-      if (
-        updatedImages[updatedImages.length - 1] !== null
-      ) {
+      if (updatedImages[updatedImages.length - 1] !== null) {
         updatedImages.push(null);
       }
 
