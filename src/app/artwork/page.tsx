@@ -118,6 +118,7 @@ export default function Artwork() {
 
   const [initialFormData, setInitialFormData] = useState<typeof formData | null>(null);
   const [eraOptions, setEraOptions] = useState<{ id: number; name: string }[]>([]);
+  const [genreOptions, setGenreOptions] = useState<string[]>([]);
 
   const { user, getIdToken, isLoadingUser } = useUser(); // Access setUser from the UserContext
   const [isEditMode, setIsEditMode] = useState(false);
@@ -128,6 +129,7 @@ export default function Artwork() {
   const [artworkStatus, setArtworkStatus] = useState<"Rejected" | "Accepted" | "Pending" | null>(null);
 
   const [loadingEras, setLoadingEras] = useState(true);
+  const [loadingGenres, setLoadingGenres] = useState(true);
   const [loadingFormData, setLoadingFormData] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
@@ -408,11 +410,39 @@ export default function Artwork() {
     fetchEraOptions();
   }, [user]);
 
+  useEffect(() => {
+    const fetchGenreOptions = async () => {
+      try {
+        if (user) {
+          const token = await getIdToken();
+          const response = await fetch(
+            `https://api.artvista.app/get_list_of_genres/?artist_portal_token=${token}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const genres: string[] = await response.json(); // Directly use the response as an array of strings
+          setGenreOptions(genres);
+        } else {
+          console.error("User is not logged in.");
+        }
+      } catch (error) {
+        console.error("Error fetching genre options:", error);
+      } finally {
+        setLoadingGenres(false);
+      }
+    };
+
+    fetchGenreOptions();
+  }, [user]);
+
+
 
   useEffect(() => {
     const fetchArtworkDetails = async () => {
       try {
-        if (user && artworkId !== null && !loadingEras) {
+        if (user && artworkId !== null && !loadingEras && !loadingGenres) {
           const token = await getIdToken();
           const response = await fetch(
             `https://api.artvista.app/get_artwork_details_to_portal/?artist_portal_token=${token}&artwork_id=${artworkId}`
@@ -489,7 +519,7 @@ export default function Artwork() {
     };
 
     fetchArtworkDetails();
-  }, [eraOptions]);
+  }, [eraOptions, genreOptions]);
 
 
   const submitArtworkForApproval = async (artistId: string): Promise<number | null> => {
@@ -616,7 +646,7 @@ export default function Artwork() {
                         className={`${styles.headerHelp} ${artworkStatus === "Pending"
                           ? styles.pendingStatus
                           : artworkStatus === "Accepted"
-                            ? styles.acceptedStatus
+                            ? styles.publishedStatus
                             : styles.rejectedStatus
                           }`}
                       >
@@ -648,7 +678,7 @@ export default function Artwork() {
               onSubmit={handleSubmit}
             >
 
-              <LoadingOverlay isVisible={loadingEras || loadingFormData || isLoadingUser || loadingSubmit || loadingDelete} />
+              <LoadingOverlay isVisible={loadingEras || loadingFormData || isLoadingUser || loadingSubmit || loadingDelete || loadingGenres} />
 
               {loadingSubmit && (
                 <div className={styles.uploadingText}>
@@ -877,12 +907,11 @@ export default function Artwork() {
                       disabled={isEditMode && !isEditing}
                     >
                       <option value="">No Option Selected</option>
-                      <option value="Photo">Photo</option>
-                      <option value="Sculpture">Sculpture</option>
-                      <option value="Painting">Painting</option>
-                      <option value="Digital Art">Digital Art</option>
-                      <option value="Installation">Installation</option>
-                      <option value="Mixed Media">Mixed Media</option>
+                      {genreOptions.map((genre, index) => (
+                        <option key={index} value={genre}>
+                          {genre}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className={styles.inputWrapper}>

@@ -532,8 +532,13 @@
 }
 
 .publishedStatus {
-  color: green;
+  color: #1b8e5e;
 }
+
+.rejectedStatus {
+  color: #d32f2f;
+}
+
 
 
 

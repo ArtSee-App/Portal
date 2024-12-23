@@ -23,7 +23,8 @@ type Artwork = {
   title: string;
   artist: string;
   image: string;
-  pending_situation: string; // New field
+  pending_situation: number; // New field
+  removing?: boolean; // Optional flag for animation
 };
 
 
@@ -72,7 +73,6 @@ export default function Home() {
   ]);
 
 
-  // Approve artwork function
   const approveArtwork = async (artworkId: number) => {
     try {
       const token = await getIdToken();
@@ -81,20 +81,31 @@ export default function Home() {
         `https://api.artvista.app/accept_or_reject_artwork/?${new URLSearchParams({
           admin_portal_token: token,
           artwork_id: artworkId.toString(),
-          accept: "true", // Approve
+          accept: "true",
         })}`
       );
       if (!response.ok) {
         throw new Error("Failed to approve artwork");
       }
-      alert("Artwork approved successfully!");
+
+      // Add sliding-out animation
+      const updatedArtworks = artworks.map((artwork) =>
+        artwork.id === artworkId
+          ? { ...artwork, removing: true } // Add `removing` flag for animation
+          : artwork
+      );
+      setArtworks(updatedArtworks);
+
+      // Wait for animation to complete before removing from the state
+      setTimeout(() => {
+        setArtworks((prev) => prev.filter((artwork) => artwork.id !== artworkId));
+      }, 300); // Match this duration to the CSS animation time
     } catch (error) {
       console.error("Error approving artwork:", error);
       alert("An error occurred while approving the artwork.");
     }
   };
 
-  // Reject artwork function
   const rejectArtwork = async (artworkId: number) => {
     try {
       const token = await getIdToken();
@@ -103,13 +114,25 @@ export default function Home() {
         `https://api.artvista.app/accept_or_reject_artwork/?${new URLSearchParams({
           admin_portal_token: token,
           artwork_id: artworkId.toString(),
-          accept: "false", // Reject
+          accept: "false",
         })}`
       );
       if (!response.ok) {
         throw new Error("Failed to reject artwork");
       }
-      alert("Artwork rejected successfully!");
+
+      // Add sliding-out animation
+      const updatedArtworks = artworks.map((artwork) =>
+        artwork.id === artworkId
+          ? { ...artwork, removing: true } // Add `removing` flag for animation
+          : artwork
+      );
+      setArtworks(updatedArtworks);
+
+      // Wait for animation to complete before removing from the state
+      setTimeout(() => {
+        setArtworks((prev) => prev.filter((artwork) => artwork.id !== artworkId));
+      }, 300); // Match this duration to the CSS animation time
     } catch (error) {
       console.error("Error rejecting artwork:", error);
       alert("An error occurred while rejecting the artwork.");
@@ -181,7 +204,7 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; title: string; artist: string; spaces_dir: string; pending_situation: string }[] = await response.json();
+        const data: { artwork_id: number; title: string; artist: string; spaces_dir: string; pending_situation: number }[] = await response.json();
 
         const artworksData = data.filter((item) => item.artwork_id);
         if (artworksData.length === 0 && page > 1) {
@@ -229,7 +252,7 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; title: string; artist: string; spaces_dir: string; pending_situation: string }[] = await response.json();
+        const data: { artwork_id: number; title: string; artist: string; spaces_dir: string; pending_situation: number }[] = await response.json();
         console.log(`Search API Response:`, data);
 
         const formattedArtworks: Artwork[] = data.map((item) => ({
@@ -479,7 +502,8 @@ export default function Home() {
                     </div>
                   ) : (
                     artworks.map((artwork) => (
-                      <div key={artwork.id} className={styles.artworkItem}>
+                      <div key={artwork.id} className={`${styles.artworkItem} ${artwork.removing ? styles.removing : ""}`}
+                      >
                         <img
                           src={artwork.image}
                           alt={artwork.title}
@@ -522,17 +546,17 @@ export default function Home() {
                           </Link>
                         )}
                         <div
-                          className={`${styles.pendingStatus} ${artwork.pending_situation === "0"
+                          className={`${styles.pendingStatus} ${artwork.pending_situation === 0
                             ? styles.rejected
-                            : artwork.pending_situation === "1"
+                            : artwork.pending_situation === 1
                               ? styles.accepted
                               : styles.pending
                             }`}
                         >
-                          {artwork.pending_situation === "0"
+                          {artwork.pending_situation === 0
                             ? "Rejected"
-                            : artwork.pending_situation === "1"
-                              ? "Accepted"
+                            : artwork.pending_situation === 1
+                              ? "Published"
                               : "Pending"}
                         </div>
                       </div>
