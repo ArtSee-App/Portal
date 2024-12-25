@@ -245,26 +245,32 @@ export default function Home() {
     }
   };
 
+  const statsFetched = useRef(false); // Ref to track if stats are fetched
+
   useEffect(() => {
     const fetchArtworkStats = async () => {
       try {
-        const token = await getIdToken();
-        if (!token) throw new Error("Admin token not found.");
+        if (user && !statsFetched.current) {
+          statsFetched.current = true; // Set the flag to true
+          console.log('bug');
+          const token = await getIdToken();
+          if (!token) throw new Error("Admin token not found.");
 
-        const response = await fetch(
-          `https://api.artvista.app/get_published_pending_rejected_counts/?artist_portal_token=${token}`
-        );
-        if (!response.ok) throw new Error("Failed to fetch artwork stats");
+          const response = await fetch(
+            `https://api.artvista.app/get_published_pending_rejected_counts/?artist_portal_token=${token}`
+          );
+          if (!response.ok) throw new Error("Failed to fetch artwork stats");
 
-        const stats: ArtworkStats = await response.json();
-        setArtworkStats(stats);
+          const stats: ArtworkStats = await response.json();
+          setArtworkStats(stats);
+        }
       } catch (error) {
         console.error("Error fetching artwork stats:", error);
       }
     };
 
     fetchArtworkStats();
-  });
+  }, [user]); // Only dependent on user and token
 
 
   const fetchArtworksFromSearchAPI = async (title: string) => {
