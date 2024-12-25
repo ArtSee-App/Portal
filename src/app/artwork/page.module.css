@@ -516,7 +516,7 @@
 }
 
 .button.deleteButton {
-  background-color: red !important;
+  background-color: #d32f2f !important;
   /* Red for delete */
   color: white;
   background: none;
@@ -526,6 +526,31 @@
 .button.deleteButton:hover {
   background-color: darkred;
 }
+
+.approveButton {
+  background-color: #1b8e5e !important;
+  ;
+  color: white;
+  background: none;
+  /* Remove the linear gradient */
+}
+
+.approveButton:hover {
+  background-color: darkgreen;
+}
+
+.rejectButton {
+  background-color: #d32f2f !important;
+  ;
+  color: white;
+  background: none;
+  /* Remove the linear gradient */
+}
+
+.rejectButton:hover {
+  background-color: darkred;
+}
+
 
 .pendingStatus {
   color: #FF9800;

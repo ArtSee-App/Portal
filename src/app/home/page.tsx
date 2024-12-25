@@ -8,10 +8,8 @@ import Footer from "../../components/footer/footer";
 import { FiRefreshCw } from "react-icons/fi"; // Import a simple, symmetric refresh icon
 import { useUser } from "@/context/UserContext";
 import { FiCheck, FiX, FiEdit } from "react-icons/fi";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../../firebase"; // Update this with your Firebase setup
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import Link from "next/link";
+import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
 
 type AdminData = {
   id: string;
@@ -48,6 +46,7 @@ export default function Home() {
   const [pageCount, setPageCount] = useState(1);
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false); // Loader for "Load More"
+  const [loadingArtworkId, setLoadingArtworkId] = useState<number | null>(null); // Tracks the ID of the artwork being processed
   const [hasMoreData, setHasMoreData] = useState(true); // Tracks if there's more data to load
   const [isRefreshing, setIsRefreshing] = useState(false); // Track refresh state
   const [isSearchActive, setIsSearchActive] = useState(false);
@@ -74,6 +73,12 @@ export default function Home() {
 
 
   const approveArtwork = async (artworkId: number) => {
+    const confirmApprove = window.confirm(
+      "Are you sure you want to approve this artwork?"
+    );
+    if (!confirmApprove) return;
+
+    setLoadingArtworkId(artworkId);
     try {
       const token = await getIdToken();
       if (!token) throw new Error("Admin token not found.");
@@ -84,29 +89,32 @@ export default function Home() {
           accept: "true",
         })}`
       );
-      if (!response.ok) {
-        throw new Error("Failed to approve artwork");
-      }
+      if (!response.ok) throw new Error("Failed to approve artwork");
 
-      // Add sliding-out animation
       const updatedArtworks = artworks.map((artwork) =>
         artwork.id === artworkId
-          ? { ...artwork, removing: true } // Add `removing` flag for animation
+          ? { ...artwork, removing: true }
           : artwork
       );
       setArtworks(updatedArtworks);
-
-      // Wait for animation to complete before removing from the state
       setTimeout(() => {
         setArtworks((prev) => prev.filter((artwork) => artwork.id !== artworkId));
-      }, 300); // Match this duration to the CSS animation time
+      }, 300);
     } catch (error) {
       console.error("Error approving artwork:", error);
       alert("An error occurred while approving the artwork.");
+    } finally {
+      setLoadingArtworkId(null);
     }
   };
 
   const rejectArtwork = async (artworkId: number) => {
+    const confirmReject = window.confirm(
+      "Are you sure you want to reject this artwork?"
+    );
+    if (!confirmReject) return;
+
+    setLoadingArtworkId(artworkId);
     try {
       const token = await getIdToken();
       if (!token) throw new Error("Admin token not found.");
@@ -117,29 +125,24 @@ export default function Home() {
           accept: "false",
         })}`
       );
-      if (!response.ok) {
-        throw new Error("Failed to reject artwork");
-      }
+      if (!response.ok) throw new Error("Failed to reject artwork");
 
-      // Add sliding-out animation
       const updatedArtworks = artworks.map((artwork) =>
         artwork.id === artworkId
-          ? { ...artwork, removing: true } // Add `removing` flag for animation
+          ? { ...artwork, removing: true }
           : artwork
       );
       setArtworks(updatedArtworks);
-
-      // Wait for animation to complete before removing from the state
       setTimeout(() => {
         setArtworks((prev) => prev.filter((artwork) => artwork.id !== artworkId));
-      }, 300); // Match this duration to the CSS animation time
+      }, 300);
     } catch (error) {
       console.error("Error rejecting artwork:", error);
       alert("An error occurred while rejecting the artwork.");
+    } finally {
+      setLoadingArtworkId(null);
     }
   };
-
-
 
 
   const filteredArtists = artists.filter((artist) =>
@@ -504,6 +507,10 @@ export default function Home() {
                     artworks.map((artwork) => (
                       <div key={artwork.id} className={`${styles.artworkItem} ${artwork.removing ? styles.removing : ""}`}
                       >
+                        {loadingArtworkId === artwork.id && (
+                          <LoadingOverlay isVisible={true} />
+                        )}
+
                         <img
                           src={artwork.image}
                           alt={artwork.title}

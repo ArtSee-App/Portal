@@ -133,6 +133,7 @@ export default function Artwork() {
   const [loadingFormData, setLoadingFormData] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [loadingApproval, setLoadingApproval] = useState(false);
 
   const statusMap: { 0: "Rejected"; 1: "Accepted"; 2: "Pending" } = {
     0: "Rejected",
@@ -196,6 +197,75 @@ export default function Artwork() {
       }
     }
   };
+
+  const handleApprove = async () => {
+    try {
+      const confirmApprove = window.confirm(
+        "Are you sure you want to approve this artwork?"
+      );
+      if (confirmApprove && artworkId) {
+        setLoadingApproval(true); // Start loading state
+        const token = await getIdToken();
+        const params = new URLSearchParams({
+          admin_portal_token: token ?? "",
+          artwork_id: artworkId.toString(),
+          accept: "true",
+        });
+
+        const response = await fetch(
+          `https://api.artvista.app/accept_or_reject_artwork/?${params.toString()}`,
+          { method: "GET" }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Failed to approve artwork: ${response.statusText}`);
+        }
+
+        alert("Artwork approved successfully.");
+        router.replace("/home"); // Redirect to /home
+      }
+    } catch (error) {
+      console.error("Error approving artwork:", error);
+      alert("An error occurred while approving the artwork.");
+    } finally {
+      setLoadingApproval(false); // Stop loading state
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      const confirmReject = window.confirm(
+        "Are you sure you want to reject this artwork?"
+      );
+      if (confirmReject && artworkId) {
+        setLoadingApproval(true); // Start loading state
+        const token = await getIdToken();
+        const params = new URLSearchParams({
+          admin_portal_token: token ?? "",
+          artwork_id: artworkId.toString(),
+          accept: "false",
+        });
+
+        const response = await fetch(
+          `https://api.artvista.app/accept_or_reject_artwork/?${params.toString()}`,
+          { method: "GET" }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Failed to reject artwork: ${response.statusText}`);
+        }
+
+        alert("Artwork rejected successfully.");
+        router.replace("/home"); // Redirect to /home
+      }
+    } catch (error) {
+      console.error("Error rejecting artwork:", error);
+      alert("An error occurred while rejecting the artwork.");
+    } finally {
+      setLoadingApproval(false); // Stop loading state
+    }
+  };
+
 
   const deleteArtwork = async (artistId: string, artworkId: number) => {
     try {
@@ -678,7 +748,7 @@ export default function Artwork() {
               onSubmit={handleSubmit}
             >
 
-              <LoadingOverlay isVisible={loadingEras || loadingFormData || isLoadingUser || loadingSubmit || loadingDelete || loadingGenres} />
+              <LoadingOverlay isVisible={loadingEras || loadingFormData || isLoadingUser || loadingSubmit || loadingDelete || loadingGenres || loadingApproval} />
 
               {loadingSubmit && (
                 <div className={styles.uploadingText}>
@@ -993,6 +1063,30 @@ export default function Artwork() {
                         onClick={handleCancelEdit}
                       >
                         Cancel Changes
+                      </button>
+                    </>
+                  ) : user?.type === "admin" ? (
+                    <>
+                      <button
+                        type="button"
+                        className={styles.button}
+                        onClick={handleEditClick}
+                      >
+                        Edit Artwork
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.button} ${styles.approveButton}`}
+                        onClick={handleApprove} // You will need to implement this function
+                      >
+                        Approve Artwork
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.button} ${styles.rejectButton}`}
+                        onClick={handleReject} // You will need to implement this function
+                      >
+                        Reject Artwork
                       </button>
                     </>
                   ) : (
