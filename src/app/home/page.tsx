@@ -10,6 +10,7 @@ import { useUser } from "@/context/UserContext";
 import { FiCheck, FiX, FiEdit } from "react-icons/fi";
 import Link from "next/link";
 import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
+import { Loader } from "@/components/loadingOverlay/loadingOverlay";
 
 type AdminData = {
   id: string;
@@ -501,7 +502,7 @@ export default function Home() {
                 <div className={styles.artworkList}>
                   {isLoadingUser || isLoading ? (
                     <div className={styles.loaderWrapper}>
-                      <div className={styles.loader}></div>
+                      <Loader />
                     </div>
                   ) : (
                     artworks.map((artwork) => (

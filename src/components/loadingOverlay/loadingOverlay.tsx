@@ -5,14 +5,18 @@ interface LoadingOverlayProps {
     isVisible: boolean;
 }
 
-const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isVisible }) => {
+export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isVisible }) => {
     if (!isVisible) return null;
 
     return (
         <div className={styles.overlay}>
-            <div className={styles.loader}></div>
+            <Loader />
         </div>
     );
 };
+
+export const Loader: React.FC = () => (
+    <div className={styles.loader}></div>
+);
 
 export default LoadingOverlay;

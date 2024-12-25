@@ -288,26 +288,6 @@
   /* Space between loader and text */
 }
 
-.loader {
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid var(--primary-color);
-  /* Use primary color */
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 .loaderWrapper span {
   font-size: 1rem;
   color: var(--primary-color);
@@ -327,7 +307,7 @@
   align-items: center;
   gap: 15px;
   background-color: #ffffff;
-  border-radius: 25px;
+  border-radius: 10px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   justify-content: space-between;
   transition: box-shadow 0.3s ease, filter 0.3s ease;
@@ -360,8 +340,8 @@
 .artworkImage {
   width: 200px;
   height: 100px;
-  border-top-left-radius: 25px;
-  border-bottom-left-radius: 25px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
   object-fit: cover;
 }
 
@@ -383,7 +363,7 @@
   position: absolute;
   top: -10px;
   /* Places the sticker above the artwork item */
-  right: -10px;
+  left: -10px;
   /* Slightly outside the top-right corner */
   font-size: 0.875rem;
   /* 14px */
@@ -430,20 +410,27 @@
 
 .viewDetails {
   padding: 12px;
+  /* Added extra padding for left and right */
+  margin-right: 10px;
   color: var(--secondary-color);
   background-color: #ffffff;
-  border: none;
+  border: 2px solid var(--secondary-color);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.875rem;
-  transition: color 0.3s ease, text-decoration 0.3s ease;
-  white-space: nowrap;
-  /* Prevent wrapping */
+  font-weight: bold;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
 }
 
 
 .viewDetails:hover {
-  color: #5a189a;
+  color: #ffffff;
+  /* Changes text color on hover */
+  background-color: var(--secondary-color);
 }
 
 .adminButtons {
