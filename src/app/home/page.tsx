@@ -26,6 +26,12 @@ type Artwork = {
   removing?: boolean; // Optional flag for animation
 };
 
+type ArtworkStats = {
+  rejected: number;
+  accepted: number;
+  pending: number;
+};
+
 
 export default function Home() {
   const router = useRouter(); // Initialize router
@@ -52,6 +58,7 @@ export default function Home() {
   const [isRefreshing, setIsRefreshing] = useState(false); // Track refresh state
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [pendingSituationFilter, setPendingSituationFilter] = useState<number | null>(null);
+  const [artworkStats, setArtworkStats] = useState<ArtworkStats | null>(null);
 
   const [artists, setArtists] = useState([
     { id: 1, name: "Artist 1", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
@@ -238,6 +245,28 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    const fetchArtworkStats = async () => {
+      try {
+        const token = await getIdToken();
+        if (!token) throw new Error("Admin token not found.");
+
+        const response = await fetch(
+          `https://api.artvista.app/get_published_pending_rejected_counts/?artist_portal_token=${token}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch artwork stats");
+
+        const stats: ArtworkStats = await response.json();
+        setArtworkStats(stats);
+      } catch (error) {
+        console.error("Error fetching artwork stats:", error);
+      }
+    };
+
+    fetchArtworkStats();
+  });
+
+
   const fetchArtworksFromSearchAPI = async (title: string) => {
     setIsLoading(true); // Start loading
     try {
@@ -366,28 +395,25 @@ export default function Home() {
           <div className={styles.headerList}>
             <div className={styles.headerLeft}>
               <div
-                className={`${styles.shapeWhite} ${pendingSituationFilter === 1 ? styles.selected : ""
-                  }`}
+                className={`${styles.shapeWhite} ${pendingSituationFilter === 1 ? styles.selected : ""}`}
                 onClick={() => handleFilterClick(1)} // Filter for Published
                 style={{ cursor: "pointer" }}
               >
-                Published
+                Published{artworkStats?.accepted !== undefined ? ` (${artworkStats.accepted})` : ""}
               </div>
               <div
-                className={`${styles.shapeWhite} ${pendingSituationFilter === 2 ? styles.selected : ""
-                  }`}
+                className={`${styles.shapeWhite} ${pendingSituationFilter === 2 ? styles.selected : ""}`}
                 onClick={() => handleFilterClick(2)} // Filter for Pending
                 style={{ cursor: "pointer" }}
               >
-                Pending
+                Pending{artworkStats?.pending !== undefined ? ` (${artworkStats.pending})` : ""}
               </div>
               <div
-                className={`${styles.shapeWhite} ${pendingSituationFilter === 0 ? styles.selected : ""
-                  }`}
+                className={`${styles.shapeWhite} ${pendingSituationFilter === 0 ? styles.selected : ""}`}
                 onClick={() => handleFilterClick(0)} // Filter for Rejected
                 style={{ cursor: "pointer" }}
               >
-                Rejected
+                Rejected{artworkStats?.rejected !== undefined ? ` (${artworkStats.rejected})` : ""}
               </div>
             </div>
             <div className={styles.headerRight}>
