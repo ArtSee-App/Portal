@@ -514,9 +514,13 @@ export default function Artwork() {
       try {
         if (user && artworkId !== null && !loadingEras && !loadingGenres) {
           const token = await getIdToken();
-          const response = await fetch(
-            `https://api.artvista.app/get_artwork_details_to_portal/?artist_portal_token=${token}&artwork_id=${artworkId}`
-          );
+
+          // Determine the endpoint based on the user type
+          const endpoint = user.type === "admin"
+            ? `https://api.artvista.app/get_artwork_details_to_admin_portal/?admin_portal_token=${token}&artwork_id=${artworkId}`
+            : `https://api.artvista.app/get_artwork_details_to_portal/?artist_portal_token=${token}&artwork_id=${artworkId}`;
+
+          const response = await fetch(endpoint);
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -525,7 +529,6 @@ export default function Artwork() {
           const artworkDetails = await response.json();
 
           const { image_links, text_information } = artworkDetails;
-
 
           const headerImageFile = image_links?.header_image
             ? await fetchImageWithProxy(image_links.header_image, "header_image.jpg")
@@ -546,7 +549,6 @@ export default function Artwork() {
                 : 1;
 
           const vectorImageFiles = [...fetchedVectorImages, ...Array(nullSlots).fill(null)];
-
 
           // Explicitly type pendingSituation
           const pendingSituation = text_information.pending_situation as 0 | 1 | 2;
@@ -587,7 +589,6 @@ export default function Artwork() {
         setLoadingFormData(false);
       }
     };
-
     fetchArtworkDetails();
   }, [eraOptions, genreOptions]);
 
