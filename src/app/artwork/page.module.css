@@ -458,6 +458,12 @@
   padding: 12px 16px;
   font-size: 1rem;
   transition: border-color 0.2s;
+  width: 100%;
+  position: relative;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23999' d='M10 12l-5-5h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 1em;
 }
 
 .select:focus {

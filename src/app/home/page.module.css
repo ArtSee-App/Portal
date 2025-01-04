@@ -301,16 +301,49 @@
   gap: 20px;
 }
 
+
+@keyframes smoothFadeInSlideScale {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .artworkItem {
   position: relative;
   display: flex;
   align-items: center;
   gap: 15px;
   background-color: #ffffff;
+
+  /* Hover effect */
+  .artworkItem:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* Hover effect */
+  .artworkItem:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
   border-radius: 10px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
   justify-content: space-between;
-  transition: box-shadow 0.3s ease, filter 0.3s ease;
+  transition: box-shadow 0.3s ease,
+  filter 0.3s ease;
+  opacity: 0;
+  /* Start with opacity 0 */
+  animation: smoothFadeInSlideScale 0.3s ease-out forwards;
+  /* Apply the new animation */
 }
 
 .artworkItem:hover {
@@ -565,6 +598,7 @@
     /* Stack items vertically */
     align-items: center;
     padding: 10px;
+    padding-bottom: 20px;
     /* Add padding for better spacing */
     gap: 10px;
     /* Adjust gap between items */

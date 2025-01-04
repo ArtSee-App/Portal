@@ -59,6 +59,7 @@ export default function Home() {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [pendingSituationFilter, setPendingSituationFilter] = useState<number | null>(null);
   const [artworkStats, setArtworkStats] = useState<ArtworkStats | null>(null);
+  const itemsPerPage = 4;
 
   const [artists, setArtists] = useState([
     { id: 1, name: "Artist 1", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
@@ -196,6 +197,7 @@ export default function Home() {
         // Build query parameters
         const params: Record<string, string> = {
           page_count: page.toString(),
+          artworks_per_page: itemsPerPage.toString(),
         };
 
         if (token) {
@@ -281,7 +283,7 @@ export default function Home() {
         const response = await fetch(
           `https://api.artvista.app/search_for_artworks_to_portal/?artist_portal_token=${token}&title=${encodeURIComponent(
             title
-          )}&return_count=4`,
+          )}&return_count=${itemsPerPage}`,
           {
             method: "POST",
           }
@@ -537,9 +539,13 @@ export default function Home() {
                       <Loader />
                     </div>
                   ) : (
-                    artworks.map((artwork) => (
-                      <div key={artwork.id} className={`${styles.artworkItem} ${artwork.removing ? styles.removing : ""}`}
+                    artworks.map((artwork, index) => (
+                      <div
+                        key={`${artwork.id}-${currentPage}`} // Combine artwork.id and currentPage for a unique key
+                        className={`${styles.artworkItem} ${artwork.removing ? styles.removing : ""}`}
+                        style={{ animationDelay: `${(index % itemsPerPage) * 0.1}s` }} // Dynamic delay based on index
                       >
+
                         {loadingArtworkId === artwork.id && (
                           <LoadingOverlay isVisible={true} />
                         )}

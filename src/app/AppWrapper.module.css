@@ -1,0 +1,13 @@
+.loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--background);
+    /* Gradient applied here */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
