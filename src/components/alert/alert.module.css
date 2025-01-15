@@ -5,29 +5,38 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    /* Dimmed, darker background */
     backdrop-filter: blur(5px);
-    /* Glassmorphism blur effect */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    animation: fadeInOverlay 0.2s ease-out;
+    /* Add fade-in animation for overlay */
 }
+
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 
 .alertBox {
     background: rgba(255, 255, 255, 0.2);
-    /* Transparent glass effect */
     backdrop-filter: blur(15px);
-    /* Increased blur */
     padding: 32px 40px;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     text-align: center;
     max-width: 420px;
     width: 90%;
-    animation: fadeIn 0.4s ease-out;
+    animation: fadeIn 0.2s ease-out;
+    /* Reduce the animation duration to 0.2s */
     color: #fff;
-    /* White text for better contrast */
 }
 
 .alertBox.success {

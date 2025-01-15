@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase"; // Adjust this path to match your project structure
 import { useAlert } from "@/context/AlertContext";
+import SearchableDropdown from "@/components/searchableDropdown/searchableDropdown";
 
 function SearchParamsHandler({
   setIsEditMode,
@@ -908,48 +909,35 @@ export default function Artwork() {
                     />
                   </div>
                   <div className={styles.inputWrapperRequired}>
-                    <p>Select Era of Origin</p>
-                    <select
-                      name="timelineCenter"
-                      className={`${styles.input} ${styles.select}`}
-                      value={formData.timelineCenter}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setFormData((prev) => ({
-                          ...prev,
-                          timelineCenter: value,
-                          customTimelineCenter: value !== "custom" ? "" : prev.customTimelineCenter,
-                        }));
-                      }}
-                      disabled={isEditMode && !isEditing}
-                    >
-                      <option value="">No Option Selected</option>
-                      {eraOptions.map((era) => (
-                        <option key={era.id} value={era.id}>
-                          {era.name}
-                        </option>
-                      ))}
-                      <option value="custom">Other (Specify below)</option>
-                    </select>
-
-                    {formData.timelineCenter === "custom" && (
-                      <input
-                        type="text"
-                        name="customTimelineCenter"
-                        placeholder=""
-                        className={`${styles.input} ${styles.customInput}`}
-                        value={formData.customTimelineCenter || ""} // Default to an empty string
-                        disabled={isEditMode && !isEditing}
-                        onChange={(e) =>
+                    <p>Era of Origin</p>
+                    <SearchableDropdown
+                      options={eraOptions}
+                      value={
+                        formData.timelineCenter
+                          ? eraOptions.find((era) => era.id === parseInt(formData.timelineCenter))?.name || ""
+                          : "" // Ensure it shows "No Option Selected" when empty
+                      }
+                      onChange={(selectedName) => {
+                        if (selectedName === "") {
+                          // Clear state when "Clear" is clicked
                           setFormData((prev) => ({
                             ...prev,
-                            customTimelineCenter: e.target.value,
-                          }))
+                            timelineCenter: "",
+                          }));
+                        } else {
+                          const selectedEra = eraOptions.find((era) => era.name === selectedName);
+                          if (selectedEra) {
+                            setFormData((prev) => ({
+                              ...prev,
+                              timelineCenter: selectedEra.id.toString(), // Store the ID as a string
+                            }));
+                          }
                         }
-                      />
-                    )}
+                      }}
+                      placeholder="No Option Selected"
+                      disabled={isEditMode && !isEditing}
+                    />
                   </div>
-
                   {user?.type !== "artist" && (
                     <div className={styles.inputWrapperRequired}>
                       <p>Select An Existing Artist</p>
@@ -988,25 +976,18 @@ export default function Artwork() {
                   </div>
                   <div className={styles.inputWrapper}>
                     <p>Artwork's Genre</p>
-                    <select
-                      name="artworkGenre"
-                      className={`${styles.input} ${styles.select}`}
+                    <SearchableDropdown
+                      options={genreOptions} // Pass the genre options (array of strings)
                       value={formData.artworkGenre}
-                      onChange={(e) =>
+                      onChange={(selectedGenre) =>
                         setFormData((prev) => ({
                           ...prev,
-                          artworkGenre: e.target.value,
+                          artworkGenre: selectedGenre, // Update the selected genre
                         }))
                       }
+                      placeholder="No Option Selected"
                       disabled={isEditMode && !isEditing}
-                    >
-                      <option value="">No Option Selected</option>
-                      {genreOptions.map((genre, index) => (
-                        <option key={index} value={genre}>
-                          {genre}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </div>
                   <div className={styles.inputWrapper}>
                     <p>What Materials or Mediums Were Used to Create the Artwork?</p>
