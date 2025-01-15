@@ -10,13 +10,18 @@ import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
 import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase"; // Adjust this path to match your project structure
+import { useAlert } from "@/context/AlertContext";
 
 function SearchParamsHandler({
   setIsEditMode,
   setArtworkId,
+  setIsPending,
+  setPendingId, // Add a new setter for pendingId
 }: {
   setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   setArtworkId: React.Dispatch<React.SetStateAction<number | null>>;
+  setIsPending: React.Dispatch<React.SetStateAction<boolean | null>>;
+  setPendingId: React.Dispatch<React.SetStateAction<number | null>>; // Add type
 }) {
   const searchParams = useSearchParams();
   useEffect(() => {
@@ -24,9 +29,16 @@ function SearchParamsHandler({
     const artworkId = searchParams.get("artworkId")
       ? parseInt(searchParams.get("artworkId")!, 10)
       : null;
+    const pendingId = searchParams.get("pendingId")
+      ? parseInt(searchParams.get("pendingId")!, 10)
+      : null; // Extract pendingId as a number
+    const pending = searchParams.get("pending") === "true"; // Extract pending as boolean
+
     setIsEditMode(editMode);
     setArtworkId(artworkId);
-  }, [searchParams, setIsEditMode, setArtworkId]);
+    setPendingId(pendingId); // Set pendingId
+    setIsPending(pending);
+  }, [searchParams, setIsEditMode, setArtworkId, setPendingId, setIsPending]);
 
   return null; // This component only handles state updates
 }
@@ -116,6 +128,8 @@ export default function Artwork() {
 
   const router = useRouter();
 
+  const { showAlert, showConfirm } = useAlert();
+
   const [initialFormData, setInitialFormData] = useState<typeof formData | null>(null);
   const [eraOptions, setEraOptions] = useState<{ id: number; name: string }[]>([]);
   const [genreOptions, setGenreOptions] = useState<string[]>([]);
@@ -127,6 +141,8 @@ export default function Artwork() {
 
   const [artworkId, setArtworkId] = useState<number | null>(null); // Define artworkId state
   const [artworkStatus, setArtworkStatus] = useState<"Rejected" | "Accepted" | "Pending" | null>(null);
+  const [isPending, setIsPending] = useState<boolean | null>(null); // Track the pending status
+  const [pendingId, setPendingId] = useState<number | null>(null); // Add pendingId state
 
   const [loadingEras, setLoadingEras] = useState(true);
   const [loadingGenres, setLoadingGenres] = useState(true);
@@ -146,8 +162,8 @@ export default function Artwork() {
     setIsEditing(true); // Enable editing
   };
 
-  const handleCancelEdit = () => {
-    const confirmCancel = window.confirm(
+  const handleCancelEdit = async () => {
+    const confirmCancel = await showConfirm(
       "Are you sure you want to cancel changes? Any unsaved changes will be lost."
     );
     if (confirmCancel) {
@@ -160,11 +176,11 @@ export default function Artwork() {
 
   const handleSaveChanges = async () => {
     if (!isFormValid) {
-      alert("Please ensure all required fields are filled in correctly before saving changes.");
+      showAlert("Please ensure all required fields are filled in correctly before saving changes.", "warning");
       return;
     }
 
-    const confirmSave = window.confirm(
+    const confirmSave = await showConfirm(
       "Do you want to save the changes to this artwork? The existing artwork will be replaced with your updated submission."
     );
 
@@ -175,22 +191,16 @@ export default function Artwork() {
         try {
           setLoadingSubmit(true); // Start loading state for submission
 
-          // Delete the existing artwork
-          await deleteArtwork(artistId, artworkId);
-
-          // Submit the updated artwork
-          const newArtworkId = await submitArtworkForApproval(artistId);
-          if (newArtworkId) {
-            // Submit additional images only if the new artwork submission succeeds
-            await submitAdditionalImages(artistId, newArtworkId);
-            alert("Changes saved successfully!");
-            setInitialFormData(formData);
-            setIsEditing(false); // Exit editing mode
-            router.replace("/home"); // Redirect to /home after successful deletion
-          }
+          // Submit the updated artwork with the optional artworkId
+          await submitArtworkForApproval(artistId, artworkId);
+          await submitAdditionalImages(artistId, artworkId);
+          showAlert("Changes saved successfully!", "success");
+          setInitialFormData(formData);
+          setIsEditing(false); // Exit editing mode
+          router.replace("/home"); // Redirect to /home after successful update
         } catch (error) {
           console.error("Error saving changes:", error);
-          alert("An error occurred while saving changes.");
+          showAlert("An error occurred while saving changes.", "error");
         } finally {
           setLoadingSubmit(false); // Stop loading state
         }
@@ -200,15 +210,15 @@ export default function Artwork() {
 
   const handleApprove = async () => {
     try {
-      const confirmApprove = window.confirm(
+      const confirmApprove = await showConfirm(
         "Are you sure you want to approve this artwork?"
       );
-      if (confirmApprove && artworkId) {
+      if (confirmApprove && pendingId) {
         setLoadingApproval(true); // Start loading state
         const token = await getIdToken();
         const params = new URLSearchParams({
           admin_portal_token: token ?? "",
-          artwork_id: artworkId.toString(),
+          pending_id: pendingId.toString(),
           accept: "true",
         });
 
@@ -221,12 +231,12 @@ export default function Artwork() {
           throw new Error(`Failed to approve artwork: ${response.statusText}`);
         }
 
-        alert("Artwork approved successfully.");
+        showAlert("Artwork approved successfully.", "success");
         router.replace("/home"); // Redirect to /home
       }
     } catch (error) {
       console.error("Error approving artwork:", error);
-      alert("An error occurred while approving the artwork.");
+      showAlert("An error occurred while approving the artwork.", "error");
     } finally {
       setLoadingApproval(false); // Stop loading state
     }
@@ -234,15 +244,15 @@ export default function Artwork() {
 
   const handleReject = async () => {
     try {
-      const confirmReject = window.confirm(
+      const confirmReject = await showConfirm(
         "Are you sure you want to reject this artwork?"
       );
-      if (confirmReject && artworkId) {
+      if (confirmReject && pendingId) {
         setLoadingApproval(true); // Start loading state
         const token = await getIdToken();
         const params = new URLSearchParams({
           admin_portal_token: token ?? "",
-          artwork_id: artworkId.toString(),
+          pending_id: pendingId.toString(),
           accept: "false",
         });
 
@@ -254,13 +264,13 @@ export default function Artwork() {
         if (!response.ok) {
           throw new Error(`Failed to reject artwork: ${response.statusText}`);
         }
+        showAlert("Artwork rejected successfully.", "success");
 
-        alert("Artwork rejected successfully.");
         router.replace("/home"); // Redirect to /home
       }
     } catch (error) {
       console.error("Error rejecting artwork:", error);
-      alert("An error occurred while rejecting the artwork.");
+      showAlert("An error occurred while rejecting the artwork.", "error");
     } finally {
       setLoadingApproval(false); // Stop loading state
     }
@@ -269,6 +279,7 @@ export default function Artwork() {
 
   const deleteArtwork = async (artistId: string, artworkId: number) => {
     try {
+      console.log(artistId)
       const token = await getIdToken();
       const params = new URLSearchParams({
         artist_portal_token: token ?? "",
@@ -287,12 +298,12 @@ export default function Artwork() {
 
     } catch (error) {
       console.error("Error deleting artwork:", error);
-      alert(error instanceof Error ? error.message : "An error occurred.");
+      showAlert(error instanceof Error ? error.message : "An error occurred.", "error");
     }
   };
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm(
+    const confirmDelete = await showConfirm(
       "Are you sure you want to delete this artwork? This action cannot be undone."
     );
     if (confirmDelete && artworkId) {
@@ -304,7 +315,7 @@ export default function Artwork() {
           router.replace("/home"); // Redirect to /home after successful deletion
         } catch (error) {
           console.error("Error deleting artwork:", error);
-          alert("An error occurred while deleting the artwork.");
+          showAlert("An error occurred while deleting the artwork.", "error");
         } finally {
           setLoadingDelete(false); // Stop loading state
         }
@@ -323,7 +334,7 @@ export default function Artwork() {
       const file = files[0];
       const validTypes = ["image/jpeg", "image/png", "image/jpg"];
       if (!validTypes.includes(file.type)) {
-        alert("Invalid file type. Please upload a JPEG or PNG image.");
+        showAlert("Invalid file type. Please upload a JPEG or PNG image.", "warning");
         return;
       }
     }
@@ -338,13 +349,13 @@ export default function Artwork() {
     if (file) {
       const validTypes = ["image/jpeg", "image/png", "image/jpg"];
       if (!validTypes.includes(file.type)) {
-        alert("Invalid file type. Please upload a JPEG or PNG image.");
+        showAlert("Invalid file type. Please upload a JPEG or PNG image.", "warning");
         return;
       }
     }
 
     if (!formData.artworkImage) {
-      alert("Please upload the main artwork image first before adding additional images.");
+      showAlert("Please upload the main artwork image first before adding additional images.", "warning");
       return; // Prevent changes to additional images if artworkImage is not filled
     }
 
@@ -404,7 +415,7 @@ export default function Artwork() {
       return artistIds[0]; // Return the first artist ID
     } catch (error) {
       console.error("Error fetching artist ID:", error);
-      alert(error instanceof Error ? error.message : "Unknown error occurred.");
+      showAlert(error instanceof Error ? error.message : "Unknown error occurred.", "error");
       return null;
     }
   };
@@ -427,10 +438,10 @@ export default function Artwork() {
         }
       } catch (error) {
         console.error("Error submitting artwork:", error);
-        alert("An error occurred while submitting your artwork.");
+        showAlert("An error occurred while submitting your artwork.", "error");
       }
     } else {
-      alert("Please fill in all required fields.");
+      showAlert("Please fill in all required fields.", "warning");
     }
   };
 
@@ -512,13 +523,13 @@ export default function Artwork() {
   useEffect(() => {
     const fetchArtworkDetails = async () => {
       try {
-        if (user && artworkId !== null && !loadingEras && !loadingGenres) {
+        if (user && artworkId !== null && isPending !== null && !loadingEras && !loadingGenres) {
           const token = await getIdToken();
 
           // Determine the endpoint based on the user type
           const endpoint = user.type === "admin"
-            ? `https://api.artvista.app/get_artwork_details_to_admin_portal/?admin_portal_token=${token}&artwork_id=${artworkId}`
-            : `https://api.artvista.app/get_artwork_details_to_portal/?artist_portal_token=${token}&artwork_id=${artworkId}`;
+            ? `https://api.artvista.app/get_artwork_details_to_admin_portal/?admin_portal_token=${token}&artwork_id=${artworkId}&is_pending=${isPending}`
+            : `https://api.artvista.app/get_artwork_details_to_portal/?artist_portal_token=${token}&artwork_id=${artworkId}&is_pending=${isPending}`;
 
           const response = await fetch(endpoint);
 
@@ -593,7 +604,10 @@ export default function Artwork() {
   }, [eraOptions, genreOptions]);
 
 
-  const submitArtworkForApproval = async (artistId: string): Promise<number | null> => {
+  const submitArtworkForApproval = async (
+    artistId: string,
+    artworkId?: number // Optional parameter
+  ): Promise<number | null> => {
     try {
       const params = new URLSearchParams({
         artist_portal_token: (await getIdToken()) ?? "",
@@ -608,6 +622,11 @@ export default function Artwork() {
         is_nsfw: formData.nsfw ? "true" : "false",
         importance_factor: formData.priority ? "10" : "0", // Send 10 for true, 0 for false
       });
+
+      // Add the optional artwork_id if provided
+      if (artworkId) {
+        params.append("artwork_id", artworkId.toString());
+      }
 
       const formDataToSend = new FormData();
       if (formData.artworkImage instanceof File) {
@@ -633,9 +652,8 @@ export default function Artwork() {
       return result.artwork_id; // Return artwork_id for the next step
     } catch (error) {
       console.error("Error submitting artwork:", error);
-      alert(error instanceof Error ? error.message : "An error occurred.");
+      showAlert(error instanceof Error ? error.message : "An error occurred.", "error");
       return null;
-    } finally {
     }
   };
 
@@ -671,7 +689,7 @@ export default function Artwork() {
       }
     } catch (error) {
       console.error("Error submitting additional images:", error);
-      alert("An error occurred while uploading additional images.");
+      showAlert("An error occurred while uploading additional images.", "error");
     }
   };
 
@@ -690,7 +708,12 @@ export default function Artwork() {
       <Header />
       <div className={styles.page}>
         <Suspense fallback={<div>Loading search params...</div>}>
-          <SearchParamsHandler setIsEditMode={setIsEditMode} setArtworkId={setArtworkId} />
+          <SearchParamsHandler
+            setIsEditMode={setIsEditMode}
+            setArtworkId={setArtworkId}
+            setIsPending={setIsPending}
+            setPendingId={setPendingId}
+          />
         </Suspense>
         {isSubmitted ? (
           <div className={styles.thankYouMessage}>

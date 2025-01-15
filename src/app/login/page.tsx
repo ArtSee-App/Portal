@@ -15,6 +15,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useAlert } from "@/context/AlertContext";
 
 
 export default function Login() {
@@ -27,6 +28,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const { setUser } = useUser();
   const [showRegisterInfo, setShowRegisterInfo] = useState(false);
+
+  const { showAlert, showConfirm } = useAlert();
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -179,17 +182,17 @@ export default function Login() {
 
   const handleForgotPassword = async () => {
     if (!loginData.email) {
-      alert("Please enter your email to reset the password.");
+      showAlert("Please enter your email to reset the password.", "error");
       return;
     }
 
     try {
       setLoading(true);
       await sendPasswordResetEmail(auth, loginData.email);
-      alert("Password reset email sent! Please check your inbox.");
+      showAlert("Password reset email sent! Please check your inbox.", "info");
       setIsForgotPassword(false);  // Return to login after success
     } catch (error) {
-      alert("Error resetting password: " + (error as Error).message);
+      showAlert(`Error resetting password: ${(error as Error).message}`, "error");
     } finally {
       setLoading(false);
     }
@@ -227,7 +230,7 @@ export default function Login() {
 
           // Check if user is approved
           if (!userApproved) {
-            alert("Your account has not been approved yet. Please wait for approval.");
+            showAlert("Your account has not been approved yet. Please wait for approval.", "info");
             await signOut(auth); // Sign out the user from Firebase Auth
             setLoading(false); // Hide loading indicator
             return;
@@ -245,12 +248,12 @@ export default function Login() {
 
           router.push("/home"); // Navigate to home page
         } catch (error) {
-          alert("Login failed: " + (error as Error).message);
+          showAlert(`Login failed: ${(error as Error).message}`, "error");
         } finally {
           setLoading(false); // Hide loading indicator
         }
       } else {
-        alert("Please fill in both email and password.");
+        showAlert("Please fill in both email and password.", "warning");
         setLoading(false); // Hide loading indicator
       }
     }
@@ -264,7 +267,7 @@ export default function Login() {
 
       // Validate password and confirm password match
       if (password !== confirmPassword) {
-        alert("Passwords do not match. Please try again.");
+        showAlert("Passwords do not match. Please try again.", "error");
         setLoading(false); // Hide loading indicator
         return;
       }
@@ -289,14 +292,12 @@ export default function Login() {
           setUsedEmail(email);
           setShowConfirmation(true);
         } catch (error) {
-          alert("Registration failed: " + (error as Error).message);
+          showAlert(`Registration failed: ${(error as Error).message}`, "error");
         } finally {
           setLoading(false); // Hide loading indicator
         }
       } else {
-        alert(
-          `Please fill in all required fields for ${registerAsArtist ? "artist" : "museum"} registration.`
-        );
+        showAlert(`Please fill in all required fields for ${registerAsArtist ? "artist" : "museum"} registration.`, "warning");
         setLoading(false); // Hide loading indicator
       }
     }

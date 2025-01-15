@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { UserProvider } from "@/context/UserContext";
 import AppWrapper from "./AppWrapper"; // Import client component wrapper
+import { AlertProvider } from "@/context/AlertContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,7 +33,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <UserProvider>
-          <AppWrapper>{children}</AppWrapper>
+          <AlertProvider>
+            <AppWrapper>{children}</AppWrapper>
+          </AlertProvider>
         </UserProvider>
       </body>
     </html>

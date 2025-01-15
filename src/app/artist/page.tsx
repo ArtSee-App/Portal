@@ -7,6 +7,7 @@ import Footer from "@/components/footer/footer";
 import { useSearchParams } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 import router from "next/router";
+import { useAlert } from "@/context/AlertContext";
 
 function SearchParamsHandler({ setIsEditMode }: { setIsEditMode: React.Dispatch<React.SetStateAction<boolean>> }) {
   const searchParams = useSearchParams();
@@ -103,6 +104,8 @@ export default function Artist() {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const { showAlert, showConfirm } = useAlert();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Form Submitted");
@@ -110,7 +113,7 @@ export default function Artist() {
       setIsSubmitted(true); // Set submission status to true
       console.log("Form is valid, submission successful.");
     } else {
-      alert("Please fill in all required fields.");
+      showAlert("Please fill in all required fields.", "warning");
       console.log("Form is not valid, submission failed.");
     }
   };
@@ -124,8 +127,8 @@ export default function Artist() {
     setIsEditing(true); // Enable editing
   };
 
-  const handleCancelEdit = () => {
-    const confirmCancel = window.confirm(
+  const handleCancelEdit = async () => {
+    const confirmCancel = await showConfirm(
       "Are you sure you want to cancel changes? Any unsaved changes will be lost."
     );
     if (confirmCancel) {
@@ -133,24 +136,24 @@ export default function Artist() {
     }
   };
 
-  const handleSaveChanges = () => {
-    const confirmSave = window.confirm(
+  const handleSaveChanges = async () => {
+    const confirmSave = await showConfirm(
       "Do you want to save the changes to this artist? Saved changes will be pending and will have to be verified."
     );
     if (confirmSave) {
       // Implement logic to save changes here
-      alert("Changes saved successfully!");
+      showAlert("Changes saved successfully!", "success");
       setIsEditing(false);
     }
   };
 
-  const handleDelete = () => {
-    const confirmDelete = window.confirm(
+  const handleDelete = async () => {
+    const confirmDelete = await showConfirm(
       "Are you sure you want to delete this artist? This action cannot be undone."
     );
     if (confirmDelete) {
       // Implement logic to delete the artist here
-      alert("Artist deleted!");
+      showAlert("Artist deleted!", "success");
     }
   };
 

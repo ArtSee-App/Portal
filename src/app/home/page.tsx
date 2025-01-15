@@ -11,6 +11,7 @@ import { FiCheck, FiX, FiEdit } from "react-icons/fi";
 import Link from "next/link";
 import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
 import { Loader } from "@/components/loadingOverlay/loadingOverlay";
+import { useAlert } from "@/context/AlertContext";
 
 type AdminData = {
   id: string;
@@ -19,6 +20,7 @@ type AdminData = {
 
 type Artwork = {
   id: number;
+  pending_id: number;
   title: string;
   artist: string;
   image: string;
@@ -28,7 +30,7 @@ type Artwork = {
 
 type ArtworkStats = {
   rejected: number;
-  accepted: number;
+  approved: number;
   pending: number;
 };
 
@@ -38,6 +40,8 @@ export default function Home() {
   const { user, getIdToken, isLoadingUser } = useUser(); // Access user from context
   const [adminData, setAdminData] = useState<AdminData[]>([]);
   const [isLoading, setIsLoading] = useState(false); //TODO set to true in the future
+
+  const { showAlert, showConfirm } = useAlert();
 
   const [isClient, setIsClient] = useState(false); // Track if the component is client-side
 
@@ -57,7 +61,7 @@ export default function Home() {
   const [hasMoreData, setHasMoreData] = useState(true); // Tracks if there's more data to load
   const [isRefreshing, setIsRefreshing] = useState(false); // Track refresh state
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [pendingSituationFilter, setPendingSituationFilter] = useState<number | null>(null);
+  const [pendingSituationFilter, setPendingSituationFilter] = useState<"approved" | "rejected" | "pending">("pending");
   const [artworkStats, setArtworkStats] = useState<ArtworkStats | null>(null);
   const itemsPerPage = 4;
 
@@ -81,73 +85,73 @@ export default function Home() {
   ]);
 
 
-  const approveArtwork = async (artworkId: number) => {
-    const confirmApprove = window.confirm(
+  const approveArtwork = async (pendingId: number) => {
+    const confirmApprove = await showConfirm(
       "Are you sure you want to approve this artwork?"
     );
     if (!confirmApprove) return;
 
-    setLoadingArtworkId(artworkId);
+    setLoadingArtworkId(pendingId);
     try {
       const token = await getIdToken();
       if (!token) throw new Error("Admin token not found.");
       const response = await fetch(
         `https://api.artvista.app/accept_or_reject_artwork/?${new URLSearchParams({
           admin_portal_token: token,
-          artwork_id: artworkId.toString(),
+          pending_id: pendingId.toString(),
           accept: "true",
         })}`
       );
       if (!response.ok) throw new Error("Failed to approve artwork");
 
       const updatedArtworks = artworks.map((artwork) =>
-        artwork.id === artworkId
+        artwork.pending_id === pendingId
           ? { ...artwork, removing: true }
           : artwork
       );
       setArtworks(updatedArtworks);
       setTimeout(() => {
-        setArtworks((prev) => prev.filter((artwork) => artwork.id !== artworkId));
+        setArtworks((prev) => prev.filter((artwork) => artwork.pending_id !== pendingId));
       }, 300);
     } catch (error) {
       console.error("Error approving artwork:", error);
-      alert("An error occurred while approving the artwork.");
+      showAlert("An error occurred while approving the artwork.", "error");
     } finally {
       setLoadingArtworkId(null);
     }
   };
 
-  const rejectArtwork = async (artworkId: number) => {
-    const confirmReject = window.confirm(
+  const rejectArtwork = async (pendingId: number) => {
+    const confirmReject = await showConfirm(
       "Are you sure you want to reject this artwork?"
     );
     if (!confirmReject) return;
 
-    setLoadingArtworkId(artworkId);
+    setLoadingArtworkId(pendingId);
     try {
       const token = await getIdToken();
       if (!token) throw new Error("Admin token not found.");
       const response = await fetch(
         `https://api.artvista.app/accept_or_reject_artwork/?${new URLSearchParams({
           admin_portal_token: token,
-          artwork_id: artworkId.toString(),
+          pending_id: pendingId.toString(),
           accept: "false",
         })}`
       );
       if (!response.ok) throw new Error("Failed to reject artwork");
 
       const updatedArtworks = artworks.map((artwork) =>
-        artwork.id === artworkId
+        artwork.pending_id === pendingId
           ? { ...artwork, removing: true }
           : artwork
       );
       setArtworks(updatedArtworks);
       setTimeout(() => {
-        setArtworks((prev) => prev.filter((artwork) => artwork.id !== artworkId));
+        setArtworks((prev) => prev.filter((artwork) => artwork.pending_id !== pendingId));
       }, 300);
     } catch (error) {
       console.error("Error rejecting artwork:", error);
-      alert("An error occurred while rejecting the artwork.");
+      showAlert("An error occurred while rejecting the artwork.", "error");
     } finally {
       setLoadingArtworkId(null);
     }
@@ -179,12 +183,11 @@ export default function Home() {
   };
 
   const fetchArtworksFromAPI = async (page = 1) => {
-    if (page === 1) setIsLoading(true); // Set loading to true initially
+    if (page === 1) setIsLoading(true);
     try {
       if (user) {
         const token = await getIdToken();
 
-        // Determine endpoint and token parameter based on user type
         const endpoint =
           user?.type === "admin"
             ? `/get_pending_artworks/`
@@ -194,7 +197,6 @@ export default function Home() {
           ? "admin_portal_token"
           : "artist_portal_token";
 
-        // Build query parameters
         const params: Record<string, string> = {
           page_count: page.toString(),
           artworks_per_page: itemsPerPage.toString(),
@@ -206,7 +208,7 @@ export default function Home() {
 
         // Include `filter_by_pending_situation` only for non-admin users
         if (user?.type !== "admin" && pendingSituationFilter !== null) {
-          params["filter_by_pending_situation"] = pendingSituationFilter.toString();
+          params["filter_by_pending_situation"] = pendingSituationFilter;
         }
 
         const response = await fetch(
@@ -217,18 +219,19 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; title: string; artist: string; spaces_dir: string; pending_situation: number }[] = await response.json();
+        const data: { artwork_id: number; pending_id: number; title: string; artist: string; spaces_dir: string; pending_situation: number }[] = await response.json();
 
         const artworksData = data.filter((item) => item.artwork_id);
         if (artworksData.length === 0 && page > 1) {
           setHasMoreData(false);
-          alert("No more artworks to load.");
+          showAlert("No more artworks to load.", "info");
         } else {
           setHasMoreData(true);
         }
 
         const formattedArtworks: Artwork[] = artworksData.map((item) => ({
           id: item.artwork_id,
+          pending_id: item.pending_id,
           title: item.title,
           artist: item.artist,
           image: item.spaces_dir,
@@ -281,9 +284,9 @@ export default function Home() {
       if (user) {
         const token = await getIdToken(); // Get token for authentication
         const response = await fetch(
-          `https://api.artvista.app/search_for_artworks_to_portal/?artist_portal_token=${token}&title=${encodeURIComponent(
+          `https://api.artvista.app/search_artworks_of_artist/?artist_portal_token=${token}&title=${encodeURIComponent(
             title
-          )}&return_count=${itemsPerPage}`,
+          )}&limit_artworks=${itemsPerPage}`,
           {
             method: "POST",
           }
@@ -293,11 +296,12 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; title: string; artist: string; spaces_dir: string; pending_situation: number }[] = await response.json();
+        const data: { artwork_id: number; pending_id: number; title: string; artist: string; spaces_dir: string; pending_situation: number }[] = await response.json();
         console.log(`Search API Response:`, data);
 
         const formattedArtworks: Artwork[] = data.map((item) => ({
           id: item.artwork_id,
+          pending_id: item.pending_id,
           title: item.title,
           artist: item.artist,
           image: item.spaces_dir,
@@ -323,7 +327,7 @@ export default function Home() {
       setHasMoreData(true); // Reset "has more data"
       await fetchArtworksFromAPI(1); // Fetch page 1 explicitly
     };
-    setPendingSituationFilter(null);
+    setPendingSituationFilter("pending");
     if (searchText.length >= 1) {
       fetchArtworksFromSearchAPI(searchText); // Trigger search API call
       setIsSearchActive(true);
@@ -345,16 +349,15 @@ export default function Home() {
     });
   };
 
-  const handleFilterClick = (filter: number | null) => {
-    setPendingSituationFilter((currentFilter) => (currentFilter === filter ? null : filter));
-
+  const handleFilterClick = (filter: "approved" | "rejected" | "pending") => {
+    setPendingSituationFilter(filter);
   };
 
   useEffect(() => {
     if (!searchText) {
       handleRefresh(); // Refresh data when filter changes, only if search text is empty
     } else {
-      setPendingSituationFilter(null); // Set the filter to null without triggering a refresh
+      setPendingSituationFilter("pending"); // Set the filter to null without triggering a refresh
     }
   }, [pendingSituationFilter, searchText]);
 
@@ -403,22 +406,25 @@ export default function Home() {
           <div className={styles.headerList}>
             <div className={styles.headerLeft}>
               <div
-                className={`${styles.shapeWhite} ${pendingSituationFilter === 1 ? styles.selected : ""}`}
-                onClick={() => handleFilterClick(1)} // Filter for Published
+                className={`${styles.shapeWhite} ${searchText === "" && pendingSituationFilter === "approved" ? styles.selected : ""
+                  }`}
+                onClick={() => handleFilterClick("approved")}
                 style={{ cursor: "pointer" }}
               >
-                Published{artworkStats?.accepted !== undefined ? ` (${artworkStats.accepted})` : ""}
+                Published{artworkStats?.approved !== undefined ? ` (${artworkStats.approved})` : ""}
               </div>
               <div
-                className={`${styles.shapeWhite} ${pendingSituationFilter === 2 ? styles.selected : ""}`}
-                onClick={() => handleFilterClick(2)} // Filter for Pending
+                className={`${styles.shapeWhite} ${searchText === "" && pendingSituationFilter === "pending" ? styles.selected : ""
+                  }`}
+                onClick={() => handleFilterClick("pending")}
                 style={{ cursor: "pointer" }}
               >
                 Pending{artworkStats?.pending !== undefined ? ` (${artworkStats.pending})` : ""}
               </div>
               <div
-                className={`${styles.shapeWhite} ${pendingSituationFilter === 0 ? styles.selected : ""}`}
-                onClick={() => handleFilterClick(0)} // Filter for Rejected
+                className={`${styles.shapeWhite} ${searchText === "" && pendingSituationFilter === "rejected" ? styles.selected : ""
+                  }`}
+                onClick={() => handleFilterClick("rejected")}
                 style={{ cursor: "pointer" }}
               >
                 Rejected{artworkStats?.rejected !== undefined ? ` (${artworkStats.rejected})` : ""}
@@ -546,7 +552,7 @@ export default function Home() {
                         style={{ animationDelay: `${(index % itemsPerPage) * 0.1}s` }} // Dynamic delay based on index
                       >
 
-                        {loadingArtworkId === artwork.id && (
+                        {loadingArtworkId === artwork.pending_id && (
                           <LoadingOverlay isVisible={true} />
                         )}
 
@@ -563,31 +569,34 @@ export default function Home() {
                           <div className={styles.adminButtons}>
                             <button
                               className={styles.approveButton}
-                              onClick={() => approveArtwork(artwork.id)} // Call approve function
+                              onClick={() => approveArtwork(artwork.pending_id)} // Call approve function
                             >
                               <FiCheck />
                             </button>
                             <button
                               className={styles.rejectButton}
-                              onClick={() => rejectArtwork(artwork.id)} // Call reject function
+                              onClick={() => rejectArtwork(artwork.pending_id)} // Call reject function
                             >
                               <FiX />
                             </button>
                             <Link
                               href={
                                 activeTab === "artworks"
-                                  ? `/artwork?edit=true&artworkId=${artwork.id}`
+                                  ? `/artwork?edit=true&artworkId=${artwork.id}&pendingId=${artwork.pending_id}&pending=${artwork.pending_situation === 2 || artwork.pending_situation === 0 ? 'true' : 'false'}`
                                   : activeTab === "artists"
                                     ? `/artist?edit=true`
                                     : `/museum?edit=true`
-                              } // Dynamically set the path based on activeTab
+                              }
                               className={styles.editButton} // Apply button styling
                             >
                               <FiEdit />
                             </Link>
                           </div>
                         ) : (
-                          <Link href={`/artwork?edit=true&artworkId=${artwork.id}`}>
+                          <Link
+                            href={`/artwork?edit=true&artworkId=${artwork.id}&pending=${artwork.pending_situation === 2 || artwork.pending_situation === 0 ? 'true' : 'false'
+                              }`}
+                          >
                             <span className={styles.viewDetails}>View artwork's details →</span>
                           </Link>
                         )}
