@@ -278,14 +278,14 @@ export default function Artwork() {
   };
 
 
-  const deleteArtwork = async (artistId: string, artworkId: number) => {
+  const deleteArtwork = async (artistId: string, artworkId: number, isPending: boolean) => {
     try {
-      console.log(artistId)
       const token = await getIdToken();
       const params = new URLSearchParams({
         artist_portal_token: token ?? "",
         artist_id: artistId,
         artwork_id: artworkId.toString(),
+        is_pending: isPending.toString(), // Include the is_pending parameter
       });
 
       const response = await fetch(
@@ -312,7 +312,7 @@ export default function Artwork() {
       if (artistId) {
         try {
           setLoadingDelete(true); // Start loading state
-          await deleteArtwork(artistId, artworkId);
+          await deleteArtwork(artistId, artworkId, isPending ?? false); // Pass isPending state
           router.replace("/home"); // Redirect to /home after successful deletion
         } catch (error) {
           console.error("Error deleting artwork:", error);
