@@ -786,10 +786,10 @@ export default function Artwork() {
                   <div className={styles.inputWrapperRequired}>
                     <p>Upload an artwork profile image</p>
                     <div
-                      className={`${styles.imageUploadWrapper} ${isEditMode && !isEditing ? styles.overlay : ""
+                      className={`${styles.imageUploadWrapper} ${isEditMode ? styles.overlay : ""
                         }`}
                     >
-                      {formData.artworkImage && (!isEditMode || isEditing) && (
+                      {formData.artworkImage && (!isEditMode) && (
                         <button
                           type="button"
                           className={styles.closeButton}
@@ -810,7 +810,7 @@ export default function Artwork() {
                         accept="image/jpeg, image/png, image/jpg" // Restrict to allowed formats
                         className={styles.hiddenInput}
                         onChange={handleInputChange}
-                        disabled={isEditMode && !isEditing}
+                        disabled={isEditMode} // Disable input when isEditMode is true
                       />
                       <label htmlFor="artworkImageInput" className={styles.imageUploadBox}>
                         {formData.artworkImage ? (
@@ -822,6 +822,14 @@ export default function Artwork() {
                             }
                             alt="Artwork Profile"
                             className={styles.uploadedImage}
+                            onClick={() => {
+                              if (isEditMode && isEditing) {
+                                showAlert(
+                                  "This field cannot be modified. If you need to change this image, delete the artwork and create a new one.",
+                                  "warning"
+                                );
+                              }
+                            }}
                           />
                         ) : (
                           <span className={styles.plusIcon}>+</span>
@@ -882,7 +890,18 @@ export default function Artwork() {
 
                 </div>
                 <div className={styles.rightColumn}>
-                  <div className={styles.inputWrapperRequired}>
+                  <div
+                    className={styles.inputWrapperRequired}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent the event from bubbling further
+                      if (isEditMode && isEditing) {
+                        showAlert(
+                          "This field cannot be modified. If you need to change the artwork title, delete the artwork and create a new one.",
+                          "warning"
+                        );
+                      }
+                    }}
+                  >
                     <p>Artwork Title</p>
                     <input
                       type="text"
@@ -890,7 +909,8 @@ export default function Artwork() {
                       className={styles.input}
                       value={formData.artworkTitle}
                       onChange={handleInputChange}
-                      disabled={isEditMode && !isEditing}
+                      disabled={isEditMode}
+                      style={isEditMode ? { pointerEvents: "none" } : {}} // Apply pointerEvents only when isEditMode is true
                     />
                   </div>
                   <div className={styles.inputWrapperRequired}>
@@ -1013,7 +1033,18 @@ export default function Artwork() {
                       disabled={isEditMode && !isEditing}
                     />
                   </div>
-                  <div className={styles.inputWrapper}>
+                  <div
+                    className={styles.inputWrapper}
+                    onClick={(e) => {
+                      if (isEditMode && isEditing) {
+                        e.stopPropagation(); // Prevent further propagation
+                        showAlert(
+                          "This field cannot be modified. If you need to change the NSFW status, delete the artwork and create a new one.",
+                          "warning"
+                        );
+                      }
+                    }}
+                  >
                     <p>Is the Artwork NSFW?</p>
                     <select
                       name="nsfw"
@@ -1025,7 +1056,8 @@ export default function Artwork() {
                           nsfw: e.target.value === "true" ? true : e.target.value === "false" ? false : null,
                         }))
                       }
-                      disabled={isEditMode && !isEditing}
+                      disabled={isEditMode}
+                      style={isEditMode ? { pointerEvents: "none" } : {}} // Disable pointer events only when in edit mode
                     >
                       <option value="false">No</option>
                       <option value="true">Yes</option>

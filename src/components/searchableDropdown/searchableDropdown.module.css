@@ -11,6 +11,17 @@
     padding-right: 30px;
 }
 
+.dropdownInput:disabled {
+    background-color: #f3f3f3;
+    /* Light gray background */
+    color: #999;
+    /* Dimmed text color */
+    cursor: not-allowed;
+    /* Indicate disabled state */
+    border-color: #ddd;
+    /* Consistent border color */
+}
+
 .dropdownList {
     list-style-type: none;
     margin: 0;
