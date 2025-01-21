@@ -189,7 +189,7 @@ export default function Login() {
     try {
       setLoading(true);
       await sendPasswordResetEmail(auth, loginData.email);
-      showAlert("Password reset email sent! Please check your inbox.", "info");
+      showAlert("Password reset email sent! Please check your inbox or spam folder.", "info");
       setIsForgotPassword(false);  // Return to login after success
     } catch (error) {
       showAlert(`Error resetting password: ${(error as Error).message}`, "error");
