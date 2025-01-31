@@ -314,6 +314,14 @@
   }
 }
 
+.noArtworksMessage {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--text-gray);
+  margin-top: 20px;
+}
+
+
 .artworkItem {
   position: relative;
   display: flex;

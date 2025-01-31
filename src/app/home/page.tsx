@@ -544,6 +544,10 @@ export default function Home() {
                     <div className={styles.loaderWrapper}>
                       <Loader />
                     </div>
+                  ) : artworks.length === 0 ? (
+                    <div className={styles.noArtworksMessage}>
+                      No artworks found
+                    </div>
                   ) : (
                     artworks.map((artwork, index) => (
                       <div
@@ -619,7 +623,7 @@ export default function Home() {
                   )}
                 </div>
                 <div className={styles.pagination}>
-                  {hasMoreData && !isLoading && !isLoadingUser && searchText.length === 0 && (
+                  {hasMoreData && !isLoading && !isLoadingUser && searchText.length === 0 && artworks.length > 3 && (
                     <button
                       className={styles.loadMoreButton}
                       onClick={handleLoadMore}

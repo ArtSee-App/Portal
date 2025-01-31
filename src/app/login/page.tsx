@@ -50,14 +50,12 @@ export default function Login() {
     fullName: string;
     about: string;
     dateOfBirth: string;
-    birthYear: string;
     nationality: string;
     artMovement: string;
     email: string;
     password: string;
     confirmPassword: string;
     dateOfDeath: string;
-    deathYear: string;
     influencedBy: string;
     influencedOn: string;
     artInstitution: string;
@@ -70,14 +68,12 @@ export default function Login() {
     fullName: "",
     about: "",
     dateOfBirth: "",
-    birthYear: "",
     nationality: "",
     artMovement: "",
     email: "",
     password: "",
     confirmPassword: "",
     dateOfDeath: "",
-    deathYear: "",
     influencedBy: "",
     influencedOn: "",
     artInstitution: "",
@@ -144,7 +140,6 @@ export default function Login() {
     formData.fullName &&
     formData.about &&
     formData.dateOfBirth &&
-    formData.birthYear &&
     formData.nationality &&
     formData.artMovement &&
     formData.email &&
@@ -310,14 +305,12 @@ export default function Login() {
       fullName: "",
       about: "",
       dateOfBirth: "",
-      birthYear: "",
       nationality: "",
       artMovement: "",
       email: "",
       password: "",
       confirmPassword: "",
       dateOfDeath: "",
-      deathYear: "",
       influencedBy: "",
       influencedOn: "",
       artInstitution: "",
@@ -507,16 +500,6 @@ export default function Login() {
                             />
                           </div>
                           <div className={styles.inputWrapperRequired}>
-                            <p>Year of Birth</p>
-                            <input
-                              type="number"
-                              name="birthYear"
-                              className={styles.input}
-                              value={formData.birthYear}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className={styles.inputWrapperRequired}>
                             <p>Nationality</p>
                             <input
                               type="text"
@@ -547,16 +530,6 @@ export default function Login() {
                               placeholder="Example: January 1, 1990"
                               className={styles.input}
                               value={formData.dateOfDeath}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className={styles.inputWrapper}>
-                            <p>Year Of Death</p>
-                            <input
-                              type="number"
-                              name="deathYear"
-                              className={styles.input}
-                              value={formData.deathYear}
                               onChange={handleInputChange}
                             />
                           </div>
