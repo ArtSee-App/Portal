@@ -28,6 +28,15 @@ type Artwork = {
   removing?: boolean; // Optional flag for animation
 };
 
+type Artist = {
+  id: number;
+  name: string;
+  image: string;
+  pending_situation: number; // New field
+  removing?: boolean; // Optional flag for animation
+};
+
+
 type ArtworkStats = {
   rejected: number;
   approved: number;
@@ -55,34 +64,23 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [pageCount, setPageCount] = useState(1);
+  const [pageCountArtists, setPageCountArtists] = useState(1);
+
   const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [artists, setArtists] = useState<Artist[]>([]);
+
   const [isLoadingMore, setIsLoadingMore] = useState(false); // Loader for "Load More"
   const [loadingArtworkId, setLoadingArtworkId] = useState<number | null>(null); // Tracks the ID of the artwork being processed
+  const [loadingArtistId, setLoadingArtistId] = useState<number | null>(null); // Tracks the ID of the artwork being processed
+
   const [hasMoreData, setHasMoreData] = useState(true); // Tracks if there's more data to load
+  const [hasMoreDataArtists, setHasMoreDataArtists] = useState(true); // Tracks if there's more data to load
+
   const [isRefreshing, setIsRefreshing] = useState(false); // Track refresh state
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [pendingSituationFilter, setPendingSituationFilter] = useState<"approved" | "rejected" | "pending">("pending");
   const [artworkStats, setArtworkStats] = useState<ArtworkStats | null>(null);
   const itemsPerPage = 4;
-
-  const [artists, setArtists] = useState([
-    { id: 1, name: "Artist 1", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
-    { id: 2, name: "Artist 2", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
-    { id: 3, name: "Artist 3", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
-    { id: 4, name: "Artist 4", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
-    { id: 5, name: "Artist 5", imasge: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
-    { id: 6, name: "Artist 6", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
-    { id: 7, name: "Artist 7", image: "https://dutchmuseumgiftshop.nl/wp-content/uploads/2023/09/s0016V1962.jpg" },
-    // Add as many artists as needed
-  ]);
-
-  const [museums, setMuseums] = useState([
-    { id: 1, name: "Museum 1", location: "City 1", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
-    { id: 2, name: "Museum 2", location: "City 2", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
-    { id: 3, name: "Museum 3", location: "City 3", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
-    { id: 4, name: "Museum 4", location: "City 4", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
-    { id: 5, name: "Museum 5", location: "City 5", image: "https://images.adsttc.com/media/images/55e6/f619/e58e/ce03/1300/0374/large_jpg/PORTADA_06_VanGoghMuseum_EntranceBuilding_HansvanHeeswijkArchitects_photo_RonaldTilleman.jpg?1441199623" },
-  ]);
 
 
   const approveArtwork = async (pendingId: number) => {
@@ -158,13 +156,107 @@ export default function Home() {
   };
 
 
-  const filteredArtists = artists.filter((artist) =>
-    artist.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const approveArtist = async (artistId: number) => {
+    const confirmMessage = await showConfirm(
+      "Are you sure you want to approve this artist? Enter a message below (not necessary):",
+      true // Enables input field
+    );
 
-  const filteredMuseums = museums.filter((museum) =>
-    museum.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+    if (confirmMessage === false) return; // User canceled
+
+    const finalMessage =
+      confirmMessage === "" ? "Artist Approved" : confirmMessage; // Default message if empty
+
+    setLoadingArtistId(artistId);
+    try {
+      const token = await getIdToken();
+      if (!token) throw new Error("Admin token not found.");
+
+      const response = await fetch(
+        `https://api.artvista.app/accept_or_reject_artist/?${new URLSearchParams({
+          admin_portal_token: token,
+          artist_id: artistId.toString(),
+          accept: "true",
+        })}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message_to_be_emailed: finalMessage, // Use input value or default
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to approve artist");
+
+      const updatedArtists = artists.map((artist) =>
+        artist.id === artistId ? { ...artist, removing: true } : artist
+      );
+      setArtists(updatedArtists);
+      setTimeout(() => {
+        setArtists((prev) => prev.filter((artist) => artist.id !== artistId));
+      }, 300);
+    } catch (error) {
+      console.error("Error approving artist:", error);
+      showAlert("An error occurred while approving the artist.", "error");
+    } finally {
+      setLoadingArtistId(null);
+    }
+  };
+
+  const rejectArtist = async (artistId: number) => {
+    const confirmMessage = await showConfirm(
+      "Are you sure you want to reject this artist? Enter a reason below (necessary):",
+      true // Enables input field
+    );
+
+    if (confirmMessage === false) return; // User canceled
+
+    const finalMessage =
+      confirmMessage === "" ? "Unfortunately, your artist submission was not approved." : confirmMessage; // Default message if empty
+
+    setLoadingArtistId(artistId);
+    try {
+      const token = await getIdToken();
+      if (!token) throw new Error("Admin token not found.");
+
+      const response = await fetch(
+        `https://api.artvista.app/accept_or_reject_artist/?${new URLSearchParams({
+          admin_portal_token: token,
+          artist_id: artistId.toString(),
+          accept: "false",
+        })}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message_to_be_emailed: finalMessage, // Use input value or default
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to reject artist");
+
+      const updatedArtists = artists.map((artist) =>
+        artist.id === artistId ? { ...artist, removing: true } : artist
+      );
+      setArtists(updatedArtists);
+      setTimeout(() => {
+        setArtists((prev) => prev.filter((artist) => artist.id !== artistId));
+      }, 300);
+    } catch (error) {
+      console.error("Error rejecting artist:", error);
+      showAlert("An error occurred while rejecting the artist.", "error");
+    } finally {
+      setLoadingArtistId(null);
+    }
+  };
+
+
 
   const filteredAdminData = adminData.filter((item) =>
     item.name.toLowerCase().includes(searchText.toLowerCase())
@@ -219,7 +311,7 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; pending_id: number; title: string; artist: string; spaces_dir: string; pending_situation: number }[] = await response.json();
+        const data: { artwork_id: number; pending_id: number; title: string; artist: string; spaces_dir_low_resolution: string; pending_situation: number }[] = await response.json();
 
         const artworksData = data.filter((item) => item.artwork_id);
         if (artworksData.length === 0 && page > 1) {
@@ -234,7 +326,7 @@ export default function Home() {
           pending_id: item.pending_id,
           title: item.title,
           artist: item.artist,
-          image: item.spaces_dir,
+          image: item.spaces_dir_low_resolution,
           pending_situation: item.pending_situation,
         }));
 
@@ -249,6 +341,53 @@ export default function Home() {
       setIsLoadingMore(false);
     }
   };
+
+
+  const fetchArtistsFromAPI = async (page = 1) => {
+    if (page === 1) setIsLoading(true);
+    try {
+      if (user?.type === "admin") {
+        const token = await getIdToken();
+        if (!token) throw new Error("Admin token not found.");
+
+        const response = await fetch(
+          `https://api.artvista.app/get_pending_artists/?${new URLSearchParams({
+            admin_portal_token: token,
+            page_count: page.toString(),
+            artists_per_page: itemsPerPage.toString(),
+          })}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch pending artists");
+
+        const data: { artist_id: number; name: string; spaces_dir_low_resolution: string; pending_situation: number }[] = await response.json();
+        const artistsData = data.filter((item) => item.artist_id);
+
+        if (artistsData.length === 0 && page > 1) {
+          setHasMoreDataArtists(false);
+          showAlert("No more artists to load.", "info");
+        } else {
+          setHasMoreDataArtists(true);
+        }
+
+        const formattedArtists: Artist[] = artistsData.map((item) => ({
+          id: item.artist_id,
+          name: item.name,
+          image: item.spaces_dir_low_resolution,
+          pending_situation: item.pending_situation, // Added field
+        }));
+
+        setArtists((prev) => (page === 1 ? formattedArtists : [...prev, ...formattedArtists]));
+      } else {
+        console.error("User is not an admin.");
+      }
+    } catch (error) {
+      console.error("Error fetching artists:", error);
+    } finally {
+      setIsLoading(false);
+      setIsLoadingMore(false);
+    }
+  };
+
 
   const statsFetched = useRef(false); // Ref to track if stats are fetched
 
@@ -296,7 +435,7 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; pending_id: number; title: string; artist: string; spaces_dir: string; pending_situation: number }[] = await response.json();
+        const data: { artwork_id: number; pending_id: number; title: string; artist: string; spaces_dir_low_resolution: string; pending_situation: number }[] = await response.json();
         console.log(`Search API Response:`, data);
 
         const formattedArtworks: Artwork[] = data.map((item) => ({
@@ -304,7 +443,7 @@ export default function Home() {
           pending_id: item.pending_id,
           title: item.title,
           artist: item.artist,
-          image: item.spaces_dir,
+          image: item.spaces_dir_low_resolution,
           pending_situation: item.pending_situation, // Map the new field
         }));
 
@@ -349,6 +488,35 @@ export default function Home() {
     });
   };
 
+  const handleLoadMore = () => {
+    setIsLoadingMore(true);
+    const nextPage = pageCount + 1; // Calculate the next page
+    setPageCount(nextPage); // Update the page count
+    fetchArtworksFromAPI(nextPage); // Pass the next page explicitly
+  };
+
+  const handleRefreshArtists = () => {
+    setPageCountArtists(1);
+    setArtists([]); // Clear artists list
+    setHasMoreDataArtists(true);
+    setSearchText(""); // Reset search
+    setIsRefreshing(true);
+    fetchArtistsFromAPI(1).finally(() => setIsRefreshing(false));
+  };
+
+
+
+  const handleLoadMoreArtists = () => {
+    setIsLoadingMore(true);
+    const nextPage = pageCountArtists + 1;
+    setPageCountArtists(nextPage);
+    fetchArtistsFromAPI(nextPage);
+  };
+
+
+
+
+
   const handleFilterClick = (filter: "approved" | "rejected" | "pending") => {
     setPendingSituationFilter(filter);
   };
@@ -362,12 +530,7 @@ export default function Home() {
   }, [pendingSituationFilter, searchText]);
 
 
-  const handleLoadMore = () => {
-    setIsLoadingMore(true);
-    const nextPage = pageCount + 1; // Calculate the next page
-    setPageCount(nextPage); // Update the page count
-    fetchArtworksFromAPI(nextPage); // Pass the next page explicitly
-  };
+
 
   useEffect(() => {
     if (isRefreshing) {
@@ -394,6 +557,13 @@ export default function Home() {
     }
   }, [user?.type, activeTab]); // Removed `pageCount` from dependency array
 
+  useEffect(() => {
+    if (user?.type === "admin" && activeTab === "artists" && !fetchCalled.current) {
+      console.log("Fetching artists...");
+      fetchArtistsFromAPI();
+      fetchCalled.current = true;
+    }
+  }, [user?.type, activeTab]);
 
 
 
@@ -531,7 +701,13 @@ export default function Home() {
             </div>
             <div
               className={styles.refreshIcon}
-              onClick={handleRefresh}
+              onClick={() => {
+                if (activeTab === "artworks") {
+                  handleRefresh();
+                } else if (activeTab === "artists") {
+                  handleRefreshArtists();
+                }
+              }}
             >
               <FiRefreshCw />
             </div>
@@ -551,7 +727,7 @@ export default function Home() {
                   ) : (
                     artworks.map((artwork, index) => (
                       <div
-                        key={`${artwork.id}-${currentPage}`} // Combine artwork.id and currentPage for a unique key
+                        key={`${artwork.id}-${artwork.pending_situation}`} // Combine artwork.id and currentPage for a unique key
                         className={`${styles.artworkItem} ${artwork.removing ? styles.removing : ""}`}
                         style={{ animationDelay: `${(index % itemsPerPage) * 0.1}s` }} // Dynamic delay based on index
                       >
@@ -585,11 +761,7 @@ export default function Home() {
                             </button>
                             <Link
                               href={
-                                activeTab === "artworks"
-                                  ? `/artwork?edit=true&artworkId=${artwork.id}&pendingId=${artwork.pending_id}&pending=${artwork.pending_situation === 2 || artwork.pending_situation === 0 ? 'true' : 'false'}`
-                                  : activeTab === "artists"
-                                    ? `/artist?edit=true`
-                                    : `/museum?edit=true`
+                                `/artwork?edit=true&artworkId=${artwork.id}&pendingId=${artwork.pending_id}&pending=${artwork.pending_situation === 2 || artwork.pending_situation === 0 ? 'true' : 'false'}`
                               }
                               className={styles.editButton} // Apply button styling
                             >
@@ -638,57 +810,74 @@ export default function Home() {
             ) : activeTab === "artists" ? (
               <>
                 <div className={styles.artworkList}>
-                  {user?.type === "admin"
-                    ? filteredAdminData
-                      .map((artist) => (
-                        <div key={artist.id} className={styles.artworkItem}>
-                          <span className={styles.artworkTitle}>{artist.name}</span>
+                  {isLoading ? (
+                    <div className={styles.loaderWrapper}>
+                      <Loader />
+                    </div>
+                  ) : artists.length === 0 ? (
+                    <div className={styles.noArtworksMessage}>No artists found</div>
+                  ) : (
+                    artists.map((artist, index) => (
+                      <div
+                        key={`${artist.id}-${artist.pending_situation}`} // Combine artwork.id and currentPage for a unique key
+                        className={`${styles.artworkItem} ${artist.removing ? styles.removing : ""}`}
+                        style={{ animationDelay: `${(index % itemsPerPage) * 0.1}s` }}
+                      >
+
+                        {loadingArtistId === artist.id && (
+                          <LoadingOverlay isVisible={true} />
+                        )}
+
+                        <img src={artist.image} alt={artist.name} className={styles.artworkImage} />
+                        <span className={styles.artworkTitle}>{artist.name}</span>
+
+                        {user?.type === "admin" ? (
                           <div className={styles.adminButtons}>
-                            <button
-                              className={styles.approveButton}
-                            >
+                            <button className={styles.approveButton} onClick={() => approveArtist(artist.id)}>
                               <FiCheck />
                             </button>
-                            <button
-                              className={styles.rejectButton}
-                            >
+                            <button className={styles.rejectButton} onClick={() => rejectArtist(artist.id)}>
                               <FiX />
                             </button>
-                            <button
-                              className={styles.editButton}
-                              onClick={() => router.push("/artist?edit=true")}
-                            >
+                            <Link href={`/artist?edit=true&artistId=${artist.id}&pending=${artist.pending_situation === 2 || artist.pending_situation === 0 ? 'true' : 'false'}`}
+                              className={styles.editButton}>
                               <FiEdit />
-                            </button>
+                            </Link>
                           </div>
+                        ) : (
+                          /* Museum View: Only Show "View Details" */
+                          user?.type === "museum" && (
+                            <Link href={`/artist?edit=true&artistId=${artist.id}&pending=${artist.pending_situation === 2 || artist.pending_situation === 0 ? 'true' : 'false'}`}>
+                              <span className={styles.viewDetails}>View artist's details →</span>
+                            </Link>
+                          )
+                        )}
+                        <div
+                          className={`${styles.pendingStatus} ${artist.pending_situation === 0
+                            ? styles.rejected
+                            : artist.pending_situation === 1
+                              ? styles.accepted
+                              : styles.pending
+                            }`}
+                        >
+                          {artist.pending_situation === 0
+                            ? "Rejected"
+                            : artist.pending_situation === 1
+                              ? "Published"
+                              : "Pending"}
                         </div>
-                      ))
-                    : filteredArtists
-                      .map((artist) => (
-                        <div key={artist.id} className={styles.artworkItem}>
-                          <img
-                            src={artist.image}
-                            alt={artist.name}
-                            className={styles.artworkImage}
-                          />
-                          <span className={styles.artworkTitle}>{artist.name}</span>
-                          <button
-                            className={styles.viewDetails}
-                            onClick={() => router.push("/artist?edit=true")}
-                          >
-                            View artist's details →
-                          </button>
-                        </div>
-                      ))}
+
+                      </div>
+                    ))
+                  )}
                 </div>
+
                 <div className={styles.pagination}>
-                  <button
-                    className={styles.loadMoreButton}
-                    onClick={handleLoadMore}
-                    disabled={isLoadingMore}
-                  >
-                    {isLoadingMore ? "Loading..." : "Load More"}
-                  </button>
+                  {hasMoreDataArtists && !isLoading && !isLoadingUser && searchText.length === 0 && artists.length > 3 && (
+                    <button className={styles.loadMoreButton} onClick={handleLoadMoreArtists} disabled={isLoadingMore}>
+                      {isLoadingMore ? "Loading..." : "Load More"}
+                    </button>
+                  )}
                 </div>
               </>
 

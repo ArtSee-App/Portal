@@ -5,7 +5,7 @@ import Alert from "@/components/alert/alert";
 
 interface AlertContextType {
     showAlert: (message: string, type?: "success" | "error" | "info" | "warning") => void;
-    showConfirm: (message: string) => Promise<boolean>; // New method for confirmation dialogs
+    showConfirm: (message: string, isPrompt?: boolean) => Promise<string | boolean>; // Supports input-based prompts
 }
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
@@ -22,23 +22,24 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const [alert, setAlert] = useState<{
         message: string;
         type: "success" | "error" | "info" | "warning";
-        isConfirm: boolean; // New flag to indicate confirmation dialog
-        resolve?: (result: boolean) => void; // Resolve function for confirmation dialogs
+        isConfirm: boolean;
+        isPrompt: boolean; // Added to support input prompts
+        resolve?: (result: string | boolean) => void; // Supports both confirmation and input return
     } | null>(null);
 
     const showAlert = (message: string, type: "success" | "error" | "info" | "warning" = "info") => {
-        setAlert({ message, type, isConfirm: false });
+        setAlert({ message, type, isConfirm: false, isPrompt: false });
     };
 
-    const showConfirm = (message: string): Promise<boolean> => {
+    const showConfirm = (message: string, isPrompt: boolean = false): Promise<string | boolean> => {
         return new Promise((resolve) => {
-            setAlert({ message, type: "info", isConfirm: true, resolve });
+            setAlert({ message, type: "info", isConfirm: true, isPrompt, resolve });
         });
     };
 
-    const closeAlert = (result?: boolean) => {
-        if (alert?.isConfirm && alert.resolve) {
-            alert.resolve(result || false); // Resolve the promise with the result
+    const closeAlert = (result?: string | boolean) => {
+        if (alert?.resolve) {
+            alert.resolve(result ?? false);
         }
         setAlert(null); // Close the alert
     };
@@ -51,6 +52,7 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                     message={alert.message}
                     type={alert.type}
                     isConfirm={alert.isConfirm}
+                    isPrompt={alert.isPrompt} // Pass to alert
                     onClose={closeAlert}
                 />
             )}

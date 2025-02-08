@@ -6,7 +6,7 @@ import { auth } from "../../firebase"; // Import Firebase auth object
 
 interface User extends FirebaseUser {
     type: string;
-    approved: boolean;
+    artistId: number | null; // Store artist ID
 }
 
 interface UserContextProps {
@@ -25,8 +25,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const setUserAndPersist = (user: User | null) => {
         setUser(user);
         if (user) {
-            const { type, approved, email, uid } = user; // Save necessary fields
-            localStorage.setItem("user", JSON.stringify({ type, approved, email, uid }));
+            const { type, email, uid, artistId } = user; // Save necessary fields
+            localStorage.setItem("user", JSON.stringify({ type, email, uid, artistId }));
         } else {
             localStorage.removeItem("user");
         }
@@ -55,11 +55,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
                     const storedUser = localStorage.getItem("user");
                     const parsedUser = storedUser ? JSON.parse(storedUser) : {};
 
-                    // Rehydrate user context
+                    // Rehydrate user context with artistId
                     setUser({
                         ...parsedUser,
                         email: firebaseUser.email, // Ensure Firebase user fields are added
                         uid: firebaseUser.uid,
+                        artistId: parsedUser.artistId ?? null, // Restore artistId if available
                     } as User);
                 } catch (error) {
                     console.error("Error fetching idToken during rehydration:", error);
@@ -72,7 +73,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
         return () => unsubscribe(); // Clean up the subscription
     }, []);
-
 
     return (
         <UserContext.Provider value={{ user, setUser: setUserAndPersist, getIdToken, isLoadingUser }}>

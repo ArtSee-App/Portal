@@ -15,7 +15,6 @@
 html,
 body {
   max-width: 1200px;
-  overflow-x: hidden;
   margin: 0 auto;
   font-size: 16px;
 }

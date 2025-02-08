@@ -51,15 +51,20 @@ export default function Login() {
     about: string;
     dateOfBirth: string;
     nationality: string;
-    artMovement: string;
+    artMovement: string[]; // Changed from string to array
+    artMovementTemp: string; // Temporary input field
     email: string;
     password: string;
     confirmPassword: string;
     dateOfDeath: string;
-    influencedBy: string;
-    influencedOn: string;
-    artInstitution: string;
-    friendsOrCoworkers: string;
+    influencedBy: string[];
+    influencedByTemp: string; // Temporary input field
+    influencedOn: string[];
+    influencedOnTemp: string; // Temporary input field
+    artInstitution: string[];
+    artInstitutionTemp: string; // Temporary input field
+    friendsOrCoworkers: string[];
+    friendsOrCoworkersTemp: string; // Temporary input field
     wikipediaLink: string;
     officialSiteLink: string;
   }>({
@@ -69,15 +74,20 @@ export default function Login() {
     about: "",
     dateOfBirth: "",
     nationality: "",
-    artMovement: "",
+    artMovement: [],
+    artMovementTemp: "",
     email: "",
     password: "",
     confirmPassword: "",
     dateOfDeath: "",
-    influencedBy: "",
-    influencedOn: "",
-    artInstitution: "",
-    friendsOrCoworkers: "",
+    influencedBy: [],
+    influencedByTemp: "",
+    influencedOn: [],
+    influencedOnTemp: "",
+    artInstitution: [],
+    artInstitutionTemp: "",
+    friendsOrCoworkers: [],
+    friendsOrCoworkersTemp: "",
     wikipediaLink: "",
     officialSiteLink: "",
   });
@@ -119,6 +129,18 @@ export default function Login() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, files } = e.target as HTMLInputElement & { files: FileList };
+
+    // Validate file type for images
+    if (name === "image" && files?.length) {
+      const file = files[0];
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+      if (!allowedTypes.includes(file.type)) {
+        showAlert("Invalid file type. Please select a JPEG, JPG, or PNG image.", "error");
+        return; // Stop further execution
+      }
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: name === "image" ? files?.[0] : value, // Set file for image input
@@ -127,6 +149,18 @@ export default function Login() {
 
   const handleMuseumInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, files } = e.target as HTMLInputElement & { files: FileList };
+
+    // Validate file type for images
+    if (name === "image" && files?.length) {
+      const file = files[0];
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+      if (!allowedTypes.includes(file.type)) {
+        showAlert("Invalid file type. Please select a JPEG, JPG, or PNG image.", "error");
+        return; // Stop further execution
+      }
+    }
+
     setMuseumFormData((prev) => ({
       ...prev,
       [name]: name === "image" ? files?.[0] : value, // Set file for image input
@@ -141,7 +175,6 @@ export default function Login() {
     formData.about &&
     formData.dateOfBirth &&
     formData.nationality &&
-    formData.artMovement &&
     formData.email &&
     formData.password &&
     formData.confirmPassword;
@@ -161,8 +194,52 @@ export default function Login() {
     museumFormData.confirmPassword;
 
   const handleToggleRegister = () => {
-    setIsRegistering((prev) => !prev);
+    setIsRegistering(false);
     setRegisterAsArtist(false);
+
+    // Reset both forms when switching to login
+    setFormData({
+      image: null,
+      name: "",
+      fullName: "",
+      about: "",
+      dateOfBirth: "",
+      nationality: "",
+      artMovement: [],
+      artMovementTemp: "", // Reset temporary input field
+      email: "",
+      password: "",
+      confirmPassword: "",
+      dateOfDeath: "",
+      influencedBy: [],
+      influencedByTemp: "", // Reset temporary input field
+      influencedOn: [],
+      influencedOnTemp: "", // Reset temporary input field
+      artInstitution: [],
+      artInstitutionTemp: "", // Reset temporary input field
+      friendsOrCoworkers: [],
+      friendsOrCoworkersTemp: "", // Reset temporary input field
+      wikipediaLink: "",
+      officialSiteLink: "",
+    });
+
+    setMuseumFormData({
+      image: null,
+      name: "",
+      latitude: "",
+      longitude: "",
+      about: "",
+      city: "",
+      province: "",
+      country: "",
+      type: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      visitorsPerYear: "",
+      websiteLink: "",
+      wikipediaLink: "",
+    });
   };
 
   const handleRegisterAsArtist = () => {
@@ -221,24 +298,50 @@ export default function Login() {
             throw new Error("This user has been rejected");
           }
 
-          const userApproved = userDoc.data()?.approved || false; // Default to false if `approved` is missing
+          const userType = userDoc.data()?.type || "unknown"; // Default to "unknown" if `type` is missing
+          const artistIds = userDoc.data()?.artist_ids || []; // Get artist_ids array
+          const artistId = artistIds.length > 0 ? artistIds[0] : null;
 
-          // Check if user is approved
-          if (!userApproved) {
-            showAlert("Your account has not been approved yet. Please wait for approval.", "info");
-            await signOut(auth); // Sign out the user from Firebase Auth
-            setLoading(false); // Hide loading indicator
-            return;
+          const token = await userCredential.user.getIdToken();
+          console.log('credentials ' + token + '   ' + userType + '   ' + artistId);
+
+          if (artistId) {
+            // Call the API to get artist account status
+            const response = await fetch(
+              `https://api.artvista.app/get_artist_account_status/?${new URLSearchParams({
+                artist_portal_token: token,
+                artist_id: artistId.toString(),
+              })}`
+            );
+
+            if (!response.ok) {
+              throw new Error(`Failed to check account status: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            const accountStatus = data.account_status;
+
+            // If account is pending or rejected, log out the user
+            if (accountStatus === "pending" || accountStatus === "rejected") {
+              showAlert(
+                accountStatus === "pending"
+                  ? "Your account is still pending approval."
+                  : "Your account has been rejected and cannot be accessed.",
+                "error"
+              );
+
+              await signOut(auth); // Sign out from Firebase
+              setUser(null); // Reset user state
+              setLoading(false); // Hide loading indicator
+              return;
+            }
           }
 
-          const userType = userDoc.data()?.type || "unknown"; // Default to "unknown" if `type` is missing
-          const token = await userCredential.user.getIdToken();
-          console.log('test ' + token);
-          // Set user in the context
+          // If account is approved, proceed with login
           setUser({
             ...userCredential.user,
-            type: userType, // Fetched from Firestore
-            approved: userApproved, // User is approved
+            type: userType, // Store user type
+            artistId, // Store first artist ID if available
           });
 
           router.push("/home"); // Navigate to home page
@@ -267,33 +370,106 @@ export default function Login() {
         return;
       }
 
-      if (
-        (registerAsArtist && isFormValid) ||
-        (!registerAsArtist && isMuseumFormValid)
-      ) {
+      if ((registerAsArtist && isFormValid) || (!registerAsArtist && isMuseumFormValid)) {
         try {
+          // Create user in Firebase
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
 
-          if (!userCredential.user.email) {
+          if (!user.email) {
             throw new Error("Email not found for the registered user");
           }
 
+          // Get authentication token
+          const token = await user.getIdToken();
+
           // Save user to Firestore
-          await setDoc(doc(db, "users", userCredential.user.email), {
-            type: registerAsArtist ? "artist" : "museum",
-            approved: false,
+          await setDoc(doc(db, "users", user.email), {
+            type: registerAsArtist ? "artist" : "museum"
           });
+
+          if (registerAsArtist) {
+            // Prepare API request for artist approval
+            const apiUrl = `https://api.artvista.app/submit_artist_for_approval/?artist_portal_token=${encodeURIComponent(token)}&artist_name=${encodeURIComponent(formData.name)}&artist_full_name=${encodeURIComponent(formData.fullName)}&born_date=${encodeURIComponent(formData.dateOfBirth)}&nationality=${encodeURIComponent(formData.nationality)}&active_years=${1}&artist_bio_text=${encodeURIComponent(formData.about)}`
+              + (formData.wikipediaLink ? `&wikipedia_link=${encodeURIComponent(formData.wikipediaLink)}` : "")
+              + (formData.officialSiteLink ? `&official_website=${encodeURIComponent(formData.officialSiteLink)}` : "");
+
+            const formDataToSend = new FormData();
+            if (formData.image) {
+              formDataToSend.append("profile_image", formData.image);
+            }
+
+            if (Array.isArray(formData.artMovement)) {
+              console.log(formData.artMovement)
+
+              formData.artMovement.forEach(item => {
+                formDataToSend.append("art_movement", item);
+              });
+            }
+
+            if (Array.isArray(formData.influencedBy)) {
+              formData.influencedBy.forEach(item => {
+                formDataToSend.append("influenced_by", item);
+              });
+            }
+
+            if (Array.isArray(formData.influencedOn)) {
+              formData.influencedOn.forEach(item => {
+                formDataToSend.append("influenced_on", item);
+              });
+            }
+
+            if (Array.isArray(formData.artInstitution)) {
+              formData.artInstitution.forEach(item => {
+                formDataToSend.append("art_institutions", item);
+              });
+            }
+
+            if (Array.isArray(formData.friendsOrCoworkers)) {
+              formData.friendsOrCoworkers.forEach(item => {
+                formDataToSend.append("friends_co_workers", item);
+              });
+            }
+
+            const response = await fetch(apiUrl, {
+              method: "POST",
+              body: formDataToSend,
+            });
+
+            const responseData = await response.json(); // Get the response JSON
+            console.log("API Response:", responseData); // Print it
+
+            if (!response.ok) {
+              throw new Error(`API request failed: ${responseData.detail}`);
+            }
+
+            // Extract artist ID from the response
+            const artistId = responseData.artist_id;
+            if (!artistId) {
+              throw new Error("Artist ID not received from API.");
+            }
+
+            // Update Firestore user document with artist_id
+            const userDocRef = doc(db, "users", user.email);
+            await setDoc(userDocRef, {
+              type: "artist",
+              artist_ids: [artistId], // Store artist_id in an array
+            }, { merge: true });
+
+            console.log("Artist ID added to Firestore:", artistId);
+          }
 
           setUsedEmail(email);
           setShowConfirmation(true);
+
         } catch (error) {
           showAlert(`Registration failed: ${(error as Error).message}`, "error");
         } finally {
-          setLoading(false); // Hide loading indicator
+          setLoading(false);
         }
       } else {
         showAlert(`Please fill in all required fields for ${registerAsArtist ? "artist" : "museum"} registration.`, "warning");
-        setLoading(false); // Hide loading indicator
+        setLoading(false);
       }
     }
   };
@@ -306,15 +482,20 @@ export default function Login() {
       about: "",
       dateOfBirth: "",
       nationality: "",
-      artMovement: "",
+      artMovement: [],
+      artMovementTemp: "", // Reset temporary input field
       email: "",
       password: "",
       confirmPassword: "",
       dateOfDeath: "",
-      influencedBy: "",
-      influencedOn: "",
-      artInstitution: "",
-      friendsOrCoworkers: "",
+      influencedBy: [],
+      influencedByTemp: "", // Reset temporary input field
+      influencedOn: [],
+      influencedOnTemp: "", // Reset temporary input field
+      artInstitution: [],
+      artInstitutionTemp: "", // Reset temporary input field
+      friendsOrCoworkers: [],
+      friendsOrCoworkersTemp: "", // Reset temporary input field
       wikipediaLink: "",
       officialSiteLink: "",
     });
@@ -339,6 +520,56 @@ export default function Login() {
     setShowConfirmation(false);
     setIsRegistering(false);
   };
+
+  const validateDateFormat = (dateString: string, fieldName: string) => {
+
+    if (!dateString.trim()) return true;
+
+    const datePattern = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/; // dd-mm-yyyy
+
+    if (!datePattern.test(dateString)) {
+      showAlert(`Invalid date format. Please enter ${fieldName} as dd-mm-yyyy`, "error");
+
+      if (fieldName === "dateOfBirth") {
+        setFormData((prev) => ({ ...prev, dateOfBirth: "" }));
+      } else if (fieldName === "dateOfDeath") {
+        setFormData((prev) => ({ ...prev, dateOfDeath: "" }));
+      }
+    }
+  };
+
+  const handleArrayInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof typeof formData
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: e.target.value, // Store temporary value
+    }));
+  };
+
+  const handleRemoveItem = (field: keyof typeof formData, index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: (prev[field] as string[]).filter((_, i) => i !== index), // Remove item from array
+    }));
+  };
+
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    field: keyof typeof formData
+  ) => {
+    if (e.key === "Enter" && formData[`${field}Temp` as keyof typeof formData]) {
+      e.preventDefault(); // Prevent form submission
+
+      setFormData((prev) => ({
+        ...prev,
+        [field]: [...(prev[field] as string[]), prev[`${field}Temp` as keyof typeof formData] as string],
+        [`${field}Temp`]: "", // Clear input
+      }));
+    }
+  };
+
 
 
   return (
@@ -437,7 +668,7 @@ export default function Login() {
                                 type="file"
                                 id="artistImageInput"
                                 name="image"
-                                accept="image/*"
+                                accept="image/jpeg, image/png, image/jpg" // Restrict to allowed formats
                                 className={styles.hiddenInput}
                                 onChange={handleInputChange}
                               />
@@ -455,7 +686,7 @@ export default function Login() {
                             </div>
                           </div>
                           <div className={styles.inputWrapperRequired}>
-                            <p>Name (short version or nickname)</p>
+                            <p>Name (First + Last, e.g., John Doe)</p>
                             <input
                               type="text"
                               name="name"
@@ -465,7 +696,7 @@ export default function Login() {
                             />
                           </div>
                           <div className={styles.inputWrapperRequired}>
-                            <p>Full Name (can be the same as name)</p>
+                            <p>Full Name (All names, e.g., John Michael Doe)</p>
                             <input
                               type="text"
                               name="fullName"
@@ -493,10 +724,11 @@ export default function Login() {
                             <input
                               type="text"
                               name="dateOfBirth"
-                              placeholder="Example: January 1, 1990"
+                              placeholder="dd-mm-yyyy"
                               className={styles.input}
                               value={formData.dateOfBirth}
                               onChange={handleInputChange}
+                              onBlur={(e) => validateDateFormat(e.target.value, "dateOfBirth")}
                             />
                           </div>
                           <div className={styles.inputWrapperRequired}>
@@ -510,71 +742,127 @@ export default function Login() {
                             />
                           </div>
 
-                          <div className={styles.inputWrapperRequired}>
-                            <p>Art Movement</p>
-                            <input
-                              type="text"
-                              name="artMovement"
-                              placeholder="Example: Realism"
-                              className={styles.input}
-                              value={formData.artMovement}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-
                           <div className={styles.inputWrapper}>
                             <p>Date Of Death</p>
                             <input
                               type="text"
                               name="dateOfDeath"
-                              placeholder="Example: January 1, 1990"
+                              placeholder="dd-mm-yyyy"
                               className={styles.input}
                               value={formData.dateOfDeath}
                               onChange={handleInputChange}
+                              onBlur={(e) => validateDateFormat(e.target.value, "dateOfDeath")}
                             />
                           </div>
+
                           <div className={styles.inputWrapper}>
-                            <p>Influenced By (multiple possible)</p>
-                            <input
-                              type="text"
-                              name="influencedBy"
-                              placeholder="Example: Leonardo DaVinci, Michael Jackson"
-                              className={styles.input}
-                              value={formData.influencedBy}
-                              onChange={handleInputChange}
-                            />
+                            <p>Art Movement (multiple)</p>
+                            <div className={styles.inputWithBubbles}>
+                              {formData.artMovement.map((item, index) => (
+                                <span key={index} className={styles.bubble}>
+                                  {item}
+                                  <button type="button" className={styles.removeBubble} onClick={() => handleRemoveItem("artMovement", index)}>❌</button>
+                                </span>
+                              ))}
+                              <input
+                                type="text"
+                                name="artMovementTemp"
+                                placeholder="Press Enter for each..."
+                                className={styles.input}
+                                value={formData.artMovementTemp || ""}
+                                onChange={(e) => handleArrayInputChange(e, "artMovementTemp")}
+                                onKeyDown={(e) => handleKeyDown(e, "artMovement")}
+                                style={{ display: "block", width: "100%" }} // Ensure full width when typing
+                              />
+                            </div>
                           </div>
+
                           <div className={styles.inputWrapper}>
-                            <p>Had An Impact On (multiple possible)</p>
-                            <input
-                              type="text"
-                              name="influencedOn"
-                              placeholder="Example: Leonardo DaVinci, Michael Jackson"
-                              className={styles.input}
-                              value={formData.influencedOn}
-                              onChange={handleInputChange}
-                            />
+                            <p>Influenced By (multiple)</p>
+                            <div className={styles.inputWithBubbles}>
+                              {formData.influencedBy.map((item, index) => (
+                                <span key={index} className={styles.bubble}>
+                                  {item}
+                                  <button type="button" className={styles.removeBubble} onClick={() => handleRemoveItem("influencedBy", index)}>❌</button>
+                                </span>
+                              ))}
+                              <input
+                                type="text"
+                                name="influencedByTemp"
+                                placeholder="Press Enter for each..."
+                                className={styles.input}
+                                value={formData.influencedByTemp || ""}
+                                onChange={(e) => handleArrayInputChange(e, "influencedByTemp")}
+                                onKeyDown={(e) => handleKeyDown(e, "influencedBy")}
+                                style={{ display: "block", width: "100%" }} // Ensure full width when typing
+                              />
+                            </div>
                           </div>
+
                           <div className={styles.inputWrapper}>
-                            <p>Art Institution Attended by the Individual</p>
-                            <input
-                              type="text"
-                              name="artInstitution"
-                              className={styles.input}
-                              value={formData.artInstitution}
-                              onChange={handleInputChange}
-                            />
+                            <p>Had An Impact On (multiple)</p>
+                            <div className={styles.inputWithBubbles}>
+                              {formData.influencedOn.map((item, index) => (
+                                <span key={index} className={styles.bubble}>
+                                  {item}
+                                  <button type="button" className={styles.removeBubble} onClick={() => handleRemoveItem("influencedOn", index)}>❌</button>
+                                </span>
+                              ))}
+                              <input
+                                type="text"
+                                name="influencedOnTemp"
+                                placeholder="Press Enter for each..."
+                                className={styles.input}
+                                value={formData.influencedOnTemp || ""}
+                                onChange={(e) => handleArrayInputChange(e, "influencedOnTemp")}
+                                onKeyDown={(e) => handleKeyDown(e, "influencedOn")}
+                                style={{ display: "block", width: "100%" }} // Ensure full width when typing
+                              />
+                            </div>
                           </div>
+
                           <div className={styles.inputWrapper}>
-                            <p>Friends/ Co-workers (multiple possible)</p>
-                            <input
-                              type="text"
-                              name="friendsOrCoworkers"
-                              placeholder="Example: Leonardo DaVinci, Michael Jackson"
-                              className={styles.input}
-                              value={formData.friendsOrCoworkers}
-                              onChange={handleInputChange}
-                            />
+                            <p>Art Institution Attended by the Individual (multiple)</p>
+                            <div className={styles.inputWithBubbles}>
+                              {formData.artInstitution.map((item, index) => (
+                                <span key={index} className={styles.bubble}>
+                                  {item}
+                                  <button type="button" className={styles.removeBubble} onClick={() => handleRemoveItem("artInstitution", index)}>❌</button>
+                                </span>
+                              ))}
+                              <input
+                                type="text"
+                                name="artInstitutionTemp"
+                                placeholder="Press Enter for each..."
+                                className={styles.input}
+                                value={formData.artInstitutionTemp || ""}
+                                onChange={(e) => handleArrayInputChange(e, "artInstitutionTemp")}
+                                onKeyDown={(e) => handleKeyDown(e, "artInstitution")}
+                                style={{ display: "block", width: "100%" }} // Ensure full width when typing
+                              />
+                            </div>
+                          </div>
+
+                          <div className={styles.inputWrapper}>
+                            <p>Friends/ Co-workers (multiple)</p>
+                            <div className={styles.inputWithBubbles}>
+                              {formData.friendsOrCoworkers.map((item, index) => (
+                                <span key={index} className={styles.bubble}>
+                                  {item}
+                                  <button type="button" className={styles.removeBubble} onClick={() => handleRemoveItem("friendsOrCoworkers", index)}>❌</button>
+                                </span>
+                              ))}
+                              <input
+                                type="text"
+                                name="friendsOrCoworkersTemp"
+                                placeholder="Press Enter for each..."
+                                className={styles.input}
+                                value={formData.friendsOrCoworkersTemp || ""}
+                                onChange={(e) => handleArrayInputChange(e, "friendsOrCoworkersTemp")}
+                                onKeyDown={(e) => handleKeyDown(e, "friendsOrCoworkers")}
+                                style={{ display: "block", width: "100%" }} // Ensure full width when typing
+                              />
+                            </div>
                           </div>
                           <div className={styles.inputWrapper}>
                             <p>Wikipedia Link</p>
@@ -638,7 +926,7 @@ export default function Login() {
                                 type="file"
                                 id="museumImageInput"
                                 name="image"
-                                accept="image/*"
+                                accept="image/jpeg, image/png, image/jpg" // Restrict to allowed formats
                                 className={styles.hiddenInput}
                                 onChange={handleMuseumInputChange}
                               />

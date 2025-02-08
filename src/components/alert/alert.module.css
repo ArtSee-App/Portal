@@ -118,6 +118,30 @@
     /* Stronger glow */
 }
 
+
+.inputField {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    outline: none;
+    transition: border 0.2s ease-in-out;
+}
+
+.inputField::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.inputField:focus {
+    border-color: #00c6ff;
+}
+
+
 @keyframes fadeIn {
     from {
         opacity: 0;

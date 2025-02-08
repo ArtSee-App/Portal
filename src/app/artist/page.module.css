@@ -204,6 +204,39 @@
   max-width: 200px;
 }
 
+.overlay {
+  position: relative;
+}
+
+.overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  /* Semi-transparent dark overlay */
+  z-index: 1;
+  /* Ensure it appears above the content */
+  pointer-events: none;
+  /* Prevent overlay from blocking interactions */
+  border-radius: 8px;
+  /* Match existing border-radius */
+}
+
+.overlay img,
+.overlay .plusIcon {
+  opacity: 0.3;
+  /* Reduce the opacity of the content */
+}
+
+.overlay-disabled {
+  position: relative;
+  z-index: auto;
+}
+
+
 .imageUploadWrapper {
   display: flex;
   justify-content: center;
@@ -247,6 +280,51 @@
   left: 0;
 }
 
+.inputWithBubbles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  background-color: white;
+  min-height: 44px;
+  /* Ensures enough space for typing */
+}
+
+.inputWithBubbles input {
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 8px;
+  font-size: 1rem;
+  min-width: 150px;
+  /* Prevents the input from getting too small */
+  max-width: 100%;
+  flex-grow: 1;
+  /* Expands but doesn't shrink */
+}
+
+
+.bubble {
+  background: lightgray;
+  color: black;
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+}
+
+.removeBubble {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
 
 
 .inputWrapper {
@@ -387,7 +465,7 @@
 }
 
 .button.deleteButton {
-  background-color: red !important;
+  background-color: #d32f2f !important;
   /* Red for delete */
   color: white;
   background: none;
@@ -398,12 +476,41 @@
   background-color: darkred;
 }
 
+.approveButton {
+  background-color: #1b8e5e !important;
+  ;
+  color: white;
+  background: none;
+  /* Remove the linear gradient */
+}
+
+.approveButton:hover {
+  background-color: darkgreen;
+}
+
+.rejectButton {
+  background-color: #d32f2f !important;
+  ;
+  color: white;
+  background: none;
+  /* Remove the linear gradient */
+}
+
+.rejectButton:hover {
+  background-color: darkred;
+}
+
+
 .pendingStatus {
-  color: yellow;
+  color: #FF9800;
 }
 
 .publishedStatus {
-  color: green;
+  color: #1b8e5e;
+}
+
+.rejectedStatus {
+  color: #d32f2f;
 }
 
 
