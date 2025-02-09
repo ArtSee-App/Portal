@@ -102,6 +102,14 @@
   /* Light gray divider */
 }
 
+.editNotice {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  /* Red color for emphasis */
+  font-weight: bold;
+}
+
+
 .headerHelp {
   font-size: 1rem;
   color: #1e90ff;

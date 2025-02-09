@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState, Suspense, useRef } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
@@ -142,6 +142,10 @@ export default function Artist() {
   const [loadingApproval, setLoadingApproval] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+
+  const hasFetchedArtistDetails = useRef(false); // Prevent multiple API calls for artist details
+  const hasFetchedArtworkStatus = useRef(false); // Prevent multiple API calls for artwork status
+
 
   const [initialFormData, setInitialFormData] = useState<typeof formData | null>(null);
   const [artworkStatus, setArtworkStatus] = useState<"Rejected" | "Accepted" | "Pending" | null>(null);
@@ -464,14 +468,16 @@ export default function Artist() {
     e: React.KeyboardEvent<HTMLInputElement>,
     field: keyof typeof formData
   ) => {
-    if (e.key === "Enter" && formData[`${field}Temp` as keyof typeof formData]) {
+    if (e.key === "Enter" || e.key === "Done" || e.key === "Next") { // Capture mobile "Next" button
       e.preventDefault(); // Prevent form submission
 
-      setFormData((prev) => ({
-        ...prev,
-        [field]: [...(prev[field] as string[]), prev[`${field}Temp` as keyof typeof formData] as string],
-        [`${field}Temp`]: "", // Clear input
-      }));
+      if (formData[`${field}Temp` as keyof typeof formData]) {
+        setFormData((prev) => ({
+          ...prev,
+          [field]: [...(prev[field] as string[]), prev[`${field}Temp` as keyof typeof formData] as string],
+          [`${field}Temp`]: "", // Clear input
+        }));
+      }
     }
   };
 
@@ -491,71 +497,186 @@ export default function Artist() {
 
 
 
-  // Call this function when the component mounts
+  /**
+   * Fetch artist details for ARTISTS (Runs only once)
+   */
   useEffect(() => {
-    const fetchArtistDetails = async () => {
+    const fetchArtistDetailsForArtist = async () => {
       try {
-        if (user?.type === "artist" || (user?.type === "admin" && artistId !== null && isPending !== null)) {
-          const token = await getIdToken();
-          console.log("artistid" + user.artistId);
+        if (user?.type !== "artist" || hasFetchedArtistDetails.current) return;
 
-          const endpoint =
-            user?.type === "artist"
-              ? `https://api.artvista.app/get_artist_details_to_portal/?artist_portal_token=${token}&artist_id=${user.artistId}`
-              : `https://api.artvista.app/get_artist_details_to_admin_portal/?admin_portal_token=${token}&artist_id=${artistId}&is_pending=${isPending}`;
+        const token = await getIdToken();
+        const endpoint = `https://api.artvista.app/get_artist_details_to_portal/?artist_portal_token=${token}&artist_id=${user.artistId}`;
 
-          const response = await fetch(endpoint);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
+        const response = await fetch(endpoint);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-          const artistDetails = await response.json();
-          const { text_information } = artistDetails;
+        const artistDetails = await response.json();
+        const { text_information } = artistDetails;
 
-          const profileImageFile = text_information?.spaces_dir
-            ? await fetchImageWithProxy(text_information.spaces_dir, "profile_image.jpg")
-            : null;
 
-          const parseStringToArray = (str: string | null): string[] => {
-            if (!str) return [];
-            str = str.replace(/^{|}$/g, "");
-            const matches = str.match(/"[^"]+"|[^,]+/g) || [];
-            return matches.map((item) => item.replace(/^"|"$/g, "").trim());
+        const profileImageFile = text_information?.spaces_dir
+          ? await fetchImageWithProxy(text_information.spaces_dir, "profile_image.jpg")
+          : null;
+
+        const parseStringToArray = (str: string | null): string[] => {
+          if (!str) return [];
+          str = str.replace(/^{|}$/g, "");
+          const matches = str.match(/"[^"]+"|[^,]+/g) || [];
+          return matches.map((item) => item.replace(/^"|"$/g, "").trim());
+        };
+
+        const formatDate = (dateString: string | null): string => {
+          if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString || "";
+          const [year, month, day] = dateString.split("-");
+          return `${day}-${month}-${year}`;
+        };
+
+        const fetchedData = {
+          image: profileImageFile,
+          name: text_information.name || "",
+          fullName: text_information.full_name || "",
+          about: text_information.about || "",
+          dateOfBirth: formatDate(text_information.born),
+          nationality: text_information.nationality || "",
+          artMovement: parseStringToArray(text_information.art_movement),
+          artMovementTemp: "",
+          dateOfDeath: formatDate(text_information.died),
+          influencedBy: parseStringToArray(text_information.influenced_by),
+          influencedByTemp: "",
+          influencedOn: parseStringToArray(text_information.influenced_on),
+          influencedOnTemp: "",
+          artInstitution: parseStringToArray(text_information.art_institution),
+          artInstitutionTemp: "",
+          friendsOrCoworkers: parseStringToArray(text_information.friends_co_workers),
+          friendsOrCoworkersTemp: "",
+          wikipediaLink: text_information.wikipedia || "",
+          officialSiteLink: text_information.official_website || "",
+        };
+
+        setFormData(fetchedData);
+        setInitialFormData(fetchedData);
+
+        hasFetchedArtistDetails.current = true; // Prevent multiple calls
+      } catch (error) {
+        console.error("Error fetching artist details:", error);
+      } finally {
+        setLoadingFormData(false);
+      }
+    };
+
+    fetchArtistDetailsForArtist();
+  }, [user]); // Runs only when user object changes
+
+  /**
+   * Fetch artwork status for ARTISTS (Runs only once)
+   */
+  useEffect(() => {
+    const fetchArtworkStatusForArtist = async () => {
+      try {
+        if (user?.type !== "artist" || hasFetchedArtworkStatus.current) return;
+
+        const token = await getIdToken();
+        const endpoint = `https://api.artvista.app/get_artist_account_status/?artist_portal_token=${token}&artist_id=${user.artistId}`;
+
+        const response = await fetch(endpoint);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch artwork status: ${response.statusText}`);
+        }
+
+        const statusData = await response.json();
+        if (statusData.account_status) {
+          setArtworkStatus(
+            statusData.account_status === "pending"
+              ? "Pending"
+              : statusData.account_status === "approved"
+                ? "Accepted"
+                : "Rejected"
+          );
+        }
+
+        hasFetchedArtworkStatus.current = true; // Prevent multiple calls
+      } catch (error) {
+        console.error("Error fetching artwork status:", error);
+      }
+    };
+
+    fetchArtworkStatusForArtist();
+  }, [user]); // Runs only when user object changes
+
+  /**
+   * Fetch artist details for ADMINS (Runs when artistId or isPending changes)
+   */
+  useEffect(() => {
+    const fetchArtistDetailsForAdmin = async () => {
+      try {
+        if (user?.type !== "admin" || artistId === null || isPending === null) return;
+
+        const token = await getIdToken();
+        const endpoint = `https://api.artvista.app/get_artist_details_to_admin_portal/?admin_portal_token=${token}&artist_id=${artistId}&is_pending=${isPending}`;
+
+        const response = await fetch(endpoint);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const artistDetails = await response.json();
+        const { text_information } = artistDetails;
+
+
+
+        const profileImageFile = text_information?.spaces_dir
+          ? await fetchImageWithProxy(text_information.spaces_dir, "profile_image.jpg")
+          : null;
+
+        const parseStringToArray = (str: string | null): string[] => {
+          if (!str) return [];
+          str = str.replace(/^{|}$/g, "");
+          const matches = str.match(/"[^"]+"|[^,]+/g) || [];
+          return matches.map((item) => item.replace(/^"|"$/g, "").trim());
+        };
+
+        const formatDate = (dateString: string | null): string => {
+          if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString || "";
+          const [year, month, day] = dateString.split("-");
+          return `${day}-${month}-${year}`;
+        };
+
+        const fetchedData = {
+          image: profileImageFile,
+          name: text_information.name || "",
+          fullName: text_information.full_name || "",
+          about: text_information.about || "",
+          dateOfBirth: formatDate(text_information.born),
+          nationality: text_information.nationality || "",
+          artMovement: parseStringToArray(text_information.art_movement),
+          artMovementTemp: "",
+          dateOfDeath: formatDate(text_information.died),
+          influencedBy: parseStringToArray(text_information.influenced_by),
+          influencedByTemp: "",
+          influencedOn: parseStringToArray(text_information.influenced_on),
+          influencedOnTemp: "",
+          artInstitution: parseStringToArray(text_information.art_institution),
+          artInstitutionTemp: "",
+          friendsOrCoworkers: parseStringToArray(text_information.friends_co_workers),
+          friendsOrCoworkersTemp: "",
+          wikipediaLink: text_information.wikipedia || "",
+          officialSiteLink: text_information.official_website || "",
+        };
+
+        setFormData(fetchedData);
+        setInitialFormData(fetchedData);
+
+        // Set artwork status based on pending_situation
+        if (text_information.pending_situation !== undefined) {
+          const statusMap: { 0: "Rejected"; 1: "Accepted"; 2: "Pending" } = {
+            0: "Rejected",
+            1: "Accepted",
+            2: "Pending",
           };
-
-          const formatDate = (dateString: string | null): string => {
-            if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString || "";
-            const [year, month, day] = dateString.split("-");
-            return `${day}-${month}-${year}`;
-          };
-
-          const pendingSituation = text_information.pending_situation as 0 | 1 | 2;
-          setArtworkStatus(statusMap[pendingSituation] || null);
-
-          const fetchedData = {
-            image: profileImageFile,
-            name: text_information.name || "",
-            fullName: text_information.full_name || "",
-            about: text_information.about || "",
-            dateOfBirth: formatDate(text_information.born),
-            nationality: text_information.nationality || "",
-            artMovement: parseStringToArray(text_information.art_movement),
-            artMovementTemp: "",
-            dateOfDeath: formatDate(text_information.died),
-            influencedBy: parseStringToArray(text_information.influenced_by),
-            influencedByTemp: "",
-            influencedOn: parseStringToArray(text_information.influenced_on),
-            influencedOnTemp: "",
-            artInstitution: parseStringToArray(text_information.art_institution),
-            artInstitutionTemp: "",
-            friendsOrCoworkers: parseStringToArray(text_information.friends_co_workers),
-            friendsOrCoworkersTemp: "",
-            wikipediaLink: text_information.wikipedia || "",
-            officialSiteLink: text_information.official_website || "",
-          };
-
-          setFormData(fetchedData);
-          setInitialFormData(fetchedData);
+          setArtworkStatus(statusMap[text_information.pending_situation as 0 | 1 | 2] || null);
         }
       } catch (error) {
         console.error("Error fetching artist details:", error);
@@ -564,9 +685,8 @@ export default function Artist() {
       }
     };
 
-    fetchArtistDetails();
-  }, [user, artistId, isPending]);
-
+    fetchArtistDetailsForAdmin();
+  }, [user, artistId, isPending]); // Runs only when user is admin and values change
 
 
 
@@ -626,6 +746,8 @@ export default function Artist() {
                 </>
               )}
 
+
+
               {!isEditMode && (
                 <>
                   <span className={styles.divider}></span>
@@ -638,6 +760,13 @@ export default function Artist() {
                 </>
               )}
             </div>
+
+            {isEditMode && user?.type === "artist" && (
+              <p className={styles.editNotice}>
+                Any submitted changes need to be approved before your profile updates.
+              </p>
+            )}
+
             <form
               id="artist-register-form"
               className={`${styles.form} ${styles.registeringForm}`}

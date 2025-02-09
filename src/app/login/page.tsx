@@ -559,17 +559,18 @@ export default function Login() {
     e: React.KeyboardEvent<HTMLInputElement>,
     field: keyof typeof formData
   ) => {
-    if (e.key === "Enter" && formData[`${field}Temp` as keyof typeof formData]) {
+    if (e.key === "Enter" || e.key === "Done" || e.key === "Next") { // Capture mobile "Next" button
       e.preventDefault(); // Prevent form submission
 
-      setFormData((prev) => ({
-        ...prev,
-        [field]: [...(prev[field] as string[]), prev[`${field}Temp` as keyof typeof formData] as string],
-        [`${field}Temp`]: "", // Clear input
-      }));
+      if (formData[`${field}Temp` as keyof typeof formData]) {
+        setFormData((prev) => ({
+          ...prev,
+          [field]: [...(prev[field] as string[]), prev[`${field}Temp` as keyof typeof formData] as string],
+          [`${field}Temp`]: "", // Clear input
+        }));
+      }
     }
   };
-
 
 
   return (

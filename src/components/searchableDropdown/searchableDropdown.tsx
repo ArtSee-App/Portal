@@ -58,6 +58,14 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                 onBlur={() => setTimeout(() => setIsOpen(false), 200)}
                 disabled={disabled}
             />
+
+            <div
+                className={`${stylesLocal.dropdownArrow} ${isOpen ? stylesLocal.arrowUp : stylesLocal.arrowDown}`}
+                onClick={() => setIsOpen(!isOpen)}
+            >
+                ▼
+            </div>
+
             {isOpen && (
                 <ul className={stylesLocal.dropdownList}>
                     {filteredOptions.length > 0 ? (
@@ -66,23 +74,16 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                                 key={index}
                                 className={stylesLocal.dropdownListItem}
                                 onMouseDown={() => handleSelect(option.name)}
-                                onMouseOver={(e) =>
-                                    (e.currentTarget.className = `${stylesLocal.dropdownListItem} ${stylesLocal.dropdownListItemHover}`)
-                                }
-                                onMouseOut={(e) =>
-                                    (e.currentTarget.className = stylesLocal.dropdownListItem)
-                                }
                             >
                                 {option.name}
                             </li>
                         ))
                     ) : (
-                        <li className={stylesLocal.dropdownListEmpty}>
-                            No options found
-                        </li>
+                        <li className={stylesLocal.dropdownListEmpty}>No options found</li>
                     )}
                 </ul>
             )}
+
             {isClearButtonEnabled && (
                 <button
                     type="button"

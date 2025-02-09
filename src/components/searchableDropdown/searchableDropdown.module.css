@@ -4,7 +4,8 @@
 }
 
 .dropdownInput {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23999' d='M10 12l-5-5h10l-5 5z'/%3E%3C/svg%3E");
+    background-image: none !important;
+    /* Removes the arrow */
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 16px;
@@ -70,4 +71,28 @@
     cursor: pointer;
     font-size: 0.9rem;
     text-decoration: underline;
+}
+
+.dropdownArrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 10px;
+    color: #999;
+    user-select: none;
+    padding: 5px;
+}
+
+.arrowUp {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.arrowDown {
+    transform: translateY(-50%) rotate(0deg);
+}
+
+.dropdownArrow:hover {
+    color: #666;
 }
