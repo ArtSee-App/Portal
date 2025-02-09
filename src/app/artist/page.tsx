@@ -232,6 +232,7 @@ export default function Artist() {
         throw new Error("Failed to retrieve authentication token.");
       }
 
+
       // Prepare API request for artist approval
       let apiUrl = `https://api.artvista.app/submit_artist_for_approval/?artist_portal_token=${encodeURIComponent(token)}&artist_name=${encodeURIComponent(formData.name)}&artist_full_name=${encodeURIComponent(formData.fullName)}&born_date=${encodeURIComponent(formData.dateOfBirth)}&nationality=${encodeURIComponent(formData.nationality)}&active_years=1&artist_bio_text=${encodeURIComponent(formData.about)}`
         + (formData.wikipediaLink ? `&wikipedia_link=${encodeURIComponent(formData.wikipediaLink)}` : "")
@@ -515,7 +516,7 @@ export default function Artist() {
 
         const artistDetails = await response.json();
         const { text_information } = artistDetails;
-
+        console.log(text_information)
 
         const profileImageFile = text_information?.spaces_dir
           ? await fetchImageWithProxy(text_information.spaces_dir, "profile_image.jpg")
@@ -552,8 +553,8 @@ export default function Artist() {
           artInstitutionTemp: "",
           friendsOrCoworkers: parseStringToArray(text_information.friends_co_workers),
           friendsOrCoworkersTemp: "",
-          wikipediaLink: text_information.wikipedia || "",
-          officialSiteLink: text_information.official_website || "",
+          wikipediaLink: text_information.wikipedia_link || "",
+          officialSiteLink: text_information.official_site_link || "",
         };
 
         setFormData(fetchedData);
@@ -625,7 +626,7 @@ export default function Artist() {
         const artistDetails = await response.json();
         const { text_information } = artistDetails;
 
-
+        console.log(text_information)
 
         const profileImageFile = text_information?.spaces_dir
           ? await fetchImageWithProxy(text_information.spaces_dir, "profile_image.jpg")
@@ -662,8 +663,8 @@ export default function Artist() {
           artInstitutionTemp: "",
           friendsOrCoworkers: parseStringToArray(text_information.friends_co_workers),
           friendsOrCoworkersTemp: "",
-          wikipediaLink: text_information.wikipedia || "",
-          officialSiteLink: text_information.official_website || "",
+          wikipediaLink: text_information.wikipedia_link || "",
+          officialSiteLink: text_information.official_site_link || "",
         };
 
         setFormData(fetchedData);
