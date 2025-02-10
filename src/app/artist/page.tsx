@@ -482,6 +482,20 @@ export default function Artist() {
     }
   };
 
+  const handleAddItem = (field: keyof typeof formData) => {
+    if (formData[`${field}Temp` as keyof typeof formData]) {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: [
+          ...(prev[field] as string[]),
+          prev[`${field}Temp` as keyof typeof formData] as string
+        ],
+        [`${field}Temp`]: "", // Clear input after adding
+      }));
+    }
+  };
+
+
   const fetchImageWithProxy = async (url: string, filename: string): Promise<File | null> => {
     try {
       const response = await fetch(url);
@@ -914,6 +928,16 @@ export default function Artist() {
                           disabled={isEditMode && !isEditing}
                         />
                       )}
+                      {formData.artMovementTemp && (
+                        <button
+                          type="button"
+                          className={styles.addBubbleButton}
+                          onClick={() => handleAddItem("artMovement")}
+                        >
+                          +
+                        </button>
+                      )}
+
                     </div>
                   </div>
 
@@ -949,6 +973,15 @@ export default function Artist() {
                           style={{ display: "block", width: "100%" }} // Ensure full width when typing
                           disabled={isEditMode && !isEditing}
                         />
+                      )}
+                      {formData.influencedByTemp && (
+                        <button
+                          type="button"
+                          className={styles.addBubbleButton}
+                          onClick={() => handleAddItem("influencedBy")}
+                        >
+                          +
+                        </button>
                       )}
 
                     </div>
@@ -987,6 +1020,15 @@ export default function Artist() {
                           disabled={isEditMode && !isEditing}
                         />
                       )}
+                      {formData.influencedOnTemp && (
+                        <button
+                          type="button"
+                          className={styles.addBubbleButton}
+                          onClick={() => handleAddItem("influencedOn")}
+                        >
+                          +
+                        </button>
+                      )}
 
                     </div>
                   </div>
@@ -1023,6 +1065,15 @@ export default function Artist() {
                           style={{ display: "block", width: "100%" }} // Ensure full width when typing
                           disabled={isEditMode && !isEditing}
                         />
+                      )}
+                      {formData.artInstitutionTemp && (
+                        <button
+                          type="button"
+                          className={styles.addBubbleButton}
+                          onClick={() => handleAddItem("artInstitution")}
+                        >
+                          +
+                        </button>
                       )}
 
                     </div>
@@ -1061,6 +1112,16 @@ export default function Artist() {
                           disabled={isEditMode && !isEditing}
                         />
                       )}
+                      {formData.friendsOrCoworkersTemp && (
+                        <button
+                          type="button"
+                          className={styles.addBubbleButton}
+                          onClick={() => handleAddItem("friendsOrCoworkers")}
+                        >
+                          +
+                        </button>
+                      )}
+
                     </div>
                   </div>
                   <div className={styles.inputWrapper}>

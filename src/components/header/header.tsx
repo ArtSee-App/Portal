@@ -82,20 +82,22 @@ const Header = () => {
                             Home
                         </Link>
                     </li>
-                    <li>
-                        <Link
-                            href={
-                                user?.type === "museum"
-                                    ? "/museum?edit=true"
-                                    : user?.type === "artist"
-                                        ? "/artist?edit=true"
-                                        : "/home"
-                            }
-                            onClick={closeSidebar}
-                        >
-                            Account Settings
-                        </Link>
-                    </li>
+                    {user?.type !== "admin" && (
+                        <li>
+                            <Link
+                                href={
+                                    user?.type === "museum"
+                                        ? "/museum?edit=true"
+                                        : user?.type === "artist"
+                                            ? "/artist?edit=true"
+                                            : "/home"
+                                }
+                                onClick={closeSidebar}
+                            >
+                                Account Settings
+                            </Link>
+                        </li>
+                    )}
                     <li>
                         <Link
                             href="https://artvista.app/"
@@ -138,20 +140,22 @@ const Header = () => {
                                     Home
                                 </Link>
                             </li>
-                            <li>
-                                <Link
-                                    href={
-                                        user?.type === "museum"
-                                            ? "/museum?edit=true"
-                                            : user?.type === "artist"
-                                                ? "/artist?edit=true"
-                                                : "/home"
-                                    }
-                                    onClick={closeSidebar}
-                                >
-                                    Account Settings
-                                </Link>
-                            </li>
+                            {user?.type !== "admin" && (
+                                <li>
+                                    <Link
+                                        href={
+                                            user?.type === "museum"
+                                                ? "/museum?edit=true"
+                                                : user?.type === "artist"
+                                                    ? "/artist?edit=true"
+                                                    : "/home"
+                                        }
+                                        onClick={closeSidebar}
+                                    >
+                                        Account Settings
+                                    </Link>
+                                </li>
+                            )}
                             <li>
                                 <Link
                                     href="https://artvista.app/"
