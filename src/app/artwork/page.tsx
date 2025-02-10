@@ -1018,8 +1018,15 @@ export default function Artwork() {
                       className={styles.input}
                       value={formData.artworkMedia}
                       onChange={handleInputChange}
+                      maxLength={25}
                       disabled={isEditMode && !isEditing}
                     />
+                    <span
+                      className={`${styles.charCounter} ${formData.artworkMedia.length === 25 ? styles.charCounterLimit : ""
+                        }`}
+                    >
+                      {formData.artworkMedia.length} / 25 characters
+                    </span>
                   </div>
                   <div className={styles.inputWrapper}>
                     <p>Artwork's Dimensions</p>
@@ -1030,8 +1037,15 @@ export default function Artwork() {
                       className={styles.input}
                       value={formData.artworkDimensions}
                       onChange={handleInputChange}
+                      maxLength={25}
                       disabled={isEditMode && !isEditing}
                     />
+                    <span
+                      className={`${styles.charCounter} ${formData.artworkDimensions.length === 25 ? styles.charCounterLimit : ""
+                        }`}
+                    >
+                      {formData.artworkDimensions.length} / 25 characters
+                    </span>
                   </div>
                   <div
                     className={styles.inputWrapper}

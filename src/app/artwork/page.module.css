@@ -570,6 +570,17 @@
   color: #d32f2f;
 }
 
+.charCounter {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  text-align: right;
+  margin-top: 4px;
+}
+
+.charCounterLimit {
+  color: #d32f2f;
+}
+
 
 
 
