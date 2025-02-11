@@ -596,6 +596,7 @@ export default function Login() {
               Thank you for registering! Your request needs to be approved first. We will
               contact you about our decision at the following email:{" "}
               <strong>{usedEmail}</strong>
+              . Make sure to check your inbox or spam folder.
             </p>
             <button
               onClick={handleBackToLogin}
