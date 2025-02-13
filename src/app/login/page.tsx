@@ -16,6 +16,7 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useAlert } from "@/context/AlertContext";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
 
 
 export default function Login() {
@@ -35,6 +36,9 @@ export default function Login() {
     email: "",
     password: "",
   });
+
+  const { getRecaptchaToken } = useRecaptcha();
+
 
   const handleLoginInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -276,6 +280,26 @@ export default function Login() {
 
     setLoading(true); // Show loading indicator
 
+    const recaptchaToken = await getRecaptchaToken("register");
+
+
+    // Verify with backend
+    const responseCaptcha = await fetch("/api/verify-recaptcha", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: recaptchaToken }),
+    });
+
+    const resultCaptcha = await responseCaptcha.json();
+
+    if (!resultCaptcha.success) {
+      showAlert("reCAPTCHA verification failed. There is suspicion of bot activity, try again later.", "error");
+      setLoading(false); // Show loading indicator
+      return;
+    }
+    console.log(responseCaptcha)
+
+
     if (!isRegistering) {
       // Login logic
       if (loginData.email && loginData.password) {
@@ -390,7 +414,7 @@ export default function Login() {
 
           if (registerAsArtist) {
             // Prepare API request for artist approval
-            const apiUrl = `https://api.artvista.app/submit_artist_for_approval/?artist_portal_token=${encodeURIComponent(token)}&artist_name=${encodeURIComponent(formData.name)}&artist_full_name=${encodeURIComponent(formData.fullName)}&born_date=${encodeURIComponent(formData.dateOfBirth)}&nationality=${encodeURIComponent(formData.nationality)}&active_years=${1}&artist_bio_text=${encodeURIComponent(formData.about)}`
+            const apiUrl = `https://api.artvista.app/submit_artist_for_approval/?artist_portal_token=${encodeURIComponent(token)}&artist_name=${encodeURIComponent(formData.name)}&artist_full_name=${encodeURIComponent(formData.fullName)}&born_date=${encodeURIComponent(formData.dateOfBirth)}&nationality=${encodeURIComponent(formData.nationality)}&active_years=${1}&artist_bio_text=${encodeURIComponent(formData.about)}&user_email=${encodeURIComponent(formData.email)}`
               + (formData.wikipediaLink ? `&wikipedia_link=${encodeURIComponent(formData.wikipediaLink)}` : "")
               + (formData.officialSiteLink ? `&official_website=${encodeURIComponent(formData.officialSiteLink)}` : "");
 

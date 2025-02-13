@@ -1,15 +1,15 @@
+// src/app/layout.tsx
 import "./globals.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { UserProvider } from "@/context/UserContext";
-import AppWrapper from "./AppWrapper"; // Import client component wrapper
-import { AlertProvider } from "@/context/AlertContext";
+import RootClient from "./RootClient"; // Import Client Component
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -32,11 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <UserProvider>
-          <AlertProvider>
-            <AppWrapper>{children}</AppWrapper>
-          </AlertProvider>
-        </UserProvider>
+        <RootClient>{children}</RootClient>
       </body>
     </html>
   );

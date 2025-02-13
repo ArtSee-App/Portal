@@ -1,7 +1,9 @@
+// src/app/AppWrapper.tsx
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useUser } from "@/context/UserContext";
+import { useRouter, usePathname } from "next/navigation";
 import styles from "./AppWrapper.module.css";
 
 const LoadingScreen = () => (
@@ -15,9 +17,24 @@ const LoadingScreen = () => (
 );
 
 const AppWrapper = ({ children }: { children: React.ReactNode }) => {
-    const { isLoadingUser } = useUser();
+    const { user, isLoadingUser } = useUser();
+    const router = useRouter();
+    const pathname = usePathname();
 
-    if (isLoadingUser) {
+    // NEW: Block rendering until auth check is done
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+    useEffect(() => {
+        if (!isLoadingUser) {
+            if (!user && pathname !== "/login") {
+                router.replace("/login"); // Reset navigation stack
+            }
+            setIsCheckingAuth(false);
+        }
+    }, [user, isLoadingUser, pathname, router]);
+
+    // Block rendering during auth check to prevent flash
+    if (isCheckingAuth || isLoadingUser) {
         return <LoadingScreen />;
     }
 

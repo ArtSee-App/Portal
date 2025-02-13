@@ -64,6 +64,18 @@ body::-webkit-scrollbar-thumb:hover {
   /* Darker gray on hover for clear feedback */
 }
 
+/* Default: Show reCAPTCHA badge */
+.grecaptcha-badge {
+  visibility: visible;
+  transition: visibility 0.3s ease-in-out;
+}
+
+/* Hide reCAPTCHA badge when specified */
+.hide-recaptcha .grecaptcha-badge {
+  visibility: hidden;
+}
+
+
 
 @media (prefers-color-scheme: light) {
   html {

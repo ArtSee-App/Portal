@@ -696,11 +696,6 @@ export default function Artwork() {
 
 
 
-  useEffect(() => {
-    if (!isLoadingUser && (user === undefined || user?.type === undefined)) {
-      router.push("/login"); // Redirect to login if user type is not determined
-    }
-  }, [user, router]);
 
 
 

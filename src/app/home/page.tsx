@@ -357,10 +357,12 @@ export default function Home() {
             artists_per_page: itemsPerPage.toString(),
           })}`
         );
+
         if (!response.ok) throw new Error("Failed to fetch pending artists");
 
         const data: { artist_id: number; name: string; spaces_dir_low_resolution: string; pending_situation: number }[] = await response.json();
         const artistsData = data.filter((item) => item.artist_id);
+        console.log(artistsData)
 
         if (artistsData.length === 0 && page > 1) {
           setHasMoreDataArtists(false);
@@ -540,11 +542,6 @@ export default function Home() {
 
 
 
-  useEffect(() => {
-    if (!isLoadingUser && (user === undefined || user?.type === undefined)) {
-      router.push("/login"); // Redirect to login only after isLoadingUser is false
-    }
-  }, [user, isLoadingUser, router]);
 
 
   const fetchCalled = useRef(false); // Track if initial fetch has been called
