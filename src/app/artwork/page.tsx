@@ -649,7 +649,6 @@ export default function Artwork() {
       }
 
       const result = await response.json();
-      console.log("First Endpoint Response:", result);
       return result.artwork_id; // Return artwork_id for the next step
     } catch (error) {
       console.error("Error submitting artwork:", error);

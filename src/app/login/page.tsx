@@ -297,7 +297,6 @@ export default function Login() {
       setLoading(false); // Show loading indicator
       return;
     }
-    console.log(responseCaptcha)
 
 
     if (!isRegistering) {
@@ -327,7 +326,9 @@ export default function Login() {
           const artistId = artistIds.length > 0 ? artistIds[0] : null;
 
           const token = await userCredential.user.getIdToken();
-          console.log('credentials ' + token + '   ' + userType + '   ' + artistId);
+          if (userType === "admin") {
+            console.log('credentials ' + token + '   ' + userType + '   ' + artistId);
+          }
 
           if (artistId) {
             // Call the API to get artist account status
@@ -424,8 +425,6 @@ export default function Login() {
             }
 
             if (Array.isArray(formData.artMovement)) {
-              console.log(formData.artMovement)
-
               formData.artMovement.forEach(item => {
                 formDataToSend.append("art_movement", item);
               });
@@ -480,7 +479,6 @@ export default function Login() {
               artist_ids: [artistId], // Store artist_id in an array
             }, { merge: true });
 
-            console.log("Artist ID added to Firestore:", artistId);
           }
 
           setUsedEmail(email);

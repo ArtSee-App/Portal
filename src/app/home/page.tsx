@@ -548,7 +548,6 @@ export default function Home() {
 
   useEffect(() => {
     if (user?.type === "artist" && activeTab === "artworks" && !fetchCalled.current) {
-      console.log("FETCHED HERE");
       fetchArtworksFromAPI();
       fetchCalled.current = true; // Mark as fetched
     }
