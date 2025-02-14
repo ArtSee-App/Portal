@@ -135,23 +135,29 @@
   width: 100%;
 }
 
+
 .leftColumn {
   flex: 1;
-  /* Left side takes 1 part */
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
   gap: 16px;
+  width: 50%;
+  /* Ensure 50% width */
+  box-sizing: border-box;
 }
 
 .rightColumn {
   flex: 1;
-  /* Right side takes 2 parts */
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 50%;
+  /* Ensure 50% width */
+  overflow: hidden;
+  /* Prevent overflow */
+  box-sizing: border-box;
 }
+
 
 .registeringForm {
   border: 2px solid var(--primary-color);
@@ -324,6 +330,17 @@
   align-items: center;
   gap: 6px;
   font-size: 0.875rem;
+  /* Limit the maximum width */
+  overflow: hidden;
+}
+
+.bubbleText {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+  /* Important to enable truncation */
 }
 
 .removeBubble {
@@ -332,6 +349,7 @@
   color: white;
   cursor: pointer;
   font-size: 0.875rem;
+  flex-shrink: 0;
 }
 
 .addBubbleButton {

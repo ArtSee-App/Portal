@@ -68,6 +68,7 @@ body::-webkit-scrollbar-thumb:hover {
 .grecaptcha-badge {
   visibility: visible;
   transition: visibility 0.3s ease-in-out;
+  z-index: 10;
 }
 
 /* Hide reCAPTCHA badge when specified */

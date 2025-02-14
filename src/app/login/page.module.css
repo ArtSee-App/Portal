@@ -281,6 +281,17 @@
   align-items: center;
   gap: 6px;
   font-size: 0.875rem;
+  /* Limit the maximum width */
+  overflow: hidden;
+}
+
+.bubbleText {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+  /* Important to enable truncation */
 }
 
 .removeBubble {
@@ -289,6 +300,7 @@
   color: white;
   cursor: pointer;
   font-size: 0.875rem;
+  flex-shrink: 0;
 }
 
 .addBubbleButton {

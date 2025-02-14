@@ -897,7 +897,7 @@ export default function Artist() {
                     >
                       {formData.artMovement.map((item, index) => (
                         <span key={index} className={styles.bubble}>
-                          {item}
+                          <span className={styles.bubbleText}>{item}</span>
                           {isEditMode && isEditing && (
                             <button
                               type="button"
@@ -942,7 +942,7 @@ export default function Artist() {
                     >
                       {formData.influencedBy.map((item, index) => (
                         <span key={index} className={styles.bubble}>
-                          {item}
+                          <span className={styles.bubbleText}>{item}</span>
                           {isEditMode && isEditing && (
                             <button
                               type="button"
@@ -988,7 +988,7 @@ export default function Artist() {
                     >
                       {formData.influencedOn.map((item, index) => (
                         <span key={index} className={styles.bubble}>
-                          {item}
+                          <span className={styles.bubbleText}>{item}</span>
                           {isEditMode && isEditing && (
                             <button
                               type="button"
@@ -1034,7 +1034,7 @@ export default function Artist() {
                     >
                       {formData.artInstitution.map((item, index) => (
                         <span key={index} className={styles.bubble}>
-                          {item}
+                          <span className={styles.bubbleText}>{item}</span>
                           {isEditMode && isEditing && (
                             <button
                               type="button"
@@ -1080,7 +1080,7 @@ export default function Artist() {
                     >
                       {formData.friendsOrCoworkers.map((item, index) => (
                         <span key={index} className={styles.bubble}>
-                          {item}
+                          <span className={styles.bubbleText}>{item}</span>
                           {isEditMode && isEditing && (
                             <button
                               type="button"

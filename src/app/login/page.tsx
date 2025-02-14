@@ -800,8 +800,14 @@ export default function Login() {
                             <div className={styles.inputWithBubbles}>
                               {formData.artMovement.map((item, index) => (
                                 <span key={index} className={styles.bubble}>
-                                  {item}
-                                  <button type="button" className={styles.removeBubble} onClick={() => handleRemoveItem("artMovement", index)}>❌</button>
+                                  <span className={styles.bubbleText}>{item}</span>
+                                  <button
+                                    type="button"
+                                    className={styles.removeBubble}
+                                    onClick={() => handleRemoveItem("artMovement", index)}
+                                  >
+                                    ❌
+                                  </button>
                                 </span>
                               ))}
                               <input
@@ -832,8 +838,14 @@ export default function Login() {
                             <div className={styles.inputWithBubbles}>
                               {formData.influencedBy.map((item, index) => (
                                 <span key={index} className={styles.bubble}>
-                                  {item}
-                                  <button type="button" className={styles.removeBubble} onClick={() => handleRemoveItem("influencedBy", index)}>❌</button>
+                                  <span className={styles.bubbleText}>{item}</span>
+                                  <button
+                                    type="button"
+                                    className={styles.removeBubble}
+                                    onClick={() => handleRemoveItem("influencedBy", index)}
+                                  >
+                                    ❌
+                                  </button>
                                 </span>
                               ))}
                               <input
@@ -864,8 +876,14 @@ export default function Login() {
                             <div className={styles.inputWithBubbles}>
                               {formData.influencedOn.map((item, index) => (
                                 <span key={index} className={styles.bubble}>
-                                  {item}
-                                  <button type="button" className={styles.removeBubble} onClick={() => handleRemoveItem("influencedOn", index)}>❌</button>
+                                  <span className={styles.bubbleText}>{item}</span>
+                                  <button
+                                    type="button"
+                                    className={styles.removeBubble}
+                                    onClick={() => handleRemoveItem("influencedOn", index)}
+                                  >
+                                    ❌
+                                  </button>
                                 </span>
                               ))}
                               <input
@@ -896,8 +914,14 @@ export default function Login() {
                             <div className={styles.inputWithBubbles}>
                               {formData.artInstitution.map((item, index) => (
                                 <span key={index} className={styles.bubble}>
-                                  {item}
-                                  <button type="button" className={styles.removeBubble} onClick={() => handleRemoveItem("artInstitution", index)}>❌</button>
+                                  <span className={styles.bubbleText}>{item}</span>
+                                  <button
+                                    type="button"
+                                    className={styles.removeBubble}
+                                    onClick={() => handleRemoveItem("artInstitution", index)}
+                                  >
+                                    ❌
+                                  </button>
                                 </span>
                               ))}
                               <input
@@ -928,8 +952,14 @@ export default function Login() {
                             <div className={styles.inputWithBubbles}>
                               {formData.friendsOrCoworkers.map((item, index) => (
                                 <span key={index} className={styles.bubble}>
-                                  {item}
-                                  <button type="button" className={styles.removeBubble} onClick={() => handleRemoveItem("friendsOrCoworkers", index)}>❌</button>
+                                  <span className={styles.bubbleText}>{item}</span>
+                                  <button
+                                    type="button"
+                                    className={styles.removeBubble}
+                                    onClick={() => handleRemoveItem("friendsOrCoworkers", index)}
+                                  >
+                                    ❌
+                                  </button>
                                 </span>
                               ))}
                               <input
