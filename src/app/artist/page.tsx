@@ -232,9 +232,13 @@ export default function Artist() {
         throw new Error("Failed to retrieve authentication token.");
       }
 
+      if (!user?.email) {
+        throw new Error("Failed to retrieve user's email.");
+      }
+
 
       // Prepare API request for artist approval
-      let apiUrl = `https://api.artvista.app/submit_artist_for_approval/?artist_portal_token=${encodeURIComponent(token)}&artist_name=${encodeURIComponent(formData.name)}&artist_full_name=${encodeURIComponent(formData.fullName)}&born_date=${encodeURIComponent(formData.dateOfBirth)}&nationality=${encodeURIComponent(formData.nationality)}&active_years=1&artist_bio_text=${encodeURIComponent(formData.about)}`
+      let apiUrl = `https://api.artvista.app/submit_artist_for_approval/?artist_portal_token=${encodeURIComponent(token)}&artist_name=${encodeURIComponent(formData.name)}&artist_full_name=${encodeURIComponent(formData.fullName)}&born_date=${encodeURIComponent(formData.dateOfBirth)}&nationality=${encodeURIComponent(formData.nationality)}&active_years=${1}&artist_bio_text=${encodeURIComponent(formData.about)}&user_email=${encodeURIComponent(user.email)}`
         + (formData.wikipediaLink ? `&wikipedia_link=${encodeURIComponent(formData.wikipediaLink)}` : "")
         + (formData.officialSiteLink ? `&official_website=${encodeURIComponent(formData.officialSiteLink)}` : "");
 
