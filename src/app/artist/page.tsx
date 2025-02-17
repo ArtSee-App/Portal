@@ -214,11 +214,11 @@ export default function Artist() {
 
   const handleDelete = async () => {
     const confirmDelete = await showConfirm(
-      "Are you sure you want to delete this artist? This action cannot be undone."
+      "Delete artist is not available yet."
     );
     if (confirmDelete) {
       // Implement logic to delete the artist here
-      showAlert("Artist deleted!", "success");
+      //showAlert("Artist deleted!", "success");
     }
   };
 
