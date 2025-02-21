@@ -17,12 +17,14 @@ function SearchParamsHandler({
   setIsEditMode,
   setArtworkId,
   setIsPending,
-  setPendingId, // Add a new setter for pendingId
+  setPendingId,
+  setArtistId, // Added setter for artistId
 }: {
   setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   setArtworkId: React.Dispatch<React.SetStateAction<number | null>>;
   setIsPending: React.Dispatch<React.SetStateAction<boolean | null>>;
-  setPendingId: React.Dispatch<React.SetStateAction<number | null>>; // Add type
+  setPendingId: React.Dispatch<React.SetStateAction<number | null>>;
+  setArtistId: React.Dispatch<React.SetStateAction<number | null>>; // Add type for artistId
 }) {
   const searchParams = useSearchParams();
   useEffect(() => {
@@ -32,16 +34,20 @@ function SearchParamsHandler({
       : null;
     const pendingId = searchParams.get("pendingId")
       ? parseInt(searchParams.get("pendingId")!, 10)
-      : null; // Extract pendingId as a number
-    const pending = searchParams.get("pending") === "true"; // Extract pending as boolean
+      : null;
+    const pending = searchParams.get("pending") === "true";
+    const artistId = searchParams.get("artistId")
+      ? parseInt(searchParams.get("artistId")!, 10)
+      : null;
 
     setIsEditMode(editMode);
     setArtworkId(artworkId);
-    setPendingId(pendingId); // Set pendingId
+    setPendingId(pendingId);
     setIsPending(pending);
-  }, [searchParams, setIsEditMode, setArtworkId, setPendingId, setIsPending]);
+    setArtistId(artistId); // Set artistId
+  }, [searchParams, setIsEditMode, setArtworkId, setPendingId, setIsPending, setArtistId]);
 
-  return null; // This component only handles state updates
+  return null;
 }
 
 interface Era {
@@ -144,6 +150,7 @@ export default function Artwork() {
   const [artworkStatus, setArtworkStatus] = useState<"Rejected" | "Accepted" | "Pending" | null>(null);
   const [isPending, setIsPending] = useState<boolean | null>(null); // Track the pending status
   const [pendingId, setPendingId] = useState<number | null>(null); // Add pendingId state
+  const [artistId, setArtistId] = useState<number | null>(null); // Added artistId state
 
   const [loadingEras, setLoadingEras] = useState(true);
   const [loadingGenres, setLoadingGenres] = useState(true);
@@ -186,7 +193,6 @@ export default function Artwork() {
     );
 
     if (confirmSave && artworkId) {
-      const artistId = await fetchArtistId(); // Fetch artist ID
 
       if (artistId) {
         try {
@@ -278,12 +284,12 @@ export default function Artwork() {
   };
 
 
-  const deleteArtwork = async (artistId: string, artworkId: number, isPending: boolean) => {
+  const deleteArtwork = async (artistId: number, artworkId: number, isPending: boolean) => {
     try {
       const token = await getIdToken();
       const params = new URLSearchParams({
         artist_portal_token: token ?? "",
-        artist_id: artistId,
+        artist_id: artistId.toString(),
         artwork_id: artworkId.toString(),
         is_pending: isPending.toString(), // Include the is_pending parameter
       });
@@ -308,7 +314,6 @@ export default function Artwork() {
       "Are you sure you want to delete this artwork? This action cannot be undone."
     );
     if (confirmDelete && artworkId) {
-      const artistId = await fetchArtistId();
       if (artistId) {
         try {
           setLoadingDelete(true); // Start loading state
@@ -396,7 +401,7 @@ export default function Artwork() {
     (formData.timelineCenter !== "custom" || (formData.timelineCenter === "custom" && formData.customTimelineCenter && formData.customTimelineCenter.trim() !== ""));
 
   // Function to fetch artist ID from Firestore
-  const fetchArtistId = async (): Promise<string | null> => {
+  const fetchArtistId = async (): Promise<number | null> => {
     try {
       if (!user || !user.email) {
         throw new Error("User email not found. Please log in again.");
@@ -426,20 +431,27 @@ export default function Artwork() {
     e.preventDefault();
     if (isFormValid) {
       try {
-        const artistId = await fetchArtistId(); // Fetch artist ID once
-        if (artistId) {
-          console.log('artist id ' + artistId);
+        let currentArtistId = artistId;
+
+        if (!currentArtistId) {
+          currentArtistId = await fetchArtistId(); // Fetch artist ID if it's null
+        }
+
+        if (currentArtistId) {
           setLoadingSubmit(true);
-          const artworkId = await submitArtworkForApproval(artistId);
+          const artworkId = await submitArtworkForApproval(currentArtistId);
           if (artworkId) {
-            await submitAdditionalImages(artistId, artworkId);
+            await submitAdditionalImages(currentArtistId, artworkId);
             setLoadingSubmit(false);
             setIsSubmitted(true);
           }
+        } else {
+          showAlert("Artist ID could not be retrieved.", "error");
         }
       } catch (error) {
         console.error("Error submitting artwork:", error);
         showAlert("An error occurred while submitting your artwork.", "error");
+        setLoadingSubmit(false);
       }
     } else {
       showAlert("Please fill in all required fields.", "warning");
@@ -591,7 +603,7 @@ export default function Artwork() {
             nsfw: text_information.is_nsfw,
             priority: text_information.importance_factor === 10, // Convert to boolean
           };
-          console.log(headerImageFile);
+          console.log(fetchedData);
           setFormData(fetchedData);
           setInitialFormData(fetchedData); // Store the fetched data as the initial state
         }
@@ -606,13 +618,13 @@ export default function Artwork() {
 
 
   const submitArtworkForApproval = async (
-    artistId: string,
+    artistId: number,
     artworkId?: number // Optional parameter
   ): Promise<number | null> => {
     try {
       const params = new URLSearchParams({
         artist_portal_token: (await getIdToken()) ?? "",
-        artist_id: artistId,
+        artist_id: artistId.toString(),
         artwork_title: formData.artworkTitle,
         about_description: formData.artworkAbout,
         year_created: formData.artworkYear,
@@ -657,16 +669,15 @@ export default function Artwork() {
     }
   };
 
-  const submitAdditionalImages = async (artistId: string, artworkId: number) => {
+  const submitAdditionalImages = async (artistId: number, artworkId: number) => {
     try {
       for (const image of formData.additionalImages) {
         if (image instanceof File) {
           const formDataToSend = new FormData();
           formDataToSend.append("additional_image", image);
-
           const params = new URLSearchParams({
             artist_portal_token: (await getIdToken()) ?? "",
-            artist_id: artistId,
+            artist_id: artistId.toString(),
             artwork_id: artworkId.toString(),
           });
 
@@ -708,6 +719,7 @@ export default function Artwork() {
             setArtworkId={setArtworkId}
             setIsPending={setIsPending}
             setPendingId={setPendingId}
+            setArtistId={setArtistId} // Pass the setter for artistId
           />
         </Suspense>
         {isSubmitted ? (
@@ -952,7 +964,7 @@ export default function Artwork() {
                       disabled={isEditMode && !isEditing}
                     />
                   </div>
-                  {user?.type !== "artist" && (
+                  {user?.type == "museum" && (
                     <div className={styles.inputWrapperRequired}>
                       <p>Select An Existing Artist</p>
                       <select

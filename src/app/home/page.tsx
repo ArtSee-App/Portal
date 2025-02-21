@@ -23,6 +23,7 @@ type Artwork = {
   pending_id: number;
   title: string;
   artist: string;
+  artist_id: number;
   image: string;
   pending_situation: number; // New field
   removing?: boolean; // Optional flag for animation
@@ -311,7 +312,7 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; pending_id: number; title: string; artist: string; spaces_dir_low_resolution: string; pending_situation: number }[] = await response.json();
+        const data: { artwork_id: number; pending_id: number; title: string; artist: string; artist_id: number; spaces_dir_low_resolution: string; pending_situation: number }[] = await response.json();
 
         const artworksData = data.filter((item) => item.artwork_id);
         if (artworksData.length === 0 && page > 1) {
@@ -326,9 +327,13 @@ export default function Home() {
           pending_id: item.pending_id,
           title: item.title,
           artist: item.artist,
+          artist_id: item.artist_id,
           image: item.spaces_dir_low_resolution,
           pending_situation: item.pending_situation,
         }));
+
+        console.log(formattedArtworks);
+
 
         setArtworks((prev) => (page === 1 ? formattedArtworks : [...prev, ...formattedArtworks]));
       } else {
@@ -437,17 +442,18 @@ export default function Home() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data: { artwork_id: number; pending_id: number; title: string; artist: string; spaces_dir_low_resolution: string; pending_situation: number }[] = await response.json();
-        console.log(`Search API Response:`, data);
+        const data: { artwork_id: number; pending_id: number; title: string; artist: string; artist_id: number; spaces_dir_low_resolution: string; pending_situation: number }[] = await response.json();
 
         const formattedArtworks: Artwork[] = data.map((item) => ({
           id: item.artwork_id,
           pending_id: item.pending_id,
           title: item.title,
           artist: item.artist,
+          artist_id: item.artist_id,
           image: item.spaces_dir_low_resolution,
           pending_situation: item.pending_situation, // Map the new field
         }));
+        console.log(`Search API Response:`, formattedArtworks);
 
         setArtworks(formattedArtworks); // Update artworks with search results
       } else {
@@ -757,7 +763,7 @@ export default function Home() {
                             </button>
                             <Link
                               href={
-                                `/artwork?edit=true&artworkId=${artwork.id}&pendingId=${artwork.pending_id}&pending=${artwork.pending_situation === 2 || artwork.pending_situation === 0 ? 'true' : 'false'}`
+                                `/artwork?edit=true&artworkId=${artwork.id}&artistId=${artwork.artist_id}&pendingId=${artwork.pending_id}&pending=${artwork.pending_situation === 2 || artwork.pending_situation === 0 ? 'true' : 'false'}`
                               }
                               className={styles.editButton} // Apply button styling
                             >
@@ -766,8 +772,7 @@ export default function Home() {
                           </div>
                         ) : (
                           <Link
-                            href={`/artwork?edit=true&artworkId=${artwork.id}&pending=${artwork.pending_situation === 2 || artwork.pending_situation === 0 ? 'true' : 'false'
-                              }`}
+                            href={`/artwork?edit=true&artworkId=${artwork.id}&artistId=${artwork.artist_id}&pending=${artwork.pending_situation === 2 || artwork.pending_situation === 0 ? 'true' : 'false'}`}
                           >
                             <span className={styles.viewDetails}>View artwork's details →</span>
                           </Link>
