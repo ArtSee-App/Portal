@@ -252,8 +252,9 @@ export default function Login() {
   };
 
   const handleRegisterAsMuseum = () => {
-    setIsRegistering(true);
-    setRegisterAsArtist(false);
+    showAlert("Museum registration is not available yet. Coming soon!", "info");
+    //setIsRegistering(true);
+    //setRegisterAsArtist(false);
   };
 
   const handleForgotPassword = async () => {
