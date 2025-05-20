@@ -226,6 +226,19 @@
   /* Optional hover effect */
 }
 
+
+/* Applies to all header text when scrolled */
+.header.scrolled,
+.header.scrolled a,
+.header.scrolled .logoText {
+  color: white !important;
+}
+
+.header.scrolled .bar {
+  background: white;
+}
+
+
 @media screen and (max-width: 767px) {
   .navLinks {
     display: none;
