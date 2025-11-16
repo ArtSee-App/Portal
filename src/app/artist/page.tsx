@@ -9,6 +9,8 @@ import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import { useAlert } from "@/context/AlertContext";
 import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
+import InfoTooltip from "@/components/InfoTooltip/InfoTooltip";
+import ImageEditor from "@/components/ImageEditor/ImageEditor";
 
 function SearchParamsHandler({
   setIsEditMode,
@@ -118,6 +120,21 @@ export default function Artist() {
     }));
   };
 
+  // Image editor handlers
+  const handleImageClick = () => {
+    if (formData.image && (isEditing || !isEditMode)) {
+      setShowImageEditor(true);
+    }
+  };
+
+  const handleImageSave = (imageData: { file: File; position: { x: number; y: number }; zoom: number }) => {
+    setSavedImageData({ position: imageData.position, zoom: imageData.zoom });
+  };
+
+  const handleUploadNew = () => {
+    document.getElementById("artistImageInput")?.click();
+  };
+
   const isFormValid =
     formData.image &&
     formData.name &&
@@ -141,6 +158,11 @@ export default function Artist() {
   const [loadingFormData, setLoadingFormData] = useState(true);
   const [loadingApproval, setLoadingApproval] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [showImageEditor, setShowImageEditor] = useState(false);
+  const [savedImageData, setSavedImageData] = useState<{
+    position: { x: number; y: number };
+    zoom: number;
+  } | null>(null);
 
   const hasFetchedArtistDetails = useRef(false); // Prevent multiple API calls for artist details
   const hasFetchedArtworkStatus = useRef(false); // Prevent multiple API calls for artwork status
@@ -711,6 +733,7 @@ export default function Artist() {
             setArtistId={setArtistId}
           />
         </Suspense>
+        <div className={styles.pageContent}>
         {isSubmitted ? (
           <div className={styles.thankYouMessage}>
             <h1>Thank You for Submitting a New Artist!</h1>
@@ -783,7 +806,7 @@ export default function Artist() {
                   <div className={styles.inputWrapperRequired}>
                     <p>Upload an artist profile image</p>
                     <div
-                      className={`${styles.imageUploadWrapper} ${isEditMode && !isEditing ? styles.overlay : ""
+                      className={`${styles.circularImageUploadWrapper} ${isEditMode && !isEditing ? styles.overlay : ""
                         }`}
                     >
                       <input
@@ -792,20 +815,44 @@ export default function Artist() {
                         name="image"
                         accept="image/jpeg, image/png, image/jpg" // Restrict to allowed formats
                         className={styles.hiddenInput}
-                        onChange={handleInputChange}
+                        onChange={(e) => {
+                          handleInputChange(e);
+                          setSavedImageData(null); // Reset saved data on new image
+                          if (e.target.files?.[0]) {
+                            setShowImageEditor(true); // Auto-open editor when image is uploaded
+                          }
+                        }}
                         disabled={isEditMode && !isEditing}
                       />
-                      <label htmlFor="artistImageInput" className={styles.imageUploadBox}>
+                      <label htmlFor="artistImageInput" className={styles.circularImageUploadBox}>
                         {formData.image ? (
-                          <img
-                            src={URL.createObjectURL(formData.image)}
-                            alt="Artist Profile"
-                            className={styles.uploadedImage}
-                          />
+                          <div
+                            className={styles.circularImageContainer}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleImageClick();
+                            }}
+                            style={{ cursor: (isEditing || !isEditMode) ? 'pointer' : 'not-allowed' }}
+                          >
+                            <img
+                              src={URL.createObjectURL(formData.image)}
+                              alt="Artist Profile"
+                              className={styles.circularUploadedImage}
+                              style={{
+                                transform: savedImageData
+                                  ? `translate(calc(-50% + ${savedImageData.position.x}px), calc(-50% + ${savedImageData.position.y}px)) scale(${savedImageData.zoom})`
+                                  : 'translate(-50%, -50%) scale(1)',
+                              }}
+                              draggable={false}
+                            />
+                          </div>
                         ) : (
                           <span className={styles.plusIcon}>+</span>
                         )}
                       </label>
+                      {formData.image && (isEditing || !isEditMode) && (
+                        <p className={styles.clickHint}>Click to edit</p>
+                      )}
                     </div>
                   </div>
                   <div className={styles.inputWrapperRequired}>
@@ -1208,8 +1255,19 @@ export default function Artist() {
             </form>
           </>
         )}
+        </div>
+        <Footer />
       </div>
-      <Footer />
+
+      {/* Image Editor Modal */}
+      {showImageEditor && formData.image && (
+        <ImageEditor
+          image={formData.image}
+          onSave={handleImageSave}
+          onClose={() => setShowImageEditor(false)}
+          onUploadNew={handleUploadNew}
+        />
+      )}
     </>
   );
 }

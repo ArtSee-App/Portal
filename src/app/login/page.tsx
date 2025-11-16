@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation"; // Import useRouter
 import Footer from "@/components/footer/footer";
 import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
 import { useUser } from "@/context/UserContext";
+import InfoTooltip from "@/components/InfoTooltip/InfoTooltip";
+import ImageEditor from "@/components/ImageEditor/ImageEditor";
 
 import { auth, db } from "../../../firebase";
 import {
@@ -31,6 +33,12 @@ export default function Login() {
   const [showRegisterInfo, setShowRegisterInfo] = useState(false);
   const [currentStep, setCurrentStep] = useState(1); // Multi-step registration state
   const [isTransitioning, setIsTransitioning] = useState(false); // For fade transitions
+  const [dateOfBirthError, setDateOfBirthError] = useState<string | null>(null);
+  const [showImageEditor, setShowImageEditor] = useState(false);
+  const [savedImageData, setSavedImageData] = useState<{
+    position: { x: number; y: number };
+    zoom: number;
+  } | null>(null);
 
   const { showAlert } = useAlert();
 
@@ -73,13 +81,14 @@ export default function Login() {
     friendsOrCoworkersTemp: string; // Temporary input field
     wikipediaLink: string;
     officialSiteLink: string;
+    registrationType: "self" | "other";
   }>({
     image: null,
     name: "",
     fullName: "",
     about: "",
     dateOfBirth: "",
-    nationality: "Prefer not to say",
+    nationality: "",
     artMovement: [],
     artMovementTemp: "",
     email: "",
@@ -96,6 +105,7 @@ export default function Login() {
     friendsOrCoworkersTemp: "",
     wikipediaLink: "",
     officialSiteLink: "",
+    registrationType: "self",
   });
 
   const [museumFormData, setMuseumFormData] = useState<{
@@ -173,6 +183,45 @@ export default function Login() {
     }));
   };
 
+  // URL validation functions
+  const isValidURL = (url: string): boolean => {
+    if (!url || url.trim() === "") return true; // Empty URLs are optional
+    try {
+      const urlObj = new URL(url);
+      return urlObj.protocol === "http:" || urlObj.protocol === "https:";
+    } catch {
+      return false;
+    }
+  };
+
+  const isValidWikipediaURL = (url: string): boolean => {
+    if (!url || url.trim() === "") return true; // Empty URLs are optional
+    try {
+      const urlObj = new URL(url);
+      return (urlObj.hostname.includes("wikipedia.org") || urlObj.hostname.includes("wikidata.org")) &&
+             (urlObj.protocol === "http:" || urlObj.protocol === "https:");
+    } catch {
+      return false;
+    }
+  };
+
+  // Image editor handlers
+  const handleImageClick = () => {
+    if (formData.image) {
+      setShowImageEditor(true);
+    }
+  };
+
+  const handleImageSave = (imageData: { file: File; position: { x: number; y: number }; zoom: number }) => {
+    setSavedImageData({ position: imageData.position, zoom: imageData.zoom });
+  };
+
+  const handleUploadNew = () => {
+    document.getElementById("artistImageInput")?.click();
+  };
+
+  const datePattern = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/; // dd-mm-yyyy
+
 
   const isFormValid =
     formData.image &&
@@ -183,7 +232,9 @@ export default function Login() {
     formData.nationality &&
     formData.email &&
     formData.password &&
-    formData.confirmPassword;
+    formData.confirmPassword &&
+    isValidURL(formData.officialSiteLink) &&
+    isValidWikipediaURL(formData.wikipediaLink);
 
   const isMuseumFormValid =
     museumFormData.image &&
@@ -198,6 +249,27 @@ export default function Login() {
     museumFormData.email &&
     museumFormData.password &&
     museumFormData.confirmPassword;
+
+  const isNextDisabled =
+    !(isRegistering && registerAsArtist) ? false :
+      currentStep === 1
+        ? !(
+          formData.image &&
+          formData.name &&
+          formData.dateOfBirth &&
+          formData.nationality &&
+          datePattern.test(formData.dateOfBirth)
+        )
+        : currentStep === 2
+          ? !(
+            formData.about &&
+            formData.fullName &&
+            isValidWikipediaURL(formData.wikipediaLink) &&
+            isValidURL(formData.officialSiteLink)
+          )
+          : currentStep === 3
+            ? false // Step 3 is all optional, never disabled
+            : false;
 
   const handleToggleRegister = () => {
     setIsRegistering(false);
@@ -227,6 +299,7 @@ export default function Login() {
       friendsOrCoworkersTemp: "", // Reset temporary input field
       wikipediaLink: "",
       officialSiteLink: "",
+      registrationType: "self",
     });
 
     setMuseumFormData({
@@ -283,9 +356,23 @@ export default function Login() {
     e.preventDefault();
 
     // If registering and not on final step, handle navigation instead of submission
-    if (isRegistering && registerAsArtist && currentStep < 3) {
+    if (isRegistering && registerAsArtist && currentStep < 4) {
       handleNextStep();
       return;
+    }
+
+    // Validate URLs before proceeding with registration
+    if (isRegistering && registerAsArtist) {
+      if (formData.wikipediaLink && !isValidWikipediaURL(formData.wikipediaLink)) {
+        showAlert("Please enter a valid Wikipedia or Wikidata URL", "error");
+        setLoading(false);
+        return;
+      }
+      if (formData.officialSiteLink && !isValidURL(formData.officialSiteLink)) {
+        showAlert("Please enter a valid URL for the official site (must start with http:// or https://)", "error");
+        setLoading(false);
+        return;
+      }
     }
 
     setLoading(true); // Show loading indicator
@@ -530,6 +617,7 @@ export default function Login() {
       friendsOrCoworkersTemp: "", // Reset temporary input field
       wikipediaLink: "",
       officialSiteLink: "",
+      registrationType: "self",
     });
 
     setMuseumFormData({
@@ -571,28 +659,47 @@ export default function Login() {
         showAlert("Please enter your date of birth.", "warning");
         return false;
       }
+      if (!datePattern.test(formData.dateOfBirth)) {
+        setDateOfBirthError("Please enter your date of birth as dd-mm-yyyy.");
+        showAlert("Invalid date format. Please enter your date of birth as dd-mm-yyyy.", "error");
+        return false;
+      }
       if (!formData.nationality) {
         showAlert("Please enter your nationality.", "warning");
         return false;
       }
+      setDateOfBirthError(null);
       return true;
     }
 
     if (currentStep === 2) {
-      // Step 2: History - About is required, rest optional
+      // Step 2: Mandatory fields - Full Name, About, Wikipedia, Official Site
+      if (!formData.fullName) {
+        showAlert("Please enter your full name.", "warning");
+        return false;
+      }
       if (!formData.about) {
         showAlert("Please tell us about yourself.", "warning");
         return false;
       }
-      if (!formData.fullName) {
-        showAlert("Please enter your full name.", "warning");
+      if (!isValidWikipediaURL(formData.wikipediaLink)) {
+        showAlert("Please enter a valid Wikipedia or Wikidata URL", "error");
+        return false;
+      }
+      if (!isValidURL(formData.officialSiteLink)) {
+        showAlert("Please enter a valid URL for the official site (must start with http:// or https://)", "error");
         return false;
       }
       return true;
     }
 
     if (currentStep === 3) {
-      // Step 3: Account - Email, Password, Confirm Password
+      // Step 3: Optional fields - No validation required, all optional
+      return true;
+    }
+
+    if (currentStep === 4) {
+      // Step 4: Account - Email, Password, Confirm Password
       if (!formData.email) {
         showAlert("Please enter your email.", "warning");
         return false;
@@ -619,12 +726,12 @@ export default function Login() {
     if (validateCurrentStep()) {
       setIsTransitioning(true);
       setTimeout(() => {
-        setCurrentStep(prev => Math.min(prev + 1, 3));
+        setCurrentStep(prev => Math.min(prev + 1, 4));
         setIsTransitioning(false);
-        // Scroll to top of form
-        const formElement = document.querySelector(`.${styles.form}`);
-        if (formElement) {
-          formElement.scrollTop = 0;
+        // Scroll to top of main content
+        const mainElement = document.querySelector(`.${styles.main}`);
+        if (mainElement) {
+          mainElement.scrollTo({ top: 0, behavior: 'smooth' });
         }
       }, 300);
     }
@@ -635,29 +742,37 @@ export default function Login() {
     setTimeout(() => {
       setCurrentStep(prev => Math.max(prev - 1, 1));
       setIsTransitioning(false);
-      // Scroll to top of form
-      const formElement = document.querySelector(`.${styles.form}`);
-      if (formElement) {
-        formElement.scrollTop = 0;
+      // Scroll to top of main content
+      const mainElement = document.querySelector(`.${styles.main}`);
+      if (mainElement) {
+        mainElement.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }, 300);
   };
 
   const validateDateFormat = (dateString: string, fieldName: string) => {
 
-    if (!dateString.trim()) return true;
-
-    const datePattern = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/; // dd-mm-yyyy
+    if (!dateString.trim()) {
+      if (fieldName === "dateOfBirth") {
+        setDateOfBirthError(null);
+      }
+      return true;
+    }
 
     if (!datePattern.test(dateString)) {
-      showAlert(`Invalid date format. Please enter ${fieldName} as dd-mm-yyyy`, "error");
-
       if (fieldName === "dateOfBirth") {
-        setFormData((prev) => ({ ...prev, dateOfBirth: "" }));
-      } else if (fieldName === "dateOfDeath") {
-        setFormData((prev) => ({ ...prev, dateOfDeath: "" }));
+        setDateOfBirthError("Please enter your date of birth as dd-mm-yyyy.");
+      } else {
+        showAlert(`Invalid date format. Please enter ${fieldName} as dd-mm-yyyy`, "error");
       }
+      return false;
     }
+
+    if (fieldName === "dateOfBirth") {
+      setDateOfBirthError(null);
+    }
+
+    return true;
   };
 
   const handleArrayInputChange = (
@@ -712,23 +827,24 @@ export default function Login() {
   return (
     <>
       <div className={styles.page}>
-        {showConfirmation ? (
-          <div className={styles.confirmationWrapper}>
-            <p>
-              Thank you for registering! Your request needs to be approved first. We will
-              contact you about our decision at the following email:{" "}
-              <strong>{usedEmail}</strong>
-              . Make sure to check your inbox or spam folder.
-            </p>
-            <button
-              onClick={handleBackToLogin}
-              className={styles.backToLoginButton}
-            >
-              Back to Login
-            </button>
-          </div>
-        ) : (
-          <div className={styles.cardsContainer}>
+        <div className={styles.pageContent}>
+          {showConfirmation ? (
+            <div className={styles.confirmationWrapper}>
+              <p>
+                Thank you for registering! Your request needs to be approved first. We will
+                contact you about our decision at the following email:{" "}
+                <strong>{usedEmail}</strong>
+                . Make sure to check your inbox or spam folder.
+              </p>
+              <button
+                onClick={handleBackToLogin}
+                className={styles.backToLoginButton}
+              >
+                Back to Login
+              </button>
+            </div>
+          ) : (
+            <div className={styles.cardsContainer}>
             <div className={styles.logoCardOuter}>
               <div className={styles.logoCard}>
                 <img src="/favicon.png" alt="ArtVista Logo" className={styles.logoTop} />
@@ -746,10 +862,11 @@ export default function Login() {
               </div>
             </div>
 
-            <div
-              className={`${styles.mainWrapper} ${isRegistering ? styles.slide : ""}`}
-            >
-              <LoadingOverlay isVisible={loading} />
+            <div className={styles.mainWrapperOuter}>
+              <div
+                className={`${styles.mainWrapper} ${isRegistering ? styles.slide : ""}`}
+              >
+                <LoadingOverlay isVisible={loading} />
 
               {showRegisterInfo ? (
               <main className={styles.main}>
@@ -814,10 +931,12 @@ export default function Login() {
                   {/* Progress Bar */}
                   {isRegistering && registerAsArtist && (
                     <div className={styles.progressBarContainer}>
-                      <div
-                        className={styles.progressBar}
-                        style={{ width: `${(currentStep / 3) * 100}%` }}
-                      />
+                      <div>
+                        <div
+                          className={styles.progressBar}
+                          style={{ width: `${(currentStep / 4) * 100}%` }}
+                        />
+                      </div>
                     </div>
                   )}
 
@@ -832,28 +951,89 @@ export default function Login() {
                             {currentStep === 1 && (
                               <>
                                 <h2 className={styles.stepTitle}>Tell us about yourself</h2>
+
+                                {/* Registration Type Selector */}
+                                <div className={styles.registrationTypeWrapper}>
+                                  <p className={styles.registrationTypeLabel}>Who are you registering?</p>
+                                  <div className={styles.registrationTypeOptions}>
+                                    <label className={`${styles.registrationTypeOption} ${formData.registrationType === "self" ? styles.selected : ""}`}>
+                                      <input
+                                        type="radio"
+                                        name="registrationType"
+                                        value="self"
+                                        checked={formData.registrationType === "self"}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, registrationType: e.target.value as "self" | "other" }))}
+                                      />
+                                      <div className={styles.optionContent}>
+                                        <span className={styles.optionTitle}>Myself</span>
+                                        <span className={styles.optionDescription}>I am the artist</span>
+                                      </div>
+                                    </label>
+                                    <label className={`${styles.registrationTypeOption} ${formData.registrationType === "other" ? styles.selected : ""}`}>
+                                      <input
+                                        type="radio"
+                                        name="registrationType"
+                                        value="other"
+                                        checked={formData.registrationType === "other"}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, registrationType: e.target.value as "self" | "other" }))}
+                                      />
+                                      <div className={styles.optionContent}>
+                                        <span className={styles.optionTitle}>Someone Else</span>
+                                        <span className={styles.optionDescription}>Another artist (living or deceased)</span>
+                                      </div>
+                                    </label>
+                                  </div>
+                                  <p className={styles.registrationTypeNotice}>
+                                    Please note that your registration will not be activated right away, as our curator team must first review your profile. If you are registering someone else, we may need to contact you to verify that you hold the necessary rights to represent them.
+                                  </p>
+                                </div>
+
                                 <div className={styles.inputWrapperRequired}>
                                   <p>Upload an artist profile image</p>
-                            <div className={styles.imageUploadWrapper}>
+                            <div className={styles.circularImageUploadWrapper}>
                                     <input
                                       type="file"
                                       id="artistImageInput"
                                       name="image"
                                       accept="image/jpeg, image/png, image/jpg"
                                       className={styles.hiddenInput}
-                                      onChange={handleInputChange}
+                                      onChange={(e) => {
+                                        handleInputChange(e);
+                                        setSavedImageData(null); // Reset saved data on new image
+                                        if (e.target.files?.[0]) {
+                                          setShowImageEditor(true); // Auto-open editor when image is uploaded
+                                        }
+                                      }}
                                     />
-                                    <label htmlFor="artistImageInput" className={styles.imageUploadBox}>
+                                    <label htmlFor="artistImageInput" className={styles.circularImageUploadBox}>
                                       {formData.image ? (
-                                        <img
-                                          src={URL.createObjectURL(formData.image)}
-                                          alt="Artist Profile"
-                                          className={styles.uploadedImage}
-                                        />
+                                        <div
+                                          className={styles.circularImageContainer}
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            handleImageClick();
+                                          }}
+                                          style={{ cursor: 'pointer' }}
+                                        >
+                                          <img
+                                            src={URL.createObjectURL(formData.image)}
+                                            alt="Artist Profile"
+                                            className={styles.circularUploadedImage}
+                                            style={{
+                                              transform: savedImageData
+                                                ? `translate(calc(-50% + ${savedImageData.position.x}px), calc(-50% + ${savedImageData.position.y}px)) scale(${savedImageData.zoom})`
+                                                : 'translate(-50%, -50%) scale(1)',
+                                            }}
+                                            draggable={false}
+                                          />
+                                        </div>
                                       ) : (
                                         <span className={styles.plusIcon}>+</span>
                                       )}
                                     </label>
+                                    {formData.image && (
+                                      <p className={styles.clickHint}>Click to edit</p>
+                                    )}
                                   </div>
                                 </div>
                                 <div className={styles.inputWrapperRequired}>
@@ -872,11 +1052,14 @@ export default function Login() {
                                     type="text"
                                     name="dateOfBirth"
                                     placeholder="dd-mm-yyyy"
-                                    className={styles.input}
+                                    className={`${styles.input} ${dateOfBirthError ? styles.inputError : ""}`}
                                     value={formData.dateOfBirth}
                                     onChange={handleInputChange}
                                     onBlur={(e) => validateDateFormat(e.target.value, "dateOfBirth")}
                                   />
+                                  {dateOfBirthError && (
+                                    <span className={styles.errorMessage}>{dateOfBirthError}</span>
+                                  )}
                                 </div>
                                 <div className={styles.inputWrapperRequired}>
                                   <p>Nationality</p>
@@ -886,6 +1069,7 @@ export default function Login() {
                                     value={formData.nationality}
                                     onChange={handleInputChange}
                                   >
+                                    <option value="">Choose one</option>
                                     <option value="Prefer not to say">Prefer not to say</option>
                                     <option value="Afghan">Afghan</option>
                                     <option value="Albanian">Albanian</option>
@@ -977,16 +1161,24 @@ export default function Login() {
                                     <option value="Welsh">Welsh</option>
                                     <option value="Other / Mixed">Other / Mixed</option>
                                   </select>
+                                  {formData.nationality === "Prefer not to say" && (
+                                    <p className={styles.registrationNotice}>
+                                      If you choose not to share your nationality, we may not be able to reflect your geographic background as precisely as we do for other artists. Our aim is to respectfully represent artists from all regions.
+                                    </p>
+                                  )}
                                 </div>
                               </>
                             )}
 
-                            {/* STEP 2: History */}
+                            {/* STEP 2: Mandatory Journey Fields */}
                             {currentStep === 2 && (
                               <>
-                                <h2 className={styles.stepTitle}>Your artistic journey</h2>
+                                <h2 className={styles.stepTitle}>Your artistic journey - Essential Information</h2>
                                 <div className={styles.inputWrapperRequired}>
-                                  <p>Full Name (All names, e.g., John Michael Doe)</p>
+                                  <p>
+                                    Full Name (All names, e.g., John Michael Doe)
+                                    <InfoTooltip text="We ask this in case you have a longer name. If it's the same as your first name, please write your name again here." />
+                                  </p>
                                   <input
                                     type="text"
                                     name="fullName"
@@ -996,7 +1188,10 @@ export default function Login() {
                                   />
                                 </div>
                                 <div className={styles.inputWrapperRequired}>
-                                  <p>About</p>
+                                  <p>
+                                    About
+                                    <InfoTooltip text="Give us a short description of who you are and what you do." />
+                                  </p>
                                   <textarea
                                     name="about"
                                     className={`${styles.input} ${styles.textarea}`}
@@ -1009,22 +1204,76 @@ export default function Login() {
                                     rows={1}
                                   />
                                 </div>
-
                                 <div className={styles.inputWrapper}>
-                                  <p>Date Of Death</p>
+                                  <p>
+                                    Wikipedia Link
+                                    <InfoTooltip text="Must be a Wikipedia or Wikidata URL. Example: https://en.wikipedia.org/wiki/Artist_Name" />
+                                  </p>
                                   <input
-                                    type="text"
-                                    name="dateOfDeath"
-                                    placeholder="dd-mm-yyyy"
-                                    className={styles.input}
-                                    value={formData.dateOfDeath}
+                                    type="url"
+                                    name="wikipediaLink"
+                                    placeholder="https://en.wikipedia.org/wiki/..."
+                                    className={`${styles.input} ${formData.wikipediaLink && !isValidWikipediaURL(formData.wikipediaLink) ? styles.inputError : ""}`}
+                                    value={formData.wikipediaLink}
                                     onChange={handleInputChange}
-                                    onBlur={(e) => validateDateFormat(e.target.value, "dateOfDeath")}
                                   />
+                                  {formData.wikipediaLink && !isValidWikipediaURL(formData.wikipediaLink) && (
+                                    <span className={styles.errorMessage}>
+                                      Please enter a valid Wikipedia or Wikidata URL
+                                    </span>
+                                  )}
                                 </div>
+                                <div className={styles.inputWrapper}>
+                                  <p>
+                                    Official Site Link
+                                    <InfoTooltip text="The artist's official website. Must start with http:// or https://" />
+                                  </p>
+                                  <input
+                                    type="url"
+                                    name="officialSiteLink"
+                                    placeholder="https://artistwebsite.com"
+                                    className={`${styles.input} ${formData.officialSiteLink && !isValidURL(formData.officialSiteLink) ? styles.inputError : ""}`}
+                                    value={formData.officialSiteLink}
+                                    onChange={handleInputChange}
+                                  />
+                                  {formData.officialSiteLink && !isValidURL(formData.officialSiteLink) && (
+                                    <span className={styles.errorMessage}>
+                                      Please enter a valid URL starting with http:// or https://
+                                    </span>
+                                  )}
+                                </div>
+                              </>
+                            )}
+
+                            {/* STEP 3: Optional Journey Fields */}
+                            {currentStep === 3 && (
+                              <>
+                                <h2 className={styles.stepTitle}>Your artistic journey - Additional Details</h2>
+                                <p className={styles.stepDescription}>The following fields are optional but help us provide a richer profile.</p>
+
+                                {formData.registrationType === "other" && (
+                                  <div className={styles.inputWrapper}>
+                                    <p>Date Of Death</p>
+                                    <input
+                                      type="text"
+                                      name="dateOfDeath"
+                                      placeholder="dd-mm-yyyy (optional)"
+                                      className={styles.input}
+                                      value={formData.dateOfDeath}
+                                      onChange={handleInputChange}
+                                      onBlur={(e) => validateDateFormat(e.target.value, "dateOfDeath")}
+                                    />
+                                    <p className={styles.registrationNotice}>
+                                      Optional: Only fill this if the artist is deceased. Use the format dd-mm-yyyy.
+                                    </p>
+                                  </div>
+                                )}
 
                                 <div className={styles.inputWrapper}>
-                                  <p>Art Movement (multiple)</p>
+                                  <p>
+                                    Art Movement (multiple)
+                                    <InfoTooltip text="Add art movements the artist was part of (e.g., Impressionism, Cubism). Press Enter to add each one." />
+                                  </p>
                                   <div className={styles.inputWithBubbles}>
                                     {formData.artMovement.map((item, index) => (
                                       <span key={index} className={styles.bubble}>
@@ -1061,7 +1310,10 @@ export default function Login() {
                                 </div>
 
                                 <div className={styles.inputWrapper}>
-                                  <p>Influenced By (multiple)</p>
+                                  <p>
+                                    Influenced By (multiple)
+                                    <InfoTooltip text="Who is your influence for your style, if anyone?" />
+                                  </p>
                                   <div className={styles.inputWithBubbles}>
                                     {formData.influencedBy.map((item, index) => (
                                       <span key={index} className={styles.bubble}>
@@ -1098,7 +1350,10 @@ export default function Login() {
                                 </div>
 
                                 <div className={styles.inputWrapper}>
-                                  <p>Had An Impact On (multiple)</p>
+                                  <p>
+                                    Had An Impact On (multiple)
+                                    <InfoTooltip text="Who has been affected by your art style, if anyone?" />
+                                  </p>
                                   <div className={styles.inputWithBubbles}>
                                     {formData.influencedOn.map((item, index) => (
                                       <span key={index} className={styles.bubble}>
@@ -1135,7 +1390,10 @@ export default function Login() {
                                 </div>
 
                                 <div className={styles.inputWrapper}>
-                                  <p>Art Institution Attended by the Individual (multiple)</p>
+                                  <p>
+                                    Art Institution Attended by the Individual (multiple)
+                                    <InfoTooltip text="The art school or institution you attended, if applicable." />
+                                  </p>
                                   <div className={styles.inputWithBubbles}>
                                     {formData.artInstitution.map((item, index) => (
                                       <span key={index} className={styles.bubble}>
@@ -1172,7 +1430,10 @@ export default function Login() {
                                 </div>
 
                                 <div className={styles.inputWrapper}>
-                                  <p>Friends/ Co-workers (multiple)</p>
+                                  <p>
+                                    Friends/ Co-workers (multiple)
+                                    <InfoTooltip text="Known artists you are friends with or work with, if applicable." />
+                                  </p>
                                   <div className={styles.inputWithBubbles}>
                                     {formData.friendsOrCoworkers.map((item, index) => (
                                       <span key={index} className={styles.bubble}>
@@ -1207,33 +1468,11 @@ export default function Login() {
                                     )}
                                   </div>
                                 </div>
-                                <div className={styles.inputWrapper}>
-                                  <p>Wikipedia Link</p>
-                                  <input
-                                    type="url"
-                                    name="wikipediaLink"
-                                    placeholder="Example: https://artvista.app/"
-                                    className={styles.input}
-                                    value={formData.wikipediaLink}
-                                    onChange={handleInputChange}
-                                  />
-                                </div>
-                                <div className={styles.inputWrapper}>
-                                  <p>Official Site Link</p>
-                                  <input
-                                    type="url"
-                                    name="officialSiteLink"
-                                    placeholder="Example: https://artvista.app/"
-                                    className={styles.input}
-                                    value={formData.officialSiteLink}
-                                    onChange={handleInputChange}
-                                  />
-                                </div>
                               </>
                             )}
 
-                            {/* STEP 3: Account */}
-                            {currentStep === 3 && (
+                            {/* STEP 4: Account */}
+                            {currentStep === 4 && (
                               <>
                                 <h2 className={styles.stepTitle}>Almost there!</h2>
                                 <p className={styles.stepDescription}>
@@ -1500,11 +1739,12 @@ export default function Login() {
                         ← Back
                       </button>
                     )}
-                    {currentStep < 3 ? (
+                    {currentStep < 4 ? (
                       <button
                         type="button"
                         className={styles.nextButton}
                         onClick={handleNextStep}
+                        disabled={isNextDisabled}
                       >
                         Next →
                       </button>
@@ -1575,11 +1815,23 @@ export default function Login() {
                 </div>
               </main>
             )}
+              </div>
+            </div>
           </div>
+        )}
         </div>
-      )}
+        <Footer />
       </div>
-      <Footer />
+
+      {/* Image Editor Modal */}
+      {showImageEditor && formData.image && (
+        <ImageEditor
+          image={formData.image}
+          onSave={handleImageSave}
+          onClose={() => setShowImageEditor(false)}
+          onUploadNew={handleUploadNew}
+        />
+      )}
     </>
   );
 }

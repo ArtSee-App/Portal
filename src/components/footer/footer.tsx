@@ -6,7 +6,7 @@ import styles from "./footer.module.css";
 const Footer = () => {
     return (
         <footer className={styles.footer}>
-            <p>&copy; 2024 Vista Technologies BV</p>
+            <p>&copy; 2025 Vista Technologies BV</p>
             <ul className={styles.navLinks}>
                 <li>
                     <Link

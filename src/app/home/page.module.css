@@ -811,6 +811,74 @@
   font-style: italic;
 }
 
+.duplicateTitle {
+  cursor: pointer;
+  position: relative;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.duplicateTitle:hover {
+  color: var(--primary-color);
+}
+
+.duplicateTooltip {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  pointer-events: none;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.duplicateTooltipContent {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  max-width: 400px;
+  border: 1px solid #e0e0e0;
+}
+
+.duplicateTooltipImage {
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+  background-color: #f5f5f5;
+  display: block;
+}
+
+.duplicateTooltipInfo {
+  padding: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.duplicateTooltipTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.duplicateTooltipArtist {
+  font-size: 0.875rem;
+  color: #666;
+}
+
 .adminButtons {
   display: flex;
   gap: 8px;

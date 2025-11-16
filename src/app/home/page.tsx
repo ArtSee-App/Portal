@@ -60,6 +60,9 @@ type DuplicateCheckResult = {
   duplicate: {
     title: string;
     artwork_id: number;
+    artist: string;
+    spaces_dir?: string;
+    spaces_dir_low_resolution?: string;
   } | null;
 };
 
@@ -98,6 +101,7 @@ export default function Home() {
   const [duplicateCheckResults, setDuplicateCheckResults] = useState<Map<number, DuplicateCheckResult>>(new Map());
   const [checkingDuplicate, setCheckingDuplicate] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [hoveredDuplicate, setHoveredDuplicate] = useState<{ artworkId: number; imageUrl: string; title: string; artist: string } | null>(null);
   const itemsPerPage = 8;
   const refreshedArtworkIds = useRef<Set<number>>(new Set());
 
@@ -1115,7 +1119,16 @@ export default function Home() {
                                           </div>
                                           {result.duplicate && (
                                             <div className={styles.duplicateCheckDetails}>
-                                              Similar to: <strong>{result.duplicate.title}</strong> <span className={styles.duplicateCheckId}>(#{result.duplicate.artwork_id})</span>
+                                              Similar to: <strong
+                                                className={styles.duplicateTitle}
+                                                onMouseEnter={() => setHoveredDuplicate({
+                                                  artworkId: result.duplicate!.artwork_id,
+                                                  imageUrl: result.duplicate!.spaces_dir_low_resolution || result.duplicate!.spaces_dir || '',
+                                                  title: result.duplicate!.title,
+                                                  artist: result.duplicate!.artist
+                                                })}
+                                                onMouseLeave={() => setHoveredDuplicate(null)}
+                                              >{result.duplicate.title}</strong> <span className={styles.duplicateCheckId}>(#{result.duplicate.artwork_id})</span>
                                             </div>
                                           )}
                                           {artwork.pending_situation === 2 && (
@@ -1138,7 +1151,16 @@ export default function Home() {
                                           </div>
                                           {result.duplicate && (
                                             <div className={styles.duplicateCheckDetails}>
-                                              Matches: <strong>{result.duplicate.title}</strong> <span className={styles.duplicateCheckId}>(#{result.duplicate.artwork_id})</span>
+                                              Matches: <strong
+                                                className={styles.duplicateTitle}
+                                                onMouseEnter={() => setHoveredDuplicate({
+                                                  artworkId: result.duplicate!.artwork_id,
+                                                  imageUrl: result.duplicate!.spaces_dir_low_resolution || result.duplicate!.spaces_dir || '',
+                                                  title: result.duplicate!.title,
+                                                  artist: result.duplicate!.artist
+                                                })}
+                                                onMouseLeave={() => setHoveredDuplicate(null)}
+                                              >{result.duplicate.title}</strong> <span className={styles.duplicateCheckId}>(#{result.duplicate.artwork_id})</span>
                                             </div>
                                           )}
                                           {artwork.pending_situation === 2 && (
@@ -1367,6 +1389,24 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Duplicate Image Tooltip */}
+      {hoveredDuplicate && hoveredDuplicate.imageUrl && (
+        <div className={styles.duplicateTooltip}>
+          <div className={styles.duplicateTooltipContent}>
+            <img
+              src={hoveredDuplicate.imageUrl}
+              alt={hoveredDuplicate.title}
+              className={styles.duplicateTooltipImage}
+            />
+            <div className={styles.duplicateTooltipInfo}>
+              <div className={styles.duplicateTooltipTitle}>{hoveredDuplicate.title}</div>
+              <div className={styles.duplicateTooltipArtist}>{hoveredDuplicate.artist}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </>
   );
