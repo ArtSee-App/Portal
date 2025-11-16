@@ -891,41 +891,45 @@ export default function Home() {
                 ) : null}
               </div>
             )}
-            <div className={styles.searchWrapper}>
-              <input
-                type="text"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)} // Update search text
-                className={styles.searchBar}
-                placeholder={`Search for a specific ${activeTab === "artworks"
-                  ? "artwork"
-                  : activeTab === "artists"
-                    ? "artist"
-                    : "museum"
-                  }...`}
-              />
-              <span className={styles.searchIcon}>🔍</span>
-              {searchText && (
-                <span
-                  className={styles.clearIcon}
-                  onClick={() => setSearchText("")} // Clear search text on click
+            {!showWelcome && (artworkStats === null || (artworkStats.approved + artworkStats.pending + artworkStats.rejected) > 0) && (
+              <>
+                <div className={styles.searchWrapper}>
+                  <input
+                    type="text"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)} // Update search text
+                    className={styles.searchBar}
+                    placeholder={`Search for a specific ${activeTab === "artworks"
+                      ? "artwork"
+                      : activeTab === "artists"
+                        ? "artist"
+                        : "museum"
+                      }...`}
+                  />
+                  <span className={styles.searchIcon}>🔍</span>
+                  {searchText && (
+                    <span
+                      className={styles.clearIcon}
+                      onClick={() => setSearchText("")} // Clear search text on click
+                    >
+                      ✖
+                    </span>
+                  )}
+                </div>
+                <div
+                  className={styles.refreshIcon}
+                  onClick={() => {
+                    if (activeTab === "artworks") {
+                      handleRefresh();
+                    } else if (activeTab === "artists") {
+                      handleRefreshArtists();
+                    }
+                  }}
                 >
-                  ✖
-                </span>
-              )}
-            </div>
-            <div
-              className={styles.refreshIcon}
-              onClick={() => {
-                if (activeTab === "artworks") {
-                  handleRefresh();
-                } else if (activeTab === "artists") {
-                  handleRefreshArtists();
-                }
-              }}
-            >
-              <FiRefreshCw />
-            </div>
+                  <FiRefreshCw />
+                </div>
+              </>
+            )}
           </div>
           <div className={styles.artworkList}>
             {activeTab === "artworks" ? (

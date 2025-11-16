@@ -38,7 +38,7 @@
 
 .logoCard {
   width: 100%;
-  padding: 24px 32px;
+  padding: 16px 24px;
   border-radius: 10px;
   background: #020019;
   display: flex;
@@ -161,7 +161,7 @@
 
 .logoTop {
   width: auto;
-  height: 96px;
+  height: 64px;
   object-fit: contain;
   margin-right: 16px;
 }
@@ -1068,8 +1068,20 @@
   }
 
   .logoTop {
-    width: 64px;
-    height: 64px;
+    width: auto;
+    height: 48px;
+  }
+
+  .logoCard .heading {
+    display: none;
+  }
+
+  .logoSubtitle {
+    display: none;
+  }
+
+  .logoTagline {
+    display: none;
   }
 
   .heading {
@@ -1091,8 +1103,20 @@
   }
 
   .logoTop {
-    width: 56px;
-    height: 56px;
+    width: auto;
+    height: 40px;
+  }
+
+  .logoCard .heading {
+    display: none;
+  }
+
+  .logoSubtitle {
+    display: none;
+  }
+
+  .logoTagline {
+    display: none;
   }
 
   .heading {

@@ -849,7 +849,7 @@ export default function Login() {
               <div className={styles.logoCard}>
                 <img src="/favicon.png" alt="ArtVista Logo" className={styles.logoTop} />
                 <div className={styles.logoContent}>
-                  <h1 className={styles.heading}>ArtVista Portal</h1>
+                  <h1 className={styles.heading}>Portal</h1>
                   <p className={styles.logoSubtitle}>
                     Empowering artists and museums to manage and showcase their collections.
                   </p>

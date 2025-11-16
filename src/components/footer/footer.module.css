@@ -45,30 +45,6 @@
 /* Mobile View: 768px and below */
 @media screen and (max-width: 768px) {
   .footer {
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 15px 0;
-  }
-
-  .footer p {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-
-  .navLinks {
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 0;
-  }
-
-  .navLinks li {
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 5px;
-  }
-
-  .navLinks a {
-    font-size: 14px;
+    display: none;
   }
 }

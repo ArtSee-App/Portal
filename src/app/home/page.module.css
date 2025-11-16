@@ -982,13 +982,13 @@
   .page {
     margin-left: 0;
     width: 100%;
-    padding-top: 80px;
+    padding-top: 100px;
   }
 }
 
 @media (max-width: 768px) {
   .page {
-    padding-top: 60px;
+    padding-top: 80px;
   }
 
   .welcomeContent {
