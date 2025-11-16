@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         } else {
             return NextResponse.json({ success: false, error: "Failed reCAPTCHA verification" }, { status: 403 });
         }
-    } catch (error) {
+    } catch {
         return NextResponse.json({ success: false, error: "Verification error" }, { status: 500 });
     }
 }

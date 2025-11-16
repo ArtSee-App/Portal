@@ -32,7 +32,7 @@ export default function Login() {
   const [currentStep, setCurrentStep] = useState(1); // Multi-step registration state
   const [isTransitioning, setIsTransitioning] = useState(false); // For fade transitions
 
-  const { showAlert, showConfirm } = useAlert();
+  const { showAlert } = useAlert();
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -377,9 +377,9 @@ export default function Login() {
           });
 
           router.push("/home"); // Navigate to home page
-        } catch (error: any) {
+        } catch (error: unknown) {
           const message =
-            error?.code === "auth/invalid-credential"
+            (error as { code?: string })?.code === "auth/invalid-credential"
               ? "Login failed: The email or password you entered is incorrect."
               : `Login failed: ${(error as Error).message}`;
           showAlert(message, "error");

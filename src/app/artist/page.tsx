@@ -141,7 +141,6 @@ export default function Artist() {
   const [loadingFormData, setLoadingFormData] = useState(true);
   const [loadingApproval, setLoadingApproval] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
 
   const hasFetchedArtistDetails = useRef(false); // Prevent multiple API calls for artist details
   const hasFetchedArtworkStatus = useRef(false); // Prevent multiple API calls for artwork status
@@ -149,12 +148,6 @@ export default function Artist() {
 
   const [initialFormData, setInitialFormData] = useState<typeof formData | null>(null);
   const [artworkStatus, setArtworkStatus] = useState<"Rejected" | "Accepted" | "Pending" | null>(null);
-
-  const statusMap: { 0: "Rejected"; 1: "Accepted"; 2: "Pending" } = {
-    0: "Rejected",
-    1: "Accepted",
-    2: "Pending",
-  };
 
 
   const handleEditClick = () => {

@@ -51,7 +51,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
             if (firebaseUser) {
                 try {
-                    const token = await firebaseUser.getIdToken();
+                    await firebaseUser.getIdToken();
                     const storedUser = localStorage.getItem("user");
                     const parsedUser = storedUser ? JSON.parse(storedUser) : {};
 

@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
-import router from "next/router";
-import { useUser } from "@/context/UserContext";
 import { useAlert } from "@/context/AlertContext";
 
 export default function Museum() {
@@ -58,8 +56,7 @@ export default function Museum() {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
-  const [museumStatus, setMuseumStatus] = useState<"pending" | "published" | null>(null);
-  const { user, isLoadingUser } = useUser();
+  const [museumStatus] = useState<"pending" | "published" | null>(null);
 
   const { showAlert, showConfirm } = useAlert();
 

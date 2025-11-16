@@ -44,25 +44,36 @@ type ArtworkStats = {
   pending: number;
 };
 
+type ArtworkDetails = {
+  text_information?: {
+    description?: string;
+    creation_date?: string;
+    genre?: string;
+    media?: string;
+    dimensions?: string;
+    style?: string;
+  };
+};
+
+type DuplicateCheckResult = {
+  score: number;
+  duplicate: {
+    title: string;
+    artwork_id: number;
+  } | null;
+};
+
 
 export default function Home() {
   const router = useRouter(); // Initialize router
   const { user, getIdToken, isLoadingUser } = useUser(); // Access user from context
-  const [adminData, setAdminData] = useState<AdminData[]>([]);
+  const [adminData] = useState<AdminData[]>([]);
   const [isLoading, setIsLoading] = useState(false); //TODO set to true in the future
 
   const { showAlert, showConfirm } = useAlert();
 
-  const [isClient, setIsClient] = useState(false); // Track if the component is client-side
-
-  useEffect(() => {
-    setIsClient(true); // Ensure we're on the client
-  }, []);
-
-
   const [activeTab, setActiveTab] = useState<"artworks" | "artists" | "museums">("artworks");
   const [searchText, setSearchText] = useState(""); // State to manage search input
-  const [currentPage, setCurrentPage] = useState(1);
 
   const [pageCount, setPageCount] = useState(1);
   const [pageCountArtists, setPageCountArtists] = useState(1);
@@ -82,9 +93,9 @@ export default function Home() {
   const [pendingSituationFilter, setPendingSituationFilter] = useState<"approved" | "rejected" | "pending">("pending");
   const [artworkStats, setArtworkStats] = useState<ArtworkStats | null>(null);
   const [expandedArtworkId, setExpandedArtworkId] = useState<number | null>(null);
-  const [expandedArtworkDetails, setExpandedArtworkDetails] = useState<any>(null);
+  const [expandedArtworkDetails, setExpandedArtworkDetails] = useState<ArtworkDetails | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
-  const [duplicateCheckResults, setDuplicateCheckResults] = useState<Map<number, any>>(new Map());
+  const [duplicateCheckResults, setDuplicateCheckResults] = useState<Map<number, DuplicateCheckResult>>(new Map());
   const [checkingDuplicate, setCheckingDuplicate] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const itemsPerPage = 8;
@@ -321,7 +332,6 @@ export default function Home() {
   const handleToggle = (tab: "artworks" | "artists" | "museums") => {
     setActiveTab(tab);
     setSearchText(""); // Clear search input when toggling
-    setCurrentPage(1); // Reset to the first page
   };
 
   const fetchArtworksFromAPI = async (page = 1) => {
@@ -552,19 +562,6 @@ export default function Home() {
     setIsRefreshing(true);
     fetchArtistsFromAPI(1).finally(() => setIsRefreshing(false));
   };
-
-
-
-  const handleLoadMoreArtists = useCallback(() => {
-    setIsLoadingMore(true);
-    const nextPage = pageCountArtists + 1;
-    setPageCountArtists(nextPage);
-    fetchArtistsFromAPI(nextPage);
-  }, [pageCountArtists]);
-
-
-
-
 
   const handleFilterClick = (filter: "approved" | "rejected" | "pending") => {
     setPendingSituationFilter(filter);
@@ -1090,6 +1087,7 @@ export default function Home() {
                                   ) : duplicateCheckResults.get(artwork.id) ? (
                                 (() => {
                                   const result = duplicateCheckResults.get(artwork.id);
+                                  if (!result) return null;
                                   const score = result.score;
 
                                   if (score < 50) {
