@@ -534,7 +534,6 @@ export default function Artist() {
 
         const artistDetails = await response.json();
         const { text_information } = artistDetails;
-        console.log(text_information)
 
         const profileImageFile = text_information?.spaces_dir
           ? await fetchImageWithProxy(text_information.spaces_dir, "profile_image.jpg")
@@ -643,8 +642,6 @@ export default function Artist() {
 
         const artistDetails = await response.json();
         const { text_information } = artistDetails;
-
-        console.log(text_information)
 
         const profileImageFile = text_information?.spaces_dir
           ? await fetchImageWithProxy(text_information.spaces_dir, "profile_image.jpg")

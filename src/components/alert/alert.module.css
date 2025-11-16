@@ -5,13 +5,11 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    animation: fadeInOverlay 0.2s ease-out;
-    /* Add fade-in animation for overlay */
+    animation: fadeInOverlay 0.15s ease-out;
 }
 
 @keyframes fadeInOverlay {
@@ -24,121 +22,113 @@
     }
 }
 
-
 .alertBox {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(15px);
-    padding: 32px 40px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    text-align: center;
+    background: #ffffff;
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
     max-width: 420px;
     width: 90%;
     animation: fadeIn 0.2s ease-out;
-    /* Reduce the animation duration to 0.2s */
-    color: #fff;
+    overflow: hidden;
 }
 
 .alertBox.success {
-    border: 3px solid #2ecc71;
+    border: 2px solid #1B8E5E;
 }
 
 .alertBox.error {
-    border: 3px solid #e74c3c;
+    border: 2px solid #d32f2f;
 }
 
 .alertBox.info {
-    border: 3px solid #3498db;
+    border: 2px solid var(--primary-color);
 }
 
 .alertBox.warning {
-    border: 3px solid #f39c12;
+    border: 2px solid #FF9800;
+}
+
+.alertContent {
+    padding: 24px 28px;
 }
 
 .alertText p {
-    font-size: 18px;
+    font-size: 0.95rem;
     font-weight: 500;
     margin: 0;
-    margin-bottom: 20px;
-    color: #fff;
-    line-height: 1.6;
+    color: #333;
+    line-height: 1.5;
+    text-align: left;
 }
 
 .buttonContainer {
-    margin-top: 20px;
     display: flex;
-    justify-content: center;
-    gap: 20px;
-    /* Space between buttons */
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 28px;
+    background-color: #fafafa;
+    border-top: 1px solid #e0e0e0;
 }
 
 .okButton {
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
-    /* Cool gradient */
-    color: #fff;
+    background-color: var(--primary-color);
+    color: #ffffff;
     border: none;
-    border-radius: 8px;
-    padding: 12px 20px;
+    border-radius: 5px;
+    padding: 8px 20px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 0.9rem;
     font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.6);
-    /* Glow effect */
+    transition: all 0.15s ease;
+    min-width: 70px;
 }
 
 .okButton:hover {
-    transform: scale(1.05);
-    background: linear-gradient(90deg, #0072ff, #00c6ff);
-    /* Reverse gradient */
-    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.8);
-    /* Stronger glow */
+    background-color: #0066cc;
+    box-shadow: 0 2px 6px rgba(29, 136, 240, 0.3);
 }
 
 .cancelButton {
-    background: linear-gradient(90deg, #ff6a6a, #ff3e3e);
-    /* Cool gradient */
-    color: #fff;
+    background-color: transparent;
+    color: #666;
     border: none;
-    border-radius: 8px;
-    padding: 12px 20px;
+    border-radius: 5px;
+    padding: 8px 20px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 0.9rem;
     font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(255, 94, 94, 0.6);
-    /* Glow effect */
+    transition: all 0.15s ease;
+    min-width: 70px;
 }
 
 .cancelButton:hover {
-    transform: scale(1.05);
-    background: linear-gradient(90deg, #ff3e3e, #ff6a6a);
-    /* Reverse gradient */
-    box-shadow: 0 6px 20px rgba(255, 94, 94, 0.8);
-    /* Stronger glow */
+    background-color: #f0f0f0;
+    color: #333;
 }
 
 
 .inputField {
     width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    border-radius: 8px;
-    font-size: 16px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
-    color: #fff;
+    padding: 10px 14px;
+    margin-top: 14px;
+    border: 1px solid #d0d0d0;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    background-color: #ffffff;
+    color: #333;
     outline: none;
-    transition: border 0.2s ease-in-out;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
 }
 
 .inputField::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: #999;
 }
 
 .inputField:focus {
-    border-color: #00c6ff;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(29, 136, 240, 0.1);
 }
 
 

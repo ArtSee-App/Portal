@@ -5,11 +5,14 @@
   justify-content: flex-start;
   min-height: 100vh;
   font-family: Arial, sans-serif;
-  gap: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 100px;
-  margin-bottom: 20px;
+  gap: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 40px;
+  margin-bottom: 40px;
+  background-color: #f5f5f5;
+  margin-left: 240px;
+  transition: margin-left 0.3s ease;
 }
 
 .thankYouMessage {
@@ -33,38 +36,42 @@
 }
 
 .resetButton {
-  margin-top: 20px;
-  padding: 12px 16px;
+  margin-top: 24px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  border-radius: 6px;
+  background-color: var(--primary-color);
   color: white;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
 }
 
 .resetButton:hover {
-  background-color: var(--primary-color);
+  background-color: #003366;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 
 .header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 12px;
-  text-align: center;
+  background-color: #ffffff;
+  padding: 20px 32px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.04);
+  width: 100%;
 }
 
 .headerTitle {
-  font-size: 1.7rem;
-  font-weight: bold;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
 }
 
 .link {
@@ -120,29 +127,25 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   width: 100%;
-  /* Adjust to fit within the wrapper */
   overflow-y: auto;
-  background-color: var(--background-container);
-  /* Enable vertical scrolling */
+  background-color: transparent;
 }
 
 .formRow {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: 32px;
   width: 100%;
 }
-
 
 .leftColumn {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   width: 50%;
-  /* Ensure 50% width */
   box-sizing: border-box;
 }
 
@@ -150,22 +153,19 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   width: 50%;
-  /* Ensure 50% width */
   overflow: hidden;
-  /* Prevent overflow */
   box-sizing: border-box;
 }
 
 
 .registeringForm {
-  border: 2px solid var(--primary-color);
-  /* Adjust border color as needed */
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  /* Optional: Add rounded corners */
-  padding: 16px;
-  /* Optional: Add some padding */
+  padding: 32px;
+  background-color: #ffffff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 
@@ -196,19 +196,21 @@
 }
 
 .fileButton {
-  padding: 12px 16px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  border-radius: 6px;
+  background-color: var(--primary-color);
   color: white;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
 }
 
 .fileButton:hover {
-  background-color: var(--primary-color);
+  background-color: #003366;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .fileName {
@@ -264,20 +266,21 @@
 .imageUploadBox {
   width: 100%;
   height: 400px;
-  border: 2px dashed #ccc;
+  border: 2px dashed #e0e0e0;
   border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background-color: #f8f8f8;
+  background-color: #ffffff;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .imageUploadBox:hover {
-  border-color: var(--primary-color);
+  border-color: #999;
+  background-color: #fafafa;
 }
 
 .plusIcon {
@@ -288,7 +291,7 @@
 .uploadedImage {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   position: absolute;
   top: 0;
   left: 0;
@@ -405,18 +408,19 @@
 
 .input {
   padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  /* 16px */
-  transition: border-color 0.2s;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
   width: 100%;
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 4px rgba(0, 112, 243, 0.2);
+  border-color: #999;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 .input::placeholder {
@@ -425,22 +429,24 @@
 
 .textarea {
   resize: none;
-  /* Disable manual resizing */
-  min-height: 40px;
-  /* Initial height */
-  max-height: 200px;
-  /* Limit the maximum height */
+  min-height: 120px;
+  max-height: 300px;
+  line-height: 1.6;
   overflow-y: auto;
-  /* Show scrollbar only when content overflows */
   overflow-x: hidden;
-  /* Prevent horizontal scrolling */
   padding: 12px 16px;
-  /* Add padding for better usability */
-  border: 1px solid #ddd;
-  /* Keep consistent border styling */
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #999;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 /* Custom scrollbar styles for the textarea */
@@ -474,24 +480,23 @@
 
 .button {
   width: 100%;
-  padding: 12px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  /* 16px */
-  font-weight: bold;
-  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background-color: var(--primary-color);
   color: white;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
   flex: 1;
-  /* Optional: Make buttons take equal space */
   text-align: center;
-  /* Center align text inside buttons */
 }
 
 .button:hover {
-  background-color: var(--primary-color);
+  background-color: #003366;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .button.cancelButton {
@@ -609,6 +614,13 @@
 }
 
 
+
+@media (max-width: 1024px) {
+  .page {
+    margin-left: 0;
+    padding-top: 80px;
+  }
+}
 
 @media (max-width: 768px) {
   .page {

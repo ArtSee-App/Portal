@@ -5,65 +5,76 @@
   justify-content: flex-start;
   min-height: 100vh;
   font-family: Arial, sans-serif;
-  gap: 20px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 100px;
-  margin-bottom: 20px;
+  gap: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 40px;
+  margin-bottom: 40px;
+  background-color: #f5f5f5;
+  margin-left: 240px;
+  transition: margin-left 0.3s ease;
 }
 
 .thankYouMessage {
   text-align: center;
   margin-top: 50px;
-  padding: 20px;
-  background: var(--background-container);
-  border: 2px solid var(--secondary-color);
+  padding: 40px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .thankYouMessage h1 {
-  font-size: 1.8rem;
-  color: var(--secondary-color);
-  margin-bottom: 12px;
+  font-size: 1.6rem;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 16px;
 }
 
 .thankYouMessage p {
-  font-size: 1.2rem;
-  color: #333;
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
 }
 
 .resetButton {
-  margin-top: 20px;
-  padding: 12px 16px;
+  margin-top: 24px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  border-radius: 6px;
+  background-color: var(--primary-color);
   color: white;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
 }
 
 .resetButton:hover {
-  background-color: var(--primary-color);
+  background-color: #003366;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
   text-align: center;
+  background-color: #ffffff;
+  padding: 20px 32px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.04);
+  width: 100%;
 }
 
 .headerTitle {
-  font-size: 1.7rem;
-  font-weight: bold;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
 }
 
 .link {
@@ -102,56 +113,48 @@
 }
 
 .headerHelp {
-  font-size: 1rem;
-  color: #1e90ff;
-  /* Fallback blue for browsers without gradient support */
+  font-size: 0.9rem;
+  color: #666;
 }
 
 .form {
   position: relative;
-  /* Add relative positioning */
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   width: 100%;
-  /* Adjust to fit within the wrapper */
   overflow-y: auto;
-  background-color: var(--background-container);
-  /* Enable vertical scrolling */
+  background-color: #ffffff;
 }
 
 .formRow {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: 32px;
   width: 100%;
 }
 
 .leftColumn {
   flex: 1;
-  /* Left side takes 1 part */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
 }
 
 .rightColumn {
   flex: 1;
-  /* Right side takes 2 parts */
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .registeringForm {
-  border: 2px solid var(--secondary-color);
-  /* Adjust border color as needed */
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  /* Optional: Add rounded corners */
-  padding: 16px;
-  /* Optional: Add some padding */
+  padding: 32px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 
@@ -208,27 +211,36 @@
   position: relative;
 }
 
-.overlay::before {
+/* Only apply overlay message to main image upload wrapper */
+.imageUploadWrapper.overlay .imageUploadBox::after {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
-  /* Semi-transparent dark overlay */
-  z-index: 1;
-  /* Ensure it appears above the content */
+  background-color: transparent;
+  z-index: 2;
   pointer-events: none;
-  /* Prevent overlay from blocking interactions */
   border-radius: 8px;
-  /* Match existing border-radius */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
-.overlay img,
-.overlay .plusIcon {
-  opacity: 0.3;
-  /* Reduce the opacity of the content */
+.imageUploadWrapper.overlay:hover .imageUploadBox::after {
+  content: "The main image cannot be changed";
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 20px;
+}
+
+.imageUploadWrapper.overlay:hover img {
+  filter: grayscale(100%) brightness(0.5);
 }
 
 .overlay-disabled {
@@ -255,25 +267,25 @@
 .imageUploadBox {
   width: 100%;
   height: 400px;
-  border: 2px dashed #ccc;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background-color: #f8f8f8;
+  background-color: #ffffff;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .smallImageUploadBox {
   height: 150px;
 }
 
-
 .imageUploadBox:hover {
-  border-color: var(--primary-color);
+  border-color: #999;
+  background-color: #f5f5f5;
 }
 
 .plusIcon {
@@ -284,7 +296,7 @@
 .uploadedImage {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   position: absolute;
   top: 0;
   left: 0;
@@ -292,7 +304,8 @@
 
 .additionalInfo {
   font-size: 0.875rem;
-  color: var(--text-gray);
+  color: #666;
+  line-height: 1.6;
 }
 
 .additionalInfo a {
@@ -357,13 +370,13 @@
 
 
 .inputWrapper {
-  margin-bottom: 16px;
+  margin-bottom: 4px;
   width: 100%;
   font-size: 1rem;
 }
 
 .inputWrapperRequired {
-  margin-bottom: 16px;
+  margin-bottom: 4px;
   width: 100%;
   font-size: 1rem;
 }
@@ -382,28 +395,35 @@
 }
 
 .inputWrapper p {
-  color: var(--text);
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 6px;
 }
 
 .inputWrapperRequired p {
-  color: var(--text);
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 6px;
 }
 
 
 .input {
   padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  /* 16px */
-  transition: border-color 0.2s;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
   width: 100%;
+  background-color: #fafafa;
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 4px rgba(0, 112, 243, 0.2);
+  border-color: #999;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 .input::placeholder {
@@ -414,9 +434,9 @@
 .textarea {
   resize: none;
   /* Disable manual resizing */
-  min-height: 40px;
-  /* Initial height */
-  max-height: 200px;
+  min-height: 120px;
+  /* Show 4-5 lines at a time */
+  max-height: 300px;
   /* Limit the maximum height */
   overflow-y: auto;
   /* Show scrollbar only when content overflows */
@@ -424,11 +444,12 @@
   /* Prevent horizontal scrolling */
   padding: 12px 16px;
   /* Add padding for better usability */
-  border: 1px solid #ddd;
+  border: 1px solid #e0e0e0;
   /* Keep consistent border styling */
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  transition: all 0.2s ease;
 }
 
 /* Custom scrollbar styles for the textarea */
@@ -451,16 +472,15 @@
 
 .select {
   appearance: none;
-  /* Remove native dropdown styles */
-  background: #f8f8f8;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
   padding: 12px 16px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
   width: 100%;
   position: relative;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23999' d='M10 12l-5-5h10l-5 5z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23666' d='M10 12l-5-5h10l-5 5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 1em;
@@ -468,8 +488,9 @@
 
 .select:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 4px rgba(0, 112, 243, 0.2);
+  border-color: #999;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 .customInput {
@@ -489,72 +510,59 @@
 
 .button {
   width: 100%;
-  padding: 12px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  /* 16px */
-  font-weight: bold;
-  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background-color: var(--primary-color);
   color: white;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
   flex: 1;
-  /* Optional: Make buttons take equal space */
   text-align: center;
-  /* Center align text inside buttons */
 }
 
 .button:hover {
-  background-color: var(--primary-color);
+  background-color: #003366;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .button.cancelButton {
-  background-color: #ccc !important;
-  /* Gray for cancel */
-  color: #333;
-  background: none;
-  /* Remove the linear gradient */
+  background-color: #e0e0e0 !important;
+  color: #666;
 }
 
 .button.cancelButton:hover {
-  background-color: #aaa;
+  background-color: #d0d0d0 !important;
 }
 
 .button.deleteButton {
   background-color: #d32f2f !important;
-  /* Red for delete */
   color: white;
-  background: none;
-  /* Remove the linear gradient */
 }
 
 .button.deleteButton:hover {
-  background-color: darkred;
+  background-color: #9a2323 !important;
 }
 
 .approveButton {
   background-color: #1b8e5e !important;
-  ;
   color: white;
-  background: none;
-  /* Remove the linear gradient */
 }
 
 .approveButton:hover {
-  background-color: darkgreen;
+  background-color: #146946 !important;
 }
 
 .rejectButton {
   background-color: #d32f2f !important;
-  ;
   color: white;
-  background: none;
-  /* Remove the linear gradient */
 }
 
 .rejectButton:hover {
-  background-color: darkred;
+  background-color: #9a2323 !important;
 }
 
 
@@ -588,11 +596,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--background-container);
-  padding: 16px 24px;
+  background-color: #ffffff;
+  padding: 20px 28px;
   border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  gap: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.04);
+  gap: 16px;
   width: 100%;
 }
 
@@ -649,6 +658,13 @@
   z-index: 10;
 }
 
+
+@media (max-width: 1024px) {
+  .page {
+    margin-left: 0;
+    padding-top: 80px;
+  }
+}
 
 @media (max-width: 768px) {
   .page {

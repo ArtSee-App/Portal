@@ -1,98 +1,94 @@
 .header {
   position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 1250px;
-  padding: 10px 30px;
-  background: transparent;
-  border-radius: 20px;
-  z-index: 1000;
-  transition: all 0.3s ease;
-}
-
-.header::before {
-  content: "";
-  position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, rgba(185, 2, 167, 0.7), rgba(3, 193, 253, 0.7));
-  background-size: 400% 400%;
-  /* Larger size for smooth gradient animation */
-  border-radius: inherit;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
-  backdrop-filter: blur(0px);
-  animation: gradientAnimation 10s infinite;
-  /* Infinite gradient animation */
-}
-
-.header.scrolled::before {
-  opacity: 1;
-  backdrop-filter: blur(20px);
-}
-
-/* Define the gradient animation */
-@keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+  width: 240px;
+  height: 100vh;
+  background-color: #020019;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
 }
 
 .nav {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  height: 100%;
 }
 
 .logoContainer {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 12px;
 }
 
 .logo {
-  height: 40px;
-  margin-right: 10px;
+  height: 50px;
+  width: 50px;
 }
 
 .logoText {
-  color: var(--text);
-  font-size: 30px;
-  font-weight: 350;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
 }
 
 .navLinks {
   display: flex;
+  flex-direction: column;
   list-style-type: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  padding-top: 20px;
 }
 
 .navLinks li {
-  margin-left: 20px;
+  margin: 0;
 }
 
 .navLinks a {
-  color: var(--text);
+  display: block;
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
-  font-size: 18px;
-  position: relative;
-  transition: color 0.3s ease, transform 0.3s ease;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 14px 24px;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
 }
 
 .navLinks a:hover {
-  color: var(--secondary-color);
-  /* Matches the theme's secondary gradient */
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.signOutContainer {
+  margin-top: auto;
+  padding: 20px 24px 32px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.signOutButton {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.signOutButton:hover {
+  color: #ffffff;
 }
 
 .hamburger {
@@ -110,7 +106,7 @@
 .hamburger .bar {
   width: 100%;
   height: 3px;
-  background: var(--text);
+  background: #ffffff;
   border-radius: 2px;
   transition: all 0.3s ease;
 }
@@ -127,28 +123,25 @@
   transform: translateY(-8.5px) rotate(-45deg);
 }
 
-.sidebar {
+.mobileSidebar {
   position: fixed;
   top: 0;
   right: 0;
   width: 250px;
   height: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  padding-top: 60px;
+  background: #020019;
   z-index: 1001;
   transform: translateX(100%);
-  /* Hidden by default */
   transition: transform 0.3s ease-in-out;
-  /* Smooth transition */
   animation: slideIn 0.3s forwards;
-  /* Default slide-in animation */
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.3);
 }
 
-.sidebarClosing {
+.mobileSidebar.sidebarClosing {
   transform: translateX(100%);
-  /* Slide to the right when closing */
   animation: slideOut 0.3s forwards;
-  /* Slide-out animation when closing */
 }
 
 @keyframes slideIn {
@@ -183,7 +176,6 @@
   animation: fadeIn 0.3s forwards;
 }
 
-/* Optional fade-out for the overlay */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -207,39 +199,121 @@
 .sidebarLinks {
   list-style: none;
   padding: 0;
+  margin: 0;
+  flex: 1;
+  padding-top: 20px;
 }
 
 .sidebarLinks li {
-  margin: 20px 0;
-  text-align: center;
+  margin: 0;
 }
 
 .sidebarLinks a {
-  color: var(--text);
+  display: block;
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
-  font-size: 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 14px 24px;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.sidebarLinks a:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.sidebarSignOutContainer {
+  margin-top: auto;
+  padding: 20px 24px 32px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebarSignOutButton {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.sidebarSignOutButton:hover {
+  color: #ffffff;
+}
+
+.sidebarLogoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 12px;
+}
+
+.sidebarLogo {
+  height: 50px;
+  width: 50px;
+}
+
+.sidebarLogoText {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
 }
 
 
-.closeButton:hover {
-  color: #ff4081;
-  /* Optional hover effect */
-}
+@media screen and (max-width: 1024px) {
+  .header {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  }
 
+  .nav {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    height: auto;
+    padding: 12px 20px;
+    width: 100%;
+    position: relative;
+  }
 
-/* Applies to all header text when scrolled */
-.header.scrolled,
-.header.scrolled a,
-.header.scrolled .logoText {
-  color: white !important;
-}
+  .logoContainer {
+    flex-direction: row;
+    padding: 0;
+    border-bottom: none;
+    gap: 10px;
+  }
 
-.header.scrolled .bar {
-  background: white;
-}
+  .hamburger {
+    position: absolute;
+    right: 20px;
+  }
 
+  .logo {
+    height: 36px;
+    width: 36px;
+  }
 
-@media screen and (max-width: 767px) {
+  .logoText {
+    color: #ffffff;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
   .navLinks {
     display: none;
   }
@@ -247,26 +321,4 @@
   .hamburger {
     display: flex;
   }
-
-  .header {
-    left: 0;
-    transform: none;
-    width: 100%;
-    border-radius: 0;
-    top: 0;
-  }
-
-  .logoText {
-    white-space: nowrap;
-    /* Prevent the text from wrapping */
-    overflow: hidden;
-    /* Hide any overflow */
-    text-overflow: ellipsis;
-    /* Add ellipsis (...) if the text is too long */
-    max-width: 200px;
-    /* Set a maximum width for the text container */
-    display: inline-block;
-    /* Ensure the text behaves as a single block */
-  }
-
 }

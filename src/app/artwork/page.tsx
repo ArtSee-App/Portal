@@ -603,7 +603,6 @@ export default function Artwork() {
             nsfw: text_information.is_nsfw,
             priority: text_information.importance_factor === 10, // Convert to boolean
           };
-          console.log(fetchedData);
           setFormData(fetchedData);
           setInitialFormData(fetchedData); // Store the fetched data as the initial state
         }
@@ -695,7 +694,7 @@ export default function Artwork() {
             );
           }
 
-          console.log(`Uploaded additional image for artwork ID ${artworkId}`);
+          // Additional image uploaded successfully
         }
       }
     } catch (error) {

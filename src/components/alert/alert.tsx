@@ -31,29 +31,31 @@ const Alert: React.FC<AlertProps> = ({
     return (
         <div className={`${styles.overlay}`}>
             <div className={`${styles.alertBox} ${styles[type]}`}>
-                <div className={styles.alertText}>
-                    <p>{message}</p>
-                    {isPrompt && (
-                        <input
-                            type="text"
-                            className={styles.inputField}
-                            placeholder="Enter message..."
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                        />
-                    )}
+                <div className={styles.alertContent}>
+                    <div className={styles.alertText}>
+                        <p>{message}</p>
+                        {isPrompt && (
+                            <input
+                                type="text"
+                                className={styles.inputField}
+                                placeholder="Enter message..."
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                            />
+                        )}
+                    </div>
                 </div>
                 <div className={styles.buttonContainer}>
                     {isConfirm || isPrompt ? (
                         <>
-                            <button className={styles.okButton} onClick={handleOkClick}>
-                                OK
-                            </button>
                             <button
                                 className={styles.cancelButton}
                                 onClick={() => onClose(false)}
                             >
                                 Cancel
+                            </button>
+                            <button className={styles.okButton} onClick={handleOkClick}>
+                                OK
                             </button>
                         </>
                     ) : (

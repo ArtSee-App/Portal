@@ -6,167 +6,303 @@
   justify-content: center;
   min-height: 100vh;
   font-family: Arial, sans-serif;
+  padding: 40px 20px;
+}
+
+.cardsContainer {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.logoCardOuter {
+  width: 100%;
+  padding: 2px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1D88F0, #BF03B0);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+.logoCard {
+  width: 100%;
+  padding: 24px 32px;
+  border-radius: 10px;
+  background: #020019;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  text-align: left;
+}
+
+.logoContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 280px;
+}
+
+.logoCard .heading {
+  color: #ffffff;
+}
+
+.logoSubtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 420px;
+}
+
+.logoTagline {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+.logoPill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.logoSeparator {
+  opacity: 0.6;
 }
 
 .confirmationWrapper {
   text-align: center;
-  padding: 32px;
+  padding: 48px;
   border-radius: 8px;
+  background: white;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
 }
 
 .confirmationWrapper p {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-  color: var(--text);
+  font-size: 1.1rem;
+  margin-bottom: 24px;
+  color: #333;
+  line-height: 1.6;
 }
 
 .backToLoginButton {
-  padding: 12px 20px;
+  padding: 12px 28px;
   border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  border-radius: 6px;
+  background: var(--primary-color);
   color: white;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .backToLoginButton:hover {
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 
 .mainWrapper {
   width: 100%;
-  /* Ensure full-width */
+  max-width: 1000px;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Centers main vertically */
-  padding: 2px;
-  border-radius: 14px;
+  padding: 0;
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
-  height: 600px;
-  box-shadow: 0px 0px 50px 15px rgba(0, 0, 0, 0.3);
-  /* Larger glow effect */
-  /* Set the height of the mainWrapper */
-}
-
-.main,
-.imageContainer {
-  width: 50%;
-  /* Set each container to 50% width */
-}
-
-
-.imageContainer {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  /* Set the height of the imageContainer to 100% of the mainWrapper */
-  background-color: #0A0A15;
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
-  transition: transform 0.2s ease-in-out;
-}
-
-.welcomeText {
-  color: white;
-  font-size: 1rem;
-  /* 16px */
-  text-align: center;
-  max-width: 80%;
-}
-
-.image {
-  width: 50%;
-  object-fit: contain;
-  /* Ensures the image fits within the container while maintaining aspect ratio */
+  min-height: auto;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  background: white;
 }
 
 .main {
+  width: 100%;
   display: flex;
-  height: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  /* Centers content vertically within main */
-  gap: 24px;
-  padding: 32px;
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
-  background-color: #EAE9EE;
-  transition: transform 0.2s ease-in-out;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 56px 64px;
+  background-color: #ffffff;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.logoTop {
+  width: auto;
+  height: 96px;
+  object-fit: contain;
+  margin-right: 16px;
+}
+
+/* Removed imageContainer - no longer needed */
+.imageContainer {
+  display: none;
 }
 
 
-.mainWrapper.slide .main {
-  transform: translateX(100%);
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-
-.mainWrapper.slide .imageContainer {
-  transform: translateX(-100%);
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
-}
-
-.mainWrapper .main {
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
-  background-color: var(--background-container);
-  padding: 32px;
-}
+/* Removed slide animation - no longer needed with multi-step approach */
 
 .heading {
-  font-size: 1.5rem;
-  /* 24px */
-  color: #333;
+  font-size: 1.8rem;
+  color: #1a1a1a;
+  font-weight: 600;
+  margin: 0;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   width: 100%;
-  max-height: 500px;
-  /* Adjust to fit within the wrapper */
-  overflow-y: auto;
-  /* Enable vertical scrolling */
+  max-height: none;
+  overflow-y: visible;
+  position: relative;
 }
 
 .registeringForm {
-  border: 2px solid var(--primary-color);
-  /* Adjust border color as needed */
-  border-radius: 8px;
-  /* Optional: Add rounded corners */
-  padding: 16px;
-  /* Optional: Add some padding */
+  border: none;
+  border-radius: 0;
+  padding: 0;
 }
 
+/* Progress Bar */
+.progressBarContainer {
+  width: 100%;
+  height: 4px;
+  background-color: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+  transition: width 0.4s ease;
+  border-radius: 2px;
+}
+
+/* Step Container with Fade Animations */
+.stepContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.fadeIn {
+  animation: fadeInAnimation 0.3s ease-in;
+}
+
+.fadeOut {
+  animation: fadeOutAnimation 0.3s ease-out;
+  opacity: 0;
+}
+
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutAnimation {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Step Title and Description */
+.stepTitle {
+  font-size: 1.4rem;
+  color: #1a1a1a;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  text-align: left;
+}
+
+.stepDescription {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0 0 20px 0;
+  line-height: 1.6;
+}
+
+/* Floating Navigation */
+.floatingNavigation {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.backButton,
+.nextButton {
+  padding: 12px 28px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backButton {
+  background-color: #ffffff;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+}
+
+.backButton:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+  transform: translateY(-1px);
+}
+
+.nextButton {
+  background-color: #ffffff;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+}
+
+.nextButton:hover {
+  background: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
 
 .form::-webkit-scrollbar {
   width: 6px;
-  /* Customize scrollbar width */
 }
 
 .form::-webkit-scrollbar-thumb {
   background: var(--primary-color);
-  /* Customize scrollbar thumb color */
   border-radius: 8px;
 }
 
 .form::-webkit-scrollbar-thumb:hover {
   background: var(--secondary-color);
-  /* Change color on hover */
 }
 
 .hiddenInput {
@@ -206,6 +342,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 8px;
 }
 
 .hiddenInput {
@@ -214,26 +351,28 @@
 
 .imageUploadBox {
   width: 100%;
-  height: 200px;
-  border: 2px dashed #ccc;
+  height: 220px;
+  border: 1px dashed #d0d0d0;
   border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background-color: #f8f8f8;
+  background-color: #fafafa;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .imageUploadBox:hover {
   border-color: var(--primary-color);
+  background-color: #f5f5f5;
 }
 
 .plusIcon {
-  font-size: 2rem;
-  color: #ccc;
+  font-size: 3rem;
+  color: #d0d0d0;
+  font-weight: 200;
 }
 
 .uploadedImage {
@@ -321,12 +460,12 @@
 
 
 .inputWrapper {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   width: 100%;
 }
 
 .inputWrapperRequired {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   width: 100%;
   font-size: 1rem;
 }
@@ -334,44 +473,52 @@
 
 .inputWrapperRequired p::after {
   content: "*";
-  color: red;
-  /* Slightly larger to make it noticeable */
-  margin-left: 2px;
+  color: #e74c3c;
+  margin-left: 4px;
+  font-size: 0.85rem;
 }
 
 .inputWrapper .inputWrapperRequired p {
   font-size: 0.875rem;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .inputWrapperRequired p {
-  color: var(--text);
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
 }
 
 .inputWrapper p {
-  color: var(--text);
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
 }
 
 
 
 .input {
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  /* 16px */
-  transition: border-color 0.2s;
+  padding: 14px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
   width: 100%;
+  background: #fafafa;
 }
 
 .input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 4px rgba(0, 112, 243, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.08);
+  background: white;
 }
 
 .input::placeholder {
-  font-style: italic;
+  color: #999;
+  font-style: normal;
 }
 
 .textarea {
@@ -415,20 +562,21 @@
 
 .button {
   width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  /* 16px */
-  font-weight: bold;
-  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-  color: white;
+  padding: 14px 20px;
+  border: 2px solid var(--primary-color);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background-color: #ffffff;
+  color: var(--primary-color);
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
 }
 
 .button:hover {
-  background-color: var(--primary-color);
+  background-color: rgba(29, 136, 240, 0.08);
+  border-color: #0066cc;
+  color: #0066cc;
 }
 
 .forgotPasswordExplanation {
@@ -533,40 +681,37 @@
 .separator {
   width: 100%;
   height: 1px;
-  background-color: #ddd;
+  background-color: #e8e8e8;
+  margin: 8px 0;
 }
 
 .registerContainer {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
 }
 
 .registerArtist,
 .registerMuseum {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  /* 14px */
-  font-weight: bold;
-  color: black;
+  padding: 12px 18px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
+  background: white;
 }
 
 .buttonWrapper {
-  display: inline-block;
-  padding: 2px;
-  /* Border thickness */
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+  display: block;
+  width: 100%;
 }
 
 .buttonWrapper .registerArtist,
 .buttonWrapper .registerMuseum {
-  border-radius: 6px;
   width: 100%;
 }
 
@@ -577,6 +722,10 @@
 
 .registerArtist:hover {
   background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .registerMuseum {
@@ -585,33 +734,59 @@
 
 .registerMuseum:hover {
   background-color: var(--secondary-color);
+  color: white;
+  border-color: var(--secondary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 768px) {
-  .imageContainer {
-    display: none;
+  .page {
+    padding: 20px 15px;
+  }
+
+  .mainWrapper {
+    max-width: 100%;
+    border-radius: 8px;
   }
 
   .main {
-    width: 100%;
-    border-top-right-radius: 12px;
-    border-bottom-right-radius: 12px;
+    padding: 40px 32px;
   }
 
-  .page {
-    padding: 25px;
+  .logoTop {
+    width: 64px;
+    height: 64px;
   }
 
-  .mainWrapper.slide .main {
-    transform: translateX(0%);
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
+  .heading {
+    font-size: 1.5rem;
   }
 
-  .addBubbleButton {
-    display: flex;
-    /* show only on phones */
+  .stepTitle {
+    font-size: 1.2rem;
   }
 
+  .floatingNavigation {
+    justify-content: flex-end;
+  }
+}
 
+@media (max-width: 480px) {
+  .main {
+    padding: 32px 24px;
+  }
+
+  .logoTop {
+    width: 56px;
+    height: 56px;
+  }
+
+  .heading {
+    font-size: 1.3rem;
+  }
+
+  .floatingNavigation {
+    justify-content: space-between;
+  }
 }

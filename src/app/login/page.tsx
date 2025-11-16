@@ -29,6 +29,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const { setUser } = useUser();
   const [showRegisterInfo, setShowRegisterInfo] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1); // Multi-step registration state
+  const [isTransitioning, setIsTransitioning] = useState(false); // For fade transitions
 
   const { showAlert, showConfirm } = useAlert();
 
@@ -77,7 +79,7 @@ export default function Login() {
     fullName: "",
     about: "",
     dateOfBirth: "",
-    nationality: "",
+    nationality: "Prefer not to say",
     artMovement: [],
     artMovementTemp: "",
     email: "",
@@ -131,8 +133,8 @@ export default function Login() {
   });
 
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, files } = e.target as HTMLInputElement & { files: FileList };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, files } = e.target as HTMLInputElement & { files: FileList | null };
 
     // Validate file type for images
     if (name === "image" && files?.length) {
@@ -208,7 +210,7 @@ export default function Login() {
       fullName: "",
       about: "",
       dateOfBirth: "",
-      nationality: "",
+      nationality: "Prefer not to say",
       artMovement: [],
       artMovementTemp: "", // Reset temporary input field
       email: "",
@@ -249,6 +251,7 @@ export default function Login() {
   const handleRegisterAsArtist = () => {
     setIsRegistering(true);
     setRegisterAsArtist(true);
+    setCurrentStep(1); // Start at step 1
   };
 
   const handleRegisterAsMuseum = () => {
@@ -278,6 +281,12 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // If registering and not on final step, handle navigation instead of submission
+    if (isRegistering && registerAsArtist && currentStep < 3) {
+      handleNextStep();
+      return;
+    }
 
     setLoading(true); // Show loading indicator
 
@@ -327,9 +336,6 @@ export default function Login() {
           const artistId = artistIds.length > 0 ? artistIds[0] : null;
 
           const token = await userCredential.user.getIdToken();
-          if (userType === "admin") {
-            console.log('credentials ' + token + '   ' + userType + '   ' + artistId);
-          }
 
           if (artistId) {
             // Call the API to get artist account status
@@ -371,8 +377,12 @@ export default function Login() {
           });
 
           router.push("/home"); // Navigate to home page
-        } catch (error) {
-          showAlert(`Login failed: ${(error as Error).message}`, "error");
+        } catch (error: any) {
+          const message =
+            error?.code === "auth/invalid-credential"
+              ? "Login failed: The email or password you entered is incorrect."
+              : `Login failed: ${(error as Error).message}`;
+          showAlert(message, "error");
         } finally {
           setLoading(false); // Hide loading indicator
         }
@@ -461,7 +471,6 @@ export default function Login() {
             });
 
             const responseData = await response.json(); // Get the response JSON
-            console.log("API Response:", responseData); // Print it
 
             if (!response.ok) {
               throw new Error(`API request failed: ${responseData.detail}`);
@@ -504,7 +513,7 @@ export default function Login() {
       fullName: "",
       about: "",
       dateOfBirth: "",
-      nationality: "",
+      nationality: "Prefer not to say",
       artMovement: [],
       artMovementTemp: "", // Reset temporary input field
       email: "",
@@ -542,6 +551,96 @@ export default function Login() {
     });
     setShowConfirmation(false);
     setIsRegistering(false);
+    setCurrentStep(1); // Reset to first step
+  };
+
+  const validateCurrentStep = () => {
+    if (!registerAsArtist) return true; // Museum validation unchanged for now
+
+    if (currentStep === 1) {
+      // Step 1: Essentials - Image, Name, Birth, Nationality
+      if (!formData.image) {
+        showAlert("Please upload a profile image.", "warning");
+        return false;
+      }
+      if (!formData.name) {
+        showAlert("Please enter your name.", "warning");
+        return false;
+      }
+      if (!formData.dateOfBirth) {
+        showAlert("Please enter your date of birth.", "warning");
+        return false;
+      }
+      if (!formData.nationality) {
+        showAlert("Please enter your nationality.", "warning");
+        return false;
+      }
+      return true;
+    }
+
+    if (currentStep === 2) {
+      // Step 2: History - About is required, rest optional
+      if (!formData.about) {
+        showAlert("Please tell us about yourself.", "warning");
+        return false;
+      }
+      if (!formData.fullName) {
+        showAlert("Please enter your full name.", "warning");
+        return false;
+      }
+      return true;
+    }
+
+    if (currentStep === 3) {
+      // Step 3: Account - Email, Password, Confirm Password
+      if (!formData.email) {
+        showAlert("Please enter your email.", "warning");
+        return false;
+      }
+      if (!formData.password) {
+        showAlert("Please enter a password.", "warning");
+        return false;
+      }
+      if (!formData.confirmPassword) {
+        showAlert("Please confirm your password.", "warning");
+        return false;
+      }
+      if (formData.password !== formData.confirmPassword) {
+        showAlert("Passwords do not match.", "error");
+        return false;
+      }
+      return true;
+    }
+
+    return true;
+  };
+
+  const handleNextStep = () => {
+    if (validateCurrentStep()) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentStep(prev => Math.min(prev + 1, 3));
+        setIsTransitioning(false);
+        // Scroll to top of form
+        const formElement = document.querySelector(`.${styles.form}`);
+        if (formElement) {
+          formElement.scrollTop = 0;
+        }
+      }, 300);
+    }
+  };
+
+  const handlePrevStep = () => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentStep(prev => Math.max(prev - 1, 1));
+      setIsTransitioning(false);
+      // Scroll to top of form
+      const formElement = document.querySelector(`.${styles.form}`);
+      if (formElement) {
+        formElement.scrollTop = 0;
+      }
+    }, 300);
   };
 
   const validateDateFormat = (dateString: string, fieldName: string) => {
@@ -629,13 +728,30 @@ export default function Login() {
             </button>
           </div>
         ) : (
+          <div className={styles.cardsContainer}>
+            <div className={styles.logoCardOuter}>
+              <div className={styles.logoCard}>
+                <img src="/favicon.png" alt="ArtVista Logo" className={styles.logoTop} />
+                <div className={styles.logoContent}>
+                  <h1 className={styles.heading}>ArtVista Portal</h1>
+                  <p className={styles.logoSubtitle}>
+                    Empowering artists and museums to manage and showcase their collections.
+                  </p>
+                  <div className={styles.logoTagline}>
+                    <span className={styles.logoPill}>Artists</span>
+                    <span className={styles.logoSeparator}>•</span>
+                    <span className={styles.logoPill}>Museums</span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <div
-            className={`${styles.mainWrapper} ${isRegistering ? styles.slide : ""}`}
-          >
-            <LoadingOverlay isVisible={loading} />
+            <div
+              className={`${styles.mainWrapper} ${isRegistering ? styles.slide : ""}`}
+            >
+              <LoadingOverlay isVisible={loading} />
 
-            {showRegisterInfo ? (
+              {showRegisterInfo ? (
               <main className={styles.main}>
                 <h1 className={styles.heading}>What Should I Register As?</h1>
                 <div className={styles.infoSection}>
@@ -690,349 +806,472 @@ export default function Login() {
               </main>
             ) : (
               <main className={styles.main}>
-                <h1 className={styles.heading}>ArtVista Portal</h1>
                 <form
                   id="form-id"
                   className={`${styles.form} ${isRegistering ? styles.registeringForm : ""}`}
                   onSubmit={handleSubmit}
                 >
+                  {/* Progress Bar */}
+                  {isRegistering && registerAsArtist && (
+                    <div className={styles.progressBarContainer}>
+                      <div
+                        className={styles.progressBar}
+                        style={{ width: `${(currentStep / 3) * 100}%` }}
+                      />
+                    </div>
+                  )}
+
                   {isRegistering ? (
                     <>
                       {registerAsArtist ? (
                         <>
-                          <div className={styles.inputWrapperRequired}>
-                            <p>Upload an artist profile image</p>
+                          {/* Step-based form content with fade transition */}
+                          <div className={`${styles.stepContainer} ${isTransitioning ? styles.fadeOut : styles.fadeIn}`}>
+
+                            {/* STEP 1: Essentials */}
+                            {currentStep === 1 && (
+                              <>
+                                <h2 className={styles.stepTitle}>Tell us about yourself</h2>
+                                <div className={styles.inputWrapperRequired}>
+                                  <p>Upload an artist profile image</p>
                             <div className={styles.imageUploadWrapper}>
-                              <input
-                                type="file"
-                                id="artistImageInput"
-                                name="image"
-                                accept="image/jpeg, image/png, image/jpg" // Restrict to allowed formats
-                                className={styles.hiddenInput}
-                                onChange={handleInputChange}
-                              />
-                              <label htmlFor="artistImageInput" className={styles.imageUploadBox}>
-                                {formData.image ? (
-                                  <img
-                                    src={URL.createObjectURL(formData.image)}
-                                    alt="Artist Profile"
-                                    className={styles.uploadedImage}
+                                    <input
+                                      type="file"
+                                      id="artistImageInput"
+                                      name="image"
+                                      accept="image/jpeg, image/png, image/jpg"
+                                      className={styles.hiddenInput}
+                                      onChange={handleInputChange}
+                                    />
+                                    <label htmlFor="artistImageInput" className={styles.imageUploadBox}>
+                                      {formData.image ? (
+                                        <img
+                                          src={URL.createObjectURL(formData.image)}
+                                          alt="Artist Profile"
+                                          className={styles.uploadedImage}
+                                        />
+                                      ) : (
+                                        <span className={styles.plusIcon}>+</span>
+                                      )}
+                                    </label>
+                                  </div>
+                                </div>
+                                <div className={styles.inputWrapperRequired}>
+                                  <p>Name (First + Last, e.g., John Doe)</p>
+                                  <input
+                                    type="text"
+                                    name="name"
+                                    className={styles.input}
+                                    value={formData.name}
+                                    onChange={handleInputChange}
                                   />
-                                ) : (
-                                  <span className={styles.plusIcon}>+</span>
-                                )}
-                              </label>
-                            </div>
-                          </div>
-                          <div className={styles.inputWrapperRequired}>
-                            <p>Name (First + Last, e.g., John Doe)</p>
-                            <input
-                              type="text"
-                              name="name"
-                              className={styles.input}
-                              value={formData.name}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className={styles.inputWrapperRequired}>
-                            <p>Full Name (All names, e.g., John Michael Doe)</p>
-                            <input
-                              type="text"
-                              name="fullName"
-                              className={styles.input}
-                              value={formData.fullName}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className={styles.inputWrapperRequired}>
-                            <p>About</p>
-                            <textarea
-                              name="about"
-                              className={`${styles.input} ${styles.textarea}`}
-                              value={formData.about}
-                              onChange={(e) => {
-                                handleInputChange(e);
-                                e.target.style.height = "auto";
-                                e.target.style.height = `${e.target.scrollHeight}px`;
-                              }}
-                              rows={1}
-                            />
-                          </div>
-                          <div className={styles.inputWrapperRequired}>
-                            <p>Date of Birth</p>
-                            <input
-                              type="text"
-                              name="dateOfBirth"
-                              placeholder="dd-mm-yyyy"
-                              className={styles.input}
-                              value={formData.dateOfBirth}
-                              onChange={handleInputChange}
-                              onBlur={(e) => validateDateFormat(e.target.value, "dateOfBirth")}
-                            />
-                          </div>
-                          <div className={styles.inputWrapperRequired}>
-                            <p>Nationality</p>
-                            <input
-                              type="text"
-                              name="nationality"
-                              className={styles.input}
-                              value={formData.nationality}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-
-                          <div className={styles.inputWrapper}>
-                            <p>Date Of Death</p>
-                            <input
-                              type="text"
-                              name="dateOfDeath"
-                              placeholder="dd-mm-yyyy"
-                              className={styles.input}
-                              value={formData.dateOfDeath}
-                              onChange={handleInputChange}
-                              onBlur={(e) => validateDateFormat(e.target.value, "dateOfDeath")}
-                            />
-                          </div>
-
-                          <div className={styles.inputWrapper}>
-                            <p>Art Movement (multiple)</p>
-                            <div className={styles.inputWithBubbles}>
-                              {formData.artMovement.map((item, index) => (
-                                <span key={index} className={styles.bubble}>
-                                  <span className={styles.bubbleText}>{item}</span>
-                                  <button
-                                    type="button"
-                                    className={styles.removeBubble}
-                                    onClick={() => handleRemoveItem("artMovement", index)}
+                                </div>
+                                <div className={styles.inputWrapperRequired}>
+                                  <p>Date of Birth</p>
+                                  <input
+                                    type="text"
+                                    name="dateOfBirth"
+                                    placeholder="dd-mm-yyyy"
+                                    className={styles.input}
+                                    value={formData.dateOfBirth}
+                                    onChange={handleInputChange}
+                                    onBlur={(e) => validateDateFormat(e.target.value, "dateOfBirth")}
+                                  />
+                                </div>
+                                <div className={styles.inputWrapperRequired}>
+                                  <p>Nationality</p>
+                                  <select
+                                    name="nationality"
+                                    className={styles.input}
+                                    value={formData.nationality}
+                                    onChange={handleInputChange}
                                   >
-                                    ❌
-                                  </button>
-                                </span>
-                              ))}
-                              <input
-                                type="text"
-                                name="artMovementTemp"
-                                placeholder="Press Enter for each..."
-                                className={styles.input}
-                                value={formData.artMovementTemp || ""}
-                                onChange={(e) => handleArrayInputChange(e, "artMovementTemp")}
-                                onKeyDown={(e) => handleKeyDown(e, "artMovement")}
-                                style={{ display: "block", width: "100%" }} // Ensure full width when typing
-                              />
-                              {formData.artMovementTemp && (
-                                <button
-                                  type="button"
-                                  className={styles.addBubbleButton}
-                                  onClick={() => handleAddItem("artMovement")}
-                                >
-                                  +
-                                </button>
-                              )}
+                                    <option value="Prefer not to say">Prefer not to say</option>
+                                    <option value="Afghan">Afghan</option>
+                                    <option value="Albanian">Albanian</option>
+                                    <option value="Algerian">Algerian</option>
+                                    <option value="American">American</option>
+                                    <option value="Argentinian">Argentinian</option>
+                                    <option value="Armenian">Armenian</option>
+                                    <option value="Australian">Australian</option>
+                                    <option value="Austrian">Austrian</option>
+                                    <option value="Azerbaijani">Azerbaijani</option>
+                                    <option value="Bangladeshi">Bangladeshi</option>
+                                    <option value="Belarusian">Belarusian</option>
+                                    <option value="Belgian">Belgian</option>
+                                    <option value="Bolivian">Bolivian</option>
+                                    <option value="Bosnian">Bosnian</option>
+                                    <option value="Brazilian">Brazilian</option>
+                                    <option value="Bulgarian">Bulgarian</option>
+                                    <option value="Canadian">Canadian</option>
+                                    <option value="Chilean">Chilean</option>
+                                    <option value="Chinese">Chinese</option>
+                                    <option value="Colombian">Colombian</option>
+                                    <option value="Croatian">Croatian</option>
+                                    <option value="Cuban">Cuban</option>
+                                    <option value="Cypriot">Cypriot</option>
+                                    <option value="Czech">Czech</option>
+                                    <option value="Danish">Danish</option>
+                                    <option value="Dutch">Dutch</option>
+                                    <option value="Egyptian">Egyptian</option>
+                                    <option value="English">English</option>
+                                    <option value="Estonian">Estonian</option>
+                                    <option value="Finnish">Finnish</option>
+                                    <option value="French">French</option>
+                                    <option value="Georgian">Georgian</option>
+                                    <option value="German">German</option>
+                                    <option value="Greek">Greek</option>
+                                    <option value="Hungarian">Hungarian</option>
+                                    <option value="Icelandic">Icelandic</option>
+                                    <option value="Indian">Indian</option>
+                                    <option value="Indonesian">Indonesian</option>
+                                    <option value="Iranian">Iranian</option>
+                                    <option value="Iraqi">Iraqi</option>
+                                    <option value="Irish">Irish</option>
+                                    <option value="Israeli">Israeli</option>
+                                    <option value="Italian">Italian</option>
+                                    <option value="Japanese">Japanese</option>
+                                    <option value="Jordanian">Jordanian</option>
+                                    <option value="Kazakh">Kazakh</option>
+                                    <option value="Kenyan">Kenyan</option>
+                                    <option value="Korean">Korean</option>
+                                    <option value="Kurdish">Kurdish</option>
+                                    <option value="Latvian">Latvian</option>
+                                    <option value="Lebanese">Lebanese</option>
+                                    <option value="Lithuanian">Lithuanian</option>
+                                    <option value="Luxembourgish">Luxembourgish</option>
+                                    <option value="Malaysian">Malaysian</option>
+                                    <option value="Mexican">Mexican</option>
+                                    <option value="Moldovan">Moldovan</option>
+                                    <option value="Mongolian">Mongolian</option>
+                                    <option value="Montenegrin">Montenegrin</option>
+                                    <option value="Moroccan">Moroccan</option>
+                                    <option value="Nepali">Nepali</option>
+                                    <option value="New Zealander">New Zealander</option>
+                                    <option value="Nigerian">Nigerian</option>
+                                    <option value="Norwegian">Norwegian</option>
+                                    <option value="Pakistani">Pakistani</option>
+                                    <option value="Palestinian">Palestinian</option>
+                                    <option value="Peruvian">Peruvian</option>
+                                    <option value="Polish">Polish</option>
+                                    <option value="Portuguese">Portuguese</option>
+                                    <option value="Romanian">Romanian</option>
+                                    <option value="Russian">Russian</option>
+                                    <option value="Saudi Arabian">Saudi Arabian</option>
+                                    <option value="Scottish">Scottish</option>
+                                    <option value="Serbian">Serbian</option>
+                                    <option value="Singaporean">Singaporean</option>
+                                    <option value="Slovak">Slovak</option>
+                                    <option value="Slovenian">Slovenian</option>
+                                    <option value="South African">South African</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="Swedish">Swedish</option>
+                                    <option value="Swiss">Swiss</option>
+                                    <option value="Syrian">Syrian</option>
+                                    <option value="Thai">Thai</option>
+                                    <option value="Turkish">Turkish</option>
+                                    <option value="Ukrainian">Ukrainian</option>
+                                    <option value="Emirati">Emirati</option>
+                                    <option value="Venezuelan">Venezuelan</option>
+                                    <option value="Vietnamese">Vietnamese</option>
+                                    <option value="Welsh">Welsh</option>
+                                    <option value="Other / Mixed">Other / Mixed</option>
+                                  </select>
+                                </div>
+                              </>
+                            )}
 
-                            </div>
-                          </div>
+                            {/* STEP 2: History */}
+                            {currentStep === 2 && (
+                              <>
+                                <h2 className={styles.stepTitle}>Your artistic journey</h2>
+                                <div className={styles.inputWrapperRequired}>
+                                  <p>Full Name (All names, e.g., John Michael Doe)</p>
+                                  <input
+                                    type="text"
+                                    name="fullName"
+                                    className={styles.input}
+                                    value={formData.fullName}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                                <div className={styles.inputWrapperRequired}>
+                                  <p>About</p>
+                                  <textarea
+                                    name="about"
+                                    className={`${styles.input} ${styles.textarea}`}
+                                    value={formData.about}
+                                    onChange={(e) => {
+                                      handleInputChange(e);
+                                      e.target.style.height = "auto";
+                                      e.target.style.height = `${e.target.scrollHeight}px`;
+                                    }}
+                                    rows={1}
+                                  />
+                                </div>
 
-                          <div className={styles.inputWrapper}>
-                            <p>Influenced By (multiple)</p>
-                            <div className={styles.inputWithBubbles}>
-                              {formData.influencedBy.map((item, index) => (
-                                <span key={index} className={styles.bubble}>
-                                  <span className={styles.bubbleText}>{item}</span>
-                                  <button
-                                    type="button"
-                                    className={styles.removeBubble}
-                                    onClick={() => handleRemoveItem("influencedBy", index)}
-                                  >
-                                    ❌
-                                  </button>
-                                </span>
-                              ))}
-                              <input
-                                type="text"
-                                name="influencedByTemp"
-                                placeholder="Press Enter for each..."
-                                className={styles.input}
-                                value={formData.influencedByTemp || ""}
-                                onChange={(e) => handleArrayInputChange(e, "influencedByTemp")}
-                                onKeyDown={(e) => handleKeyDown(e, "influencedBy")}
-                                style={{ display: "block", width: "100%" }} // Ensure full width when typing
-                              />
-                              {formData.influencedByTemp && (
-                                <button
-                                  type="button"
-                                  className={styles.addBubbleButton}
-                                  onClick={() => handleAddItem("influencedBy")}
-                                >
-                                  +
-                                </button>
-                              )}
+                                <div className={styles.inputWrapper}>
+                                  <p>Date Of Death</p>
+                                  <input
+                                    type="text"
+                                    name="dateOfDeath"
+                                    placeholder="dd-mm-yyyy"
+                                    className={styles.input}
+                                    value={formData.dateOfDeath}
+                                    onChange={handleInputChange}
+                                    onBlur={(e) => validateDateFormat(e.target.value, "dateOfDeath")}
+                                  />
+                                </div>
 
-                            </div>
-                          </div>
+                                <div className={styles.inputWrapper}>
+                                  <p>Art Movement (multiple)</p>
+                                  <div className={styles.inputWithBubbles}>
+                                    {formData.artMovement.map((item, index) => (
+                                      <span key={index} className={styles.bubble}>
+                                        <span className={styles.bubbleText}>{item}</span>
+                                        <button
+                                          type="button"
+                                          className={styles.removeBubble}
+                                          onClick={() => handleRemoveItem("artMovement", index)}
+                                        >
+                                          ❌
+                                        </button>
+                                      </span>
+                                    ))}
+                                    <input
+                                      type="text"
+                                      name="artMovementTemp"
+                                      placeholder="Press Enter for each..."
+                                      className={styles.input}
+                                      value={formData.artMovementTemp || ""}
+                                      onChange={(e) => handleArrayInputChange(e, "artMovementTemp")}
+                                      onKeyDown={(e) => handleKeyDown(e, "artMovement")}
+                                      style={{ display: "block", width: "100%" }}
+                                    />
+                                    {formData.artMovementTemp && (
+                                      <button
+                                        type="button"
+                                        className={styles.addBubbleButton}
+                                        onClick={() => handleAddItem("artMovement")}
+                                      >
+                                        +
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
 
-                          <div className={styles.inputWrapper}>
-                            <p>Had An Impact On (multiple)</p>
-                            <div className={styles.inputWithBubbles}>
-                              {formData.influencedOn.map((item, index) => (
-                                <span key={index} className={styles.bubble}>
-                                  <span className={styles.bubbleText}>{item}</span>
-                                  <button
-                                    type="button"
-                                    className={styles.removeBubble}
-                                    onClick={() => handleRemoveItem("influencedOn", index)}
-                                  >
-                                    ❌
-                                  </button>
-                                </span>
-                              ))}
-                              <input
-                                type="text"
-                                name="influencedOnTemp"
-                                placeholder="Press Enter for each..."
-                                className={styles.input}
-                                value={formData.influencedOnTemp || ""}
-                                onChange={(e) => handleArrayInputChange(e, "influencedOnTemp")}
-                                onKeyDown={(e) => handleKeyDown(e, "influencedOn")}
-                                style={{ display: "block", width: "100%" }} // Ensure full width when typing
-                              />
-                              {formData.influencedOnTemp && (
-                                <button
-                                  type="button"
-                                  className={styles.addBubbleButton}
-                                  onClick={() => handleAddItem("influencedOn")}
-                                >
-                                  +
-                                </button>
-                              )}
+                                <div className={styles.inputWrapper}>
+                                  <p>Influenced By (multiple)</p>
+                                  <div className={styles.inputWithBubbles}>
+                                    {formData.influencedBy.map((item, index) => (
+                                      <span key={index} className={styles.bubble}>
+                                        <span className={styles.bubbleText}>{item}</span>
+                                        <button
+                                          type="button"
+                                          className={styles.removeBubble}
+                                          onClick={() => handleRemoveItem("influencedBy", index)}
+                                        >
+                                          ❌
+                                        </button>
+                                      </span>
+                                    ))}
+                                    <input
+                                      type="text"
+                                      name="influencedByTemp"
+                                      placeholder="Press Enter for each..."
+                                      className={styles.input}
+                                      value={formData.influencedByTemp || ""}
+                                      onChange={(e) => handleArrayInputChange(e, "influencedByTemp")}
+                                      onKeyDown={(e) => handleKeyDown(e, "influencedBy")}
+                                      style={{ display: "block", width: "100%" }}
+                                    />
+                                    {formData.influencedByTemp && (
+                                      <button
+                                        type="button"
+                                        className={styles.addBubbleButton}
+                                        onClick={() => handleAddItem("influencedBy")}
+                                      >
+                                        +
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
 
-                            </div>
-                          </div>
+                                <div className={styles.inputWrapper}>
+                                  <p>Had An Impact On (multiple)</p>
+                                  <div className={styles.inputWithBubbles}>
+                                    {formData.influencedOn.map((item, index) => (
+                                      <span key={index} className={styles.bubble}>
+                                        <span className={styles.bubbleText}>{item}</span>
+                                        <button
+                                          type="button"
+                                          className={styles.removeBubble}
+                                          onClick={() => handleRemoveItem("influencedOn", index)}
+                                        >
+                                          ❌
+                                        </button>
+                                      </span>
+                                    ))}
+                                    <input
+                                      type="text"
+                                      name="influencedOnTemp"
+                                      placeholder="Press Enter for each..."
+                                      className={styles.input}
+                                      value={formData.influencedOnTemp || ""}
+                                      onChange={(e) => handleArrayInputChange(e, "influencedOnTemp")}
+                                      onKeyDown={(e) => handleKeyDown(e, "influencedOn")}
+                                      style={{ display: "block", width: "100%" }}
+                                    />
+                                    {formData.influencedOnTemp && (
+                                      <button
+                                        type="button"
+                                        className={styles.addBubbleButton}
+                                        onClick={() => handleAddItem("influencedOn")}
+                                      >
+                                        +
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
 
-                          <div className={styles.inputWrapper}>
-                            <p>Art Institution Attended by the Individual (multiple)</p>
-                            <div className={styles.inputWithBubbles}>
-                              {formData.artInstitution.map((item, index) => (
-                                <span key={index} className={styles.bubble}>
-                                  <span className={styles.bubbleText}>{item}</span>
-                                  <button
-                                    type="button"
-                                    className={styles.removeBubble}
-                                    onClick={() => handleRemoveItem("artInstitution", index)}
-                                  >
-                                    ❌
-                                  </button>
-                                </span>
-                              ))}
-                              <input
-                                type="text"
-                                name="artInstitutionTemp"
-                                placeholder="Press Enter for each..."
-                                className={styles.input}
-                                value={formData.artInstitutionTemp || ""}
-                                onChange={(e) => handleArrayInputChange(e, "artInstitutionTemp")}
-                                onKeyDown={(e) => handleKeyDown(e, "artInstitution")}
-                                style={{ display: "block", width: "100%" }} // Ensure full width when typing
-                              />
-                              {formData.artInstitutionTemp && (
-                                <button
-                                  type="button"
-                                  className={styles.addBubbleButton}
-                                  onClick={() => handleAddItem("artInstitution")}
-                                >
-                                  +
-                                </button>
-                              )}
+                                <div className={styles.inputWrapper}>
+                                  <p>Art Institution Attended by the Individual (multiple)</p>
+                                  <div className={styles.inputWithBubbles}>
+                                    {formData.artInstitution.map((item, index) => (
+                                      <span key={index} className={styles.bubble}>
+                                        <span className={styles.bubbleText}>{item}</span>
+                                        <button
+                                          type="button"
+                                          className={styles.removeBubble}
+                                          onClick={() => handleRemoveItem("artInstitution", index)}
+                                        >
+                                          ❌
+                                        </button>
+                                      </span>
+                                    ))}
+                                    <input
+                                      type="text"
+                                      name="artInstitutionTemp"
+                                      placeholder="Press Enter for each..."
+                                      className={styles.input}
+                                      value={formData.artInstitutionTemp || ""}
+                                      onChange={(e) => handleArrayInputChange(e, "artInstitutionTemp")}
+                                      onKeyDown={(e) => handleKeyDown(e, "artInstitution")}
+                                      style={{ display: "block", width: "100%" }}
+                                    />
+                                    {formData.artInstitutionTemp && (
+                                      <button
+                                        type="button"
+                                        className={styles.addBubbleButton}
+                                        onClick={() => handleAddItem("artInstitution")}
+                                      >
+                                        +
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
 
-                            </div>
-                          </div>
+                                <div className={styles.inputWrapper}>
+                                  <p>Friends/ Co-workers (multiple)</p>
+                                  <div className={styles.inputWithBubbles}>
+                                    {formData.friendsOrCoworkers.map((item, index) => (
+                                      <span key={index} className={styles.bubble}>
+                                        <span className={styles.bubbleText}>{item}</span>
+                                        <button
+                                          type="button"
+                                          className={styles.removeBubble}
+                                          onClick={() => handleRemoveItem("friendsOrCoworkers", index)}
+                                        >
+                                          ❌
+                                        </button>
+                                      </span>
+                                    ))}
+                                    <input
+                                      type="text"
+                                      name="friendsOrCoworkersTemp"
+                                      placeholder="Press Enter for each..."
+                                      className={styles.input}
+                                      value={formData.friendsOrCoworkersTemp || ""}
+                                      onChange={(e) => handleArrayInputChange(e, "friendsOrCoworkersTemp")}
+                                      onKeyDown={(e) => handleKeyDown(e, "friendsOrCoworkers")}
+                                      style={{ display: "block", width: "100%" }}
+                                    />
+                                    {formData.friendsOrCoworkersTemp && (
+                                      <button
+                                        type="button"
+                                        className={styles.addBubbleButton}
+                                        onClick={() => handleAddItem("friendsOrCoworkers")}
+                                      >
+                                        +
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className={styles.inputWrapper}>
+                                  <p>Wikipedia Link</p>
+                                  <input
+                                    type="url"
+                                    name="wikipediaLink"
+                                    placeholder="Example: https://artvista.app/"
+                                    className={styles.input}
+                                    value={formData.wikipediaLink}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                                <div className={styles.inputWrapper}>
+                                  <p>Official Site Link</p>
+                                  <input
+                                    type="url"
+                                    name="officialSiteLink"
+                                    placeholder="Example: https://artvista.app/"
+                                    className={styles.input}
+                                    value={formData.officialSiteLink}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                              </>
+                            )}
 
-                          <div className={styles.inputWrapper}>
-                            <p>Friends/ Co-workers (multiple)</p>
-                            <div className={styles.inputWithBubbles}>
-                              {formData.friendsOrCoworkers.map((item, index) => (
-                                <span key={index} className={styles.bubble}>
-                                  <span className={styles.bubbleText}>{item}</span>
-                                  <button
-                                    type="button"
-                                    className={styles.removeBubble}
-                                    onClick={() => handleRemoveItem("friendsOrCoworkers", index)}
-                                  >
-                                    ❌
-                                  </button>
-                                </span>
-                              ))}
-                              <input
-                                type="text"
-                                name="friendsOrCoworkersTemp"
-                                placeholder="Press Enter for each..."
-                                className={styles.input}
-                                value={formData.friendsOrCoworkersTemp || ""}
-                                onChange={(e) => handleArrayInputChange(e, "friendsOrCoworkersTemp")}
-                                onKeyDown={(e) => handleKeyDown(e, "friendsOrCoworkers")}
-                                style={{ display: "block", width: "100%" }} // Ensure full width when typing
-                              />
-                              {formData.friendsOrCoworkersTemp && (
-                                <button
-                                  type="button"
-                                  className={styles.addBubbleButton}
-                                  onClick={() => handleAddItem("friendsOrCoworkers")}
-                                >
-                                  +
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                          <div className={styles.inputWrapper}>
-                            <p>Wikipedia Link</p>
-                            <input
-                              type="url"
-                              name="wikipediaLink"
-                              placeholder="Example: https://artvista.app/"
-                              className={styles.input}
-                              value={formData.wikipediaLink}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className={styles.inputWrapper}>
-                            <p>Official Site Link</p>
-                            <input
-                              type="url"
-                              name="officialSiteLink"
-                              placeholder="Example: https://artvista.app/"
-                              className={styles.input}
-                              value={formData.officialSiteLink}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className={styles.inputWrapperRequired}>
-                            <p>Email</p>
-                            <input
-                              type="email"
-                              name="email"
-                              className={styles.input}
-                              value={formData.email}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className={styles.inputWrapperRequired}>
-                            <p>Password</p>
-                            <input
-                              type="password"
-                              name="password"
-                              className={styles.input}
-                              value={formData.password}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className={styles.inputWrapperRequired}>
-                            <p>Confirm Password</p>
-                            <input
-                              type="password"
-                              name="confirmPassword"
-                              className={styles.input}
-                              value={formData.confirmPassword}
-                              onChange={handleInputChange}
-                            />
+                            {/* STEP 3: Account */}
+                            {currentStep === 3 && (
+                              <>
+                                <h2 className={styles.stepTitle}>Almost there!</h2>
+                                <p className={styles.stepDescription}>
+                                  Create your account credentials to complete registration
+                                </p>
+                                <div className={styles.inputWrapperRequired}>
+                                  <p>Email</p>
+                                  <input
+                                    type="email"
+                                    name="email"
+                                    className={styles.input}
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                                <div className={styles.inputWrapperRequired}>
+                                  <p>Password</p>
+                                  <input
+                                    type="password"
+                                    name="password"
+                                    className={styles.input}
+                                    value={formData.password}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                                <div className={styles.inputWrapperRequired}>
+                                  <p>Confirm Password</p>
+                                  <input
+                                    type="password"
+                                    name="confirmPassword"
+                                    className={styles.input}
+                                    value={formData.confirmPassword}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                              </>
+                            )}
+
                           </div>
                         </>
                       ) : (
@@ -1249,7 +1488,39 @@ export default function Login() {
                   )}
                 </form>
 
-                {isRegistering && (
+                {/* Floating Navigation Buttons */}
+                {isRegistering && registerAsArtist && (
+                  <div className={styles.floatingNavigation}>
+                    {currentStep > 1 && (
+                      <button
+                        type="button"
+                        className={styles.backButton}
+                        onClick={handlePrevStep}
+                      >
+                        ← Back
+                      </button>
+                    )}
+                    {currentStep < 3 ? (
+                      <button
+                        type="button"
+                        className={styles.nextButton}
+                        onClick={handleNextStep}
+                      >
+                        Next →
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        form="form-id"
+                        className={styles.nextButton}
+                      >
+                        Submit
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {isRegistering && !registerAsArtist && (
                   <div className={styles.registerButtonWrapper}>
                     <button type="submit" form="form-id" className={styles.button}>
                       Register
@@ -1304,15 +1575,9 @@ export default function Login() {
                 </div>
               </main>
             )}
-            <div className={styles.imageContainer}>
-              <img src="/logo.png" alt="ArtVista Logo" className={styles.image} />
-              <p className={styles.welcomeText}>
-                Welcome to the ArtVista Portal – empowering artists and museums to
-                seamlessly manage and showcase their collections
-              </p>
-            </div>
           </div>
-        )}
+        </div>
+      )}
       </div>
       <Footer />
     </>

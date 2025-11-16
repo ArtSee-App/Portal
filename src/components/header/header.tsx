@@ -3,52 +3,46 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./header.module.css";
-import { signOut } from "firebase/auth"; // Import signOut from Firebase Auth
-import { auth } from "../../../firebase"; // Import your Firebase configuration
+import { signOut } from "firebase/auth";
+import { auth } from "../../../firebase";
 import { useUser } from "@/context/UserContext";
 
 const Header = () => {
-    const [scrolled, setScrolled] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { user, setUser } = useUser(); // Access setUser from the UserContext
+    const { user, setUser } = useUser();
+
     const handleSignOut = async () => {
         try {
-            await signOut(auth); // Firebase sign-out
-            setUser(null); // Clear user context
+            await signOut(auth);
+            setUser(null);
         } catch (error) {
             console.error("Error during sign-out:", error);
         }
     };
 
     useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 0);
-        };
-
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Escape" && sidebarOpen) {
                 closeSidebar();
             }
         };
 
-        window.addEventListener("scroll", handleScroll);
         window.addEventListener("keydown", handleKeyDown);
 
         return () => {
-            window.removeEventListener("scroll", handleScroll);
             window.removeEventListener("keydown", handleKeyDown);
         };
     }, [sidebarOpen]);
 
     const toggleSidebar = () => {
-        const sidebarElement = document.querySelector(`.${styles.sidebar}`);
+        const sidebarElement = document.querySelector(`.${styles.mobileSidebar}`);
         if (sidebarOpen && sidebarElement) {
             sidebarElement.classList.add(styles.sidebarClosing);
             setTimeout(() => {
-                sidebarElement.classList.remove(styles.sidebarClosing); // Remove after animation
+                sidebarElement.classList.remove(styles.sidebarClosing);
                 setSidebarOpen(false);
                 document.body.style.overflow = "";
-            }, 300); // Match animation duration
+            }, 300);
         } else {
             setSidebarOpen(true);
             document.body.style.overflow = "hidden";
@@ -56,84 +50,84 @@ const Header = () => {
     };
 
     const closeSidebar = () => {
-        const sidebarElement = document.querySelector(`.${styles.sidebar}`);
+        const sidebarElement = document.querySelector(`.${styles.mobileSidebar}`);
         if (sidebarElement) {
             sidebarElement.classList.add(styles.sidebarClosing);
             setTimeout(() => {
-                sidebarElement.classList.remove(styles.sidebarClosing); // Remove the class after animation completes
+                sidebarElement.classList.remove(styles.sidebarClosing);
                 setSidebarOpen(false);
                 document.body.style.overflow = "";
-            }, 300); // Match the animation duration (0.3s)
+            }, 300);
         }
     };
 
     return (
-        <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
-            <nav className={styles.nav}>
-                <div className={styles.logoContainer}>
-                    <img src="favicon.png" alt="ArtVista Logo" className={styles.logo} />
-                    <span className={styles.logoText}>
-                        ArtVista {user?.type && `(${user.type})`}
-                    </span>
-                </div>
-                <ul className={styles.navLinks}>
-                    <li>
-                        <Link href="/home" onClick={closeSidebar}>
-                            Home
-                        </Link>
-                    </li>
-                    {user?.type !== "admin" && (
+        <>
+            <header className={styles.header}>
+                <nav className={styles.nav}>
+                    <div className={styles.logoContainer}>
+                        <img src="/favicon.png" alt="ArtVista Logo" className={styles.logo} />
+                        <span className={styles.logoText}>
+                            ArtVista {user?.type && `(${user.type})`}
+                        </span>
+                    </div>
+                    <ul className={styles.navLinks}>
                         <li>
-                            <Link
-                                href={
-                                    user?.type === "museum"
-                                        ? "/museum?edit=true"
-                                        : user?.type === "artist"
-                                            ? "/artist?edit=true"
-                                            : "/home"
-                                }
-                                onClick={closeSidebar}
-                            >
-                                Account Settings
+                            <Link href="/home">
+                                Home
                             </Link>
                         </li>
-                    )}
-                    <li>
-                        <Link
-                            href="https://artvista.app/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={closeSidebar}
-                        >
-                            ArtVista Website
+                        {user?.type !== "admin" && (
+                            <li>
+                                <Link
+                                    href={
+                                        user?.type === "museum"
+                                            ? "/museum?edit=true"
+                                            : user?.type === "artist"
+                                                ? "/artist?edit=true"
+                                                : "/home"
+                                    }
+                                >
+                                    Account Settings
+                                </Link>
+                            </li>
+                        )}
+                        <li>
+                            <Link
+                                href="https://artvista.app/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                ArtVista Website
+                            </Link>
+                        </li>
+                    </ul>
+                    <div className={styles.signOutContainer}>
+                        <Link href="/login" onClick={handleSignOut} className={styles.signOutButton}>
+                            &gt; Sign Out
                         </Link>
-                    </li>
-                    <li>
-                        <Link href="/login" onClick={() => {
-                            closeSidebar(); // Close the sidebar if open
-                            handleSignOut(); // Sign out the user
-                        }}
-                        >
-                            Sign Out
-                        </Link>
-                    </li>
-                </ul>
-                <button
-                    className={`${styles.hamburger} ${sidebarOpen ? styles.active : ""}`}
-                    onClick={toggleSidebar}
-                    aria-label="Toggle navigation"
-                    aria-expanded={sidebarOpen}
-                >
-                    <span className={`${styles.bar} ${styles.topBar}`}></span>
-                    <span className={`${styles.bar} ${styles.middleBar}`}></span>
-                    <span className={`${styles.bar} ${styles.bottomBar}`}></span>
-                </button>
-            </nav>
+                    </div>
+                    <button
+                        className={`${styles.hamburger} ${sidebarOpen ? styles.active : ""}`}
+                        onClick={toggleSidebar}
+                        aria-label="Toggle navigation"
+                        aria-expanded={sidebarOpen}
+                    >
+                        <span className={`${styles.bar} ${styles.topBar}`}></span>
+                        <span className={`${styles.bar} ${styles.middleBar}`}></span>
+                        <span className={`${styles.bar} ${styles.bottomBar}`}></span>
+                    </button>
+                </nav>
+            </header>
             {sidebarOpen && (
                 <>
-                    <div
-                        className={`${styles.sidebar} ${sidebarOpen ? "" : styles.sidebarClosing}`}
-                    >
+                    <div className={`${styles.mobileSidebar} ${sidebarOpen ? "" : styles.sidebarClosing}`}>
+                        <div className={styles.sidebarLogoContainer}>
+                            <img src="/favicon.png" alt="ArtVista Logo" className={styles.sidebarLogo} />
+                            <span className={styles.sidebarLogoText}>
+                                ArtVista {user?.type && `(${user.type})`}
+                            </span>
+                        </div>
                         <ul className={styles.sidebarLinks}>
                             <li>
                                 <Link href="/home" onClick={closeSidebar}>
@@ -166,21 +160,20 @@ const Header = () => {
                                     ArtVista Website
                                 </Link>
                             </li>
-                            <li>
-                                <Link href="/login" onClick={() => {
-                                    closeSidebar(); // Close the sidebar if open
-                                    handleSignOut(); // Sign out the user
-                                }}
-                                >
-                                    Sign Out
-                                </Link>
-                            </li>
                         </ul>
+                        <div className={styles.sidebarSignOutContainer}>
+                            <Link href="/login" onClick={() => {
+                                closeSidebar();
+                                handleSignOut();
+                            }} className={styles.sidebarSignOutButton}>
+                                &gt; Sign Out
+                            </Link>
+                        </div>
                     </div>
                     <div className={styles.overlay} onClick={closeSidebar}></div>
                 </>
             )}
-        </header>
+        </>
     );
 };
 
