@@ -73,11 +73,22 @@
 }
 
 .signOutContainer {
-  display: none;
+  margin-top: auto;
+  padding: 20px 24px 32px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .signOutButton {
-  display: none;
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.signOutButton:hover {
+  color: #ffffff;
 }
 
 .hamburger {
@@ -304,6 +315,10 @@
   }
 
   .navLinks {
+    display: none;
+  }
+
+  .signOutContainer {
     display: none;
   }
 
