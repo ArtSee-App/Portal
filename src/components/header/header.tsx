@@ -77,6 +77,48 @@ const Header = () => {
                                 Home
                             </Link>
                         </li>
+                        {user?.type === "admin" && (
+                            <li>
+                                <Link href="/admin/bots">
+                                    Bots
+                                </Link>
+                            </li>
+                        )}
+                        {user?.type === "admin" && (
+                            <li>
+                                <Link href="/admin/indexing">
+                                    Indexing
+                                </Link>
+                            </li>
+                        )}
+                        {user?.type === "admin" && (
+                            <li>
+                                <Link href="/admin/museums">
+                                    Museums
+                                </Link>
+                            </li>
+                        )}
+                        {user?.type === "admin" && (
+                            <li>
+                                <Link href="/admin/rights">
+                                    Rights
+                                </Link>
+                            </li>
+                        )}
+                        {user?.type === "admin" && (
+                            <li>
+                                <Link href="/admin/app-version">
+                                    App version
+                                </Link>
+                            </li>
+                        )}
+                        {user?.type === "admin" && (
+                            <li>
+                                <Link href="/admin/news">
+                                    News
+                                </Link>
+                            </li>
+                        )}
                         {user?.type !== "admin" && (
                             <li>
                                 <Link
@@ -134,6 +176,48 @@ const Header = () => {
                                     Home
                                 </Link>
                             </li>
+                            {user?.type === "admin" && (
+                                <li>
+                                    <Link href="/admin/bots" onClick={closeSidebar}>
+                                        Bots
+                                    </Link>
+                                </li>
+                            )}
+                            {user?.type === "admin" && (
+                                <li>
+                                    <Link href="/admin/indexing" onClick={closeSidebar}>
+                                        Indexing
+                                    </Link>
+                                </li>
+                            )}
+                            {user?.type === "admin" && (
+                                <li>
+                                    <Link href="/admin/museums" onClick={closeSidebar}>
+                                        Museums
+                                    </Link>
+                                </li>
+                            )}
+                            {user?.type === "admin" && (
+                                <li>
+                                    <Link href="/admin/rights" onClick={closeSidebar}>
+                                        Rights
+                                    </Link>
+                                </li>
+                            )}
+                            {user?.type === "admin" && (
+                                <li>
+                                    <Link href="/admin/app-version" onClick={closeSidebar}>
+                                        App version
+                                    </Link>
+                                </li>
+                            )}
+                            {user?.type === "admin" && (
+                                <li>
+                                    <Link href="/admin/news" onClick={closeSidebar}>
+                                        News
+                                    </Link>
+                                </li>
+                            )}
                             {user?.type !== "admin" && (
                                 <li>
                                     <Link
