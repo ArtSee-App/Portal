@@ -2506,3 +2506,10 @@
   background: var(--well);
   border-color: var(--ink);
 }
+
+.logoTop {
+  width: 56px;
+  height: 56px;
+  border-radius: 0;
+  object-fit: contain;
+}

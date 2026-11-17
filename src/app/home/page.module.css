@@ -1935,3 +1935,13 @@
   border: 1.5px solid var(--stroke);
   color: var(--ink);
 }
+
+/* The selected tab keeps its whole outline: the divider rule between tabs must not remove its left edge. */
+.toggleContainer .toggleButton.active,
+.toggleContainer .toggleButton + .toggleButton.active {
+  border: 2px solid transparent;
+}
+
+.toggleContainer .toggleButton {
+  border: 2px solid transparent;
+}

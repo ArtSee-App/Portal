@@ -140,7 +140,7 @@ let failures = 0;
 for (const scenario of scenarios.filter((s) => !ONLY || s.name.includes(ONLY) || s.family === ONLY)) {
   for (const theme of THEMES) {
     for (const viewport of VIEWPORTS) {
-      const context = await browser.newContext({ viewport: SIZES[viewport], deviceScaleFactor: viewport === "mobile" ? 2 : 1,
+      const context = await browser.newContext({ viewport: SIZES[viewport], deviceScaleFactor: Number(option("--scale", viewport === "mobile" ? 2 : 1)),
                                                 colorScheme: theme, reducedMotion: "reduce" });
       await context.addInitScript(([user, theme]) => {
         if (user) window.__PORTAL_PREVIEW_USER__ = user;
