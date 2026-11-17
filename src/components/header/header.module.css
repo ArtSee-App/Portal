@@ -111,7 +111,7 @@
 }
 .navLinks a.current svg,
 .sidebarLinks a.current svg {
-  color: var(--accent);
+  color: #b3a1ff;
 }
 
 .navLinks a:focus-visible,
@@ -119,7 +119,7 @@
 .signOutButton:focus-visible,
 .themeOption:focus-visible,
 .hamburger:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid #b3a1ff;
   outline-offset: 2px;
 }
 

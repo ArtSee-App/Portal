@@ -1895,3 +1895,43 @@
     padding: 0 10px;
   }
 }
+
+/* The hover preview is larger than its thumbnail cell: lift the global
+   img { max-width: 100% } so it can grow in both directions. */
+.imageContainer:hover .artworkImage {
+  max-width: none;
+  max-height: none;
+  filter: none;
+  z-index: 1000;
+}
+
+/* Every button is an outline on the page colour: gradient for the one primary
+   action, a neutral line for the others, red for the destructive one. */
+.editButton {
+  background: var(--surface);
+  border: 1.5px solid var(--stroke);
+  color: var(--ink);
+}
+
+.editButton:hover {
+  background: var(--well);
+  border-color: var(--ink);
+}
+
+.rejectButton {
+  background: var(--surface);
+  border: 1.5px solid color-mix(in srgb, var(--danger) 55%, transparent);
+  color: var(--danger);
+}
+
+.rejectButton:hover {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+}
+
+.shapeSecondary,
+.loadMoreButton:not(.activePage) {
+  background: var(--surface);
+  border: 1.5px solid var(--stroke);
+  color: var(--ink);
+}

@@ -2470,3 +2470,39 @@
     overflow: visible;
   }
 }
+
+/* Every button is an outline on the page colour: gradient for the one primary
+   action, a neutral line for the others, red for the destructive one. */
+.buttonRow:has(.approveButton) > .button:not(.approveButton):not(.rejectButton),
+.button.cancelButton {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--stroke) !important;
+  color: var(--ink);
+}
+
+.buttonRow:has(.approveButton) > .button:not(.approveButton):not(.rejectButton):hover,
+.button.cancelButton:hover {
+  background: var(--well) !important;
+  border-color: var(--ink) !important;
+  opacity: 1;
+}
+
+.button.rejectButton,
+.button.rejectButton:hover {
+  border: 1.5px solid color-mix(in srgb, var(--danger) 55%, transparent) !important;
+}
+
+.registerArtist,
+.registerMuseum,
+.backButton {
+  background: var(--surface);
+  border: 1.5px solid var(--stroke);
+  color: var(--ink);
+}
+
+.registerArtist:hover,
+.registerMuseum:hover,
+.backButton:hover {
+  background: var(--well);
+  border-color: var(--ink);
+}

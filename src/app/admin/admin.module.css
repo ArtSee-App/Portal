@@ -1859,3 +1859,39 @@ textarea.control {
 .tableWrap {
   position: relative;
 }
+
+/* Every button is an outline on the page colour: gradient for the one primary
+   action, a neutral line for the others, red for the destructive one. */
+.buttonGhost {
+  background: var(--surface);
+  border: 1.5px solid var(--stroke);
+  color: var(--ink);
+}
+
+.buttonGhost:hover:not(:disabled) {
+  background: var(--well);
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.button {
+  background: var(--surface);
+  border: 1.5px solid var(--stroke);
+  color: var(--ink);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--well);
+  border-color: var(--ink);
+}
+
+.buttonDanger {
+  background: var(--surface);
+  border: 1.5px solid color-mix(in srgb, var(--danger) 55%, transparent);
+  color: var(--danger);
+}
+
+.buttonDanger:hover:not(:disabled) {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+}
