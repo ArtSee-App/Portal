@@ -27,7 +27,7 @@
   --ink: #0c0b14;
   --muted: #5d5b6b;           /* app muted is #808080; darkened to pass AA on --screen */
   --placeholder: #6a6878;
-  --solid: #000000;           /* app: button; the one primary action */
+  --solid: linear-gradient(100deg, #1d88f0 0%, #6a4be0 52%, #bf03b0 100%);  /* the one primary action */
   --on-solid: #ffffff;
 
   /* brand */
@@ -51,6 +51,8 @@
   --info: #0b5cab;
   --info-soft: #dbe8f8;
 
+  --grad: linear-gradient(100deg, #1d88f0 0%, #7a4fe0 52%, #bf03b0 100%);
+  --glow: 0 10px 28px -12px rgb(106 75 224 / 0.6);
   --scrim: rgb(10 10 21 / 0.55);
   --shadow-overlay: 0 12px 32px -8px rgb(10 10 21 / 0.28), 0 2px 6px rgb(10 10 21 / 0.08);
 
@@ -79,46 +81,48 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
+  /* The app at night: one near-black ground, panels barely lifted from it, light from the brand gradient. */
   --screen: #0a0a15;
-  --surface: #15141f;
-  --raised: #2a2936;
-  --well: #24232e;
-  --well-hover: #2f2e3a;      /* app: field */
-  --category: #373544;
-  --category-hover: #444253;
-  --line: #262531;
-  --container: #020019;
+  --surface: #11101c;
+  --raised: #1b1a29;
+  --well: #171624;
+  --well-hover: #1e1d2d;
+  --category: #262536;
+  --category-hover: #313044;
+  --line: #232233;
+  --container: #0a0a15;
   --on-container: #ffffff;
-  --on-container-muted: #a9a6bd;
-  --container-raised: #1a1832;
-  --selected: #ffffff;
-  --on-selected: #0a0a15;
+  --on-container-muted: #9d9bb0;
+  --container-raised: #17162a;
+  --selected: #262536;
+  --on-selected: #ffffff;
 
   --ink: #ffffff;
-  --muted: #a5a3b3;
-  --placeholder: #9390a3;
-  --solid: #ffffff;
-  --on-solid: #000000;
+  --muted: #a3a1b5;
+  --placeholder: #8a889c;
+  --solid: linear-gradient(100deg, #1d88f0 0%, #7a4fe0 52%, #bf03b0 100%);
+  --on-solid: #ffffff;
 
-  --accent: #a893ff;
+  --accent: #b3a1ff;
   --accent-solid: #6a4be0;
   --on-accent: #ffffff;
-  --accent-soft: #2a2350;
+  --accent-soft: #221c45;
 
   --danger: #ff7a7f;
   --danger-solid: #d83a40;
-  --danger-soft: #3d1a1d;
+  --danger-soft: #3a171b;
   --success: #5fd19a;
   --success-solid: #1b8e5e;
-  --success-soft: #143325;
+  --success-soft: #122e22;
   --warning: #f0c14b;
   --warning-solid: #c98500;
-  --warning-soft: #3a2c0c;
+  --warning-soft: #33270b;
   --info: #7db7f5;
-  --info-soft: #14293f;
+  --info-soft: #12263b;
 
-  --scrim: rgb(0 0 0 / 0.66);
-  --shadow-overlay: 0 16px 40px -8px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(255 255 255 / 0.06);
+  --scrim: rgb(4 4 12 / 0.72);
+  --shadow-overlay: 0 24px 60px -12px rgb(0 0 0 / 0.8), 0 0 0 1px rgb(255 255 255 / 0.07);
+  --glow: 0 10px 34px -10px rgb(122 79 224 / 0.75);
 }
 
 * {
@@ -167,6 +171,21 @@ h3 {
 
 img {
   max-width: 100%;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60vw 46vh at 88% -8%, rgb(29 136 240 / 0.16), transparent 70%),
+    radial-gradient(52vw 50vh at 6% 108%, rgb(191 3 176 / 0.13), transparent 70%);
+}
+
+:root[data-theme="light"] body::before {
+  opacity: 0.45;
 }
 
 /* The parts of the page the browser draws */

@@ -1774,3 +1774,86 @@ textarea.control {
   letter-spacing: 0;
   text-transform: none;
 }
+
+/* --------------------------------------------------------------------------
+   Figures read as one line of facts, not a wall of tiles.
+   -------------------------------------------------------------------------- */
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  row-gap: 14px;
+}
+
+.stat {
+  flex: 0 1 auto;
+  min-width: 96px;
+  padding: 2px 22px 2px 0;
+  margin-right: 22px;
+  border-radius: 0;
+  border-right: 1px solid var(--line);
+  background: none;
+}
+
+.stat:last-child {
+  border-right: 0;
+  margin-right: 0;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.statLabel {
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* Nothing in an admin page may push the document wider than the screen. */
+.page,
+.page > *,
+.panel,
+.panel > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.tableWrap {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media screen and (max-width: 640px) {
+  .stat {
+    min-width: 40%;
+    margin-right: 12px;
+    padding-right: 12px;
+  }
+  .page p,
+  .page li {
+    overflow-wrap: anywhere;
+  }
+}
+
+.page :where(div, section, form, ul, ol, li, header, nav) {
+  min-width: 0;
+}
+
+@media screen and (max-width: 1024px) {
+  .page {
+    overflow-x: clip;
+  }
+  .tableWrap {
+    display: block;
+    width: 100%;
+  }
+}
+
+/* Visually hidden labels are absolutely positioned; keep them inside the scroller
+   so a wide table cannot stretch the page through them. */
+.tableWrap {
+  position: relative;
+}

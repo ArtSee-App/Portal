@@ -153,6 +153,16 @@ for (const scenario of scenarios.filter((s) => !ONLY || s.name.includes(ONLY) ||
         await page.waitForTimeout(700);
         const dir = join(OUT, scenario.family);
         mkdirSync(dir, { recursive: true });
+        if (flag("--overflow")) {
+          const wide = await page.evaluate(() => {
+            const vw = document.documentElement.clientWidth;
+            return [...document.querySelectorAll("body *")]
+              .filter((e) => e.getBoundingClientRect().right > vw + 1 && !e.closest("[class*=tableWrap]"))
+              .slice(0, 8)
+              .map((e) => `${e.tagName.toLowerCase()}.${String(e.className).slice(0, 60)} right=${Math.round(e.getBoundingClientRect().right)} w=${Math.round(e.getBoundingClientRect().width)}`);
+          });
+          for (const line of wide) console.log("  wider than the screen: " + line);
+        }
         await page.screenshot({ path: join(dir, `${scenario.name}-${theme}-${viewport}.png`), fullPage: true });
         console.log(`ok  ${scenario.name} ${theme} ${viewport}${errors.length ? "  page errors: " + errors.join(" | ").slice(0, 200) : ""}`);
       } catch (e) {

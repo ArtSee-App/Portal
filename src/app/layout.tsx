@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 // Applies the saved theme before the first paint: "light", "dark", or the system's choice.
 // Kept in sync with src/components/header/ThemeSwitch.tsx.
-const themeScript = `(function(){try{var t=localStorage.getItem("artvista-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme="light"}})();`;
+const themeScript = `(function(){var t="dark";try{var s=localStorage.getItem("artvista-theme");if(s==="light")t="light";else if(s==="system")t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}catch(e){}document.documentElement.dataset.theme=t})();`;
 
 export default function RootLayout({
   children,

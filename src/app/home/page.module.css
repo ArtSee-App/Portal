@@ -1515,21 +1515,22 @@
 }
 
 .imageContainer {
-  height: 104px;
-  width: 104px;
-  min-width: 104px;
-  border-radius: var(--r-control);
-  background: var(--well);
+  height: 96px;
+  width: 96px;
+  min-width: 96px;
+  border-radius: 0;
+  background: none;
 }
 
 .artworkItem:hover .imageContainer {
-  background: var(--category);
+  background: none;
 }
 
 .artworkImage {
-  padding: 8px;
-  border-radius: var(--r-control);
+  padding: 0;
+  border-radius: var(--r-image);
   background: none;
+  filter: drop-shadow(0 6px 12px rgb(0 0 0 / 0.45));
 }
 
 .imageContainer:hover .artworkImage {

@@ -2346,3 +2346,67 @@
 .registrationTypeOption input[type="radio"] {
   accent-color: var(--accent-solid);
 }
+
+/* --------------------------------------------------------------------------
+   Sign-in as a gallery wall: the artwork fills the brand panel, the form sits
+   beside it, and the pair is centred in the window.
+   -------------------------------------------------------------------------- */
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.pageContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 24px;
+}
+
+.cardsContainer {
+  width: 100%;
+  min-height: min(660px, calc(100vh - 150px));
+}
+
+.logoCardOuter {
+  position: relative;
+  flex: 0 0 46%;
+  overflow: hidden;
+  background: #05050d url("/login/starry-night.webp") center / cover no-repeat;
+  box-shadow: 0 30px 80px -30px rgb(29 136 240 / 0.45), 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+
+.logoCardOuter::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(10 10 21 / 0.1) 0%, rgb(10 10 21 / 0.35) 40%, rgb(10 10 21 / 0.94) 88%);
+}
+
+.logoCard {
+  position: relative;
+  z-index: 1;
+  top: auto;
+  height: 100%;
+  justify-content: flex-end;
+  color: #fff;
+}
+
+.logoCard .heading {
+  color: #fff;
+}
+
+.logoSubtitle {
+  color: rgb(255 255 255 / 0.82);
+}
+
+@media screen and (max-width: 900px) {
+  .cardsContainer {
+    min-height: 0;
+  }
+  .logoCardOuter {
+    flex: none;
+    min-height: 260px;
+  }
+}
