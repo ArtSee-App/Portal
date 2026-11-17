@@ -10,7 +10,7 @@
 }
 
 .legend {
-  color: #333;
+  color: var(--ink);
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 6px;
@@ -39,13 +39,13 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 6px;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
   padding: 7px 12px;
   font-size: 0.875rem;
   cursor: pointer;
-  background-color: #fafafa;
-  color: #333;
+  background-color: var(--well);
+  color: var(--ink);
 }
 
 .mode input {
@@ -59,7 +59,7 @@
 
 .modeActive {
   border-color: var(--primary-color);
-  background-color: #f3f8fe;
+  background-color: var(--info-soft);
 }
 
 .combo {
@@ -77,10 +77,10 @@
   list-style: none;
   margin: 0;
   padding: 4px 0;
-  background-color: #ffffff;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: none;
 }
 
 .option {
@@ -92,29 +92,29 @@
 }
 
 .optionActive {
-  background-color: #eef5fe;
+  background-color: var(--info-soft);
 }
 
 .optionEmpty {
   padding: 10px 14px;
   font-size: 0.85rem;
-  color: #777;
+  color: var(--muted);
 }
 
 .optionName {
   font-size: 0.92rem;
   font-weight: 600;
-  color: #222;
+  color: var(--ink);
 }
 
 .optionNative {
   font-size: 0.82rem;
-  color: #555;
+  color: var(--ink);
 }
 
 .optionMeta {
   font-size: 0.78rem;
-  color: #888;
+  color: var(--muted);
 }
 
 .commercial {
@@ -123,9 +123,9 @@
   font-size: 0.72rem;
   font-weight: 700;
   padding: 2px 8px;
-  border-radius: 10px;
-  background-color: #f3e5f5;
-  color: #6a1b6a;
+  border-radius: var(--r-control);
+  background-color: var(--accent-soft);
+  color: var(--accent);
 }
 
 .selected {
@@ -133,9 +133,9 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  border: 1px solid #b3d4f6;
-  background-color: #f3f8fe;
-  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background-color: var(--info-soft);
+  border-radius: 8px;
   padding: 10px 14px;
 }
 
@@ -147,22 +147,22 @@
 
 .note {
   font-size: 0.8rem;
-  color: #666;
+  color: var(--ink);
   line-height: 1.5;
   min-height: 1em;
 }
 
 .error {
-  color: #d32f2f;
+  color: var(--danger);
 }
 
 .unavailable {
   font-size: 0.85rem;
   line-height: 1.5;
-  color: #0b4a85;
-  background-color: #e8f2fd;
-  border: 1px solid #b3d4f6;
-  border-radius: 6px;
+  color: var(--info);
+  background-color: var(--info-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
   padding: 10px 14px;
 }
 
@@ -195,7 +195,7 @@
 }
 
 .saveButton {
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 8px 16px;
   font-weight: 600;
   font-size: 0.875rem;
@@ -206,10 +206,113 @@
 }
 
 .saveButton:hover:not(:disabled) {
-  background-color: rgba(29, 136, 240, 0.08);
+  background-color: var(--accent-soft);
 }
 
 .saveButton:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* App identity layer (redesign 2026-11) */
+.legend {
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.mode {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--well);
+  color: var(--ink);
+}
+
+.mode input {
+  accent-color: var(--accent-solid);
+}
+
+.mode:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.modeActive {
+  background: var(--accent-soft);
+}
+
+.list {
+  padding: 6px;
+  border: 0;
+  border-radius: var(--r-control);
+  background: var(--raised);
+  box-shadow: var(--shadow-overlay);
+}
+
+.option {
+  border-radius: 8px;
+}
+
+.option:hover,
+.optionActive {
+  background: var(--category);
+}
+
+.optionNative {
+  color: var(--muted);
+}
+
+.commercial {
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.selected {
+  padding: 12px 14px;
+  border: 0;
+  border-radius: var(--r-control);
+  background: var(--well);
+}
+
+.note {
+  color: var(--muted);
+}
+
+.error {
+  color: var(--danger);
+}
+
+.unavailable {
+  padding: 12px 14px;
+  border: 0;
+  border-radius: var(--r-control);
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.linkButton {
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+.linkButton:focus-visible,
+.saveButton:focus-visible {
+  outline-color: var(--accent);
+}
+
+.saveButton {
+  min-height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--category);
+  color: var(--ink);
+}
+
+.saveButton:hover:not(:disabled) {
+  background: var(--category-hover);
 }

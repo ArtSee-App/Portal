@@ -1,0 +1,37 @@
+{
+ "path": "/get_artist_details_to_admin_portal/",
+ "query": "?admin_portal_token=…&artist_id=3740&is_pending=true",
+ "status": 200,
+ "body": {
+  "text_information": {
+   "artist_id": 3740,
+   "name": "Mara Lindqvist",
+   "full_name": "Mara Elise Lindqvist",
+   "born": "1988-04-12",
+   "died": null,
+   "active_years": null,
+   "nationality": "Swedish",
+   "art_movement": "Contemporary Realism",
+   "field": "painting",
+   "influenced_by": "Vilhelm Hammershoi, Agnes Martin",
+   "influenced_on": null,
+   "art_institution": "Royal Institute of Art, Stockholm",
+   "friends_co_workers": null,
+   "family_relatives": null,
+   "wikipedia_link": null,
+   "official_site_link": "https://example.com",
+   "source_image_url": null,
+   "source_url": null,
+   "time_created": "2026-02-02T09:32:59.063149",
+   "about": "Painter working in oil and egg tempera. Her panels return to the same stretch of coast in different light, built up in thin glazes over months.",
+   "artist_source": "Artist Provided",
+   "about_source": "Artist Provided",
+   "width_in_pixels": null,
+   "height_in_pixels": null,
+   "background_color": null,
+   "pending_situation": 2,
+   "profile_image_path": "mara-lindqvist/profile_picture_pending.jpg",
+   "spaces_dir": null
+  }
+ }
+}

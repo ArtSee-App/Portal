@@ -40,7 +40,7 @@ function Explainer({ rule }: { rule: RightsRule }) {
       <h2 id="rule-title" className={styles.panelTitle} style={{ marginBottom: 8 }}>
         The rule in plain words
       </h2>
-      <p style={{ fontSize: "0.92rem", lineHeight: 1.6, color: "#444", marginBottom: 14, maxWidth: 880 }}>
+      <p style={{ fontSize: "0.92rem", lineHeight: 1.6, color: "var(--muted)", marginBottom: 14, maxWidth: 880 }}>
         We only show an artwork&apos;s image once its copyright has run out. In Europe that is {rule.term_years} years after the artist&apos;s death,
         counted from the next 1 January, so today artists who died in <strong>{rule.last_free_death_year} or earlier</strong> are free to show. When
         the death year is missing, a work dated {EARLY_WORK_MAX_YEAR} or earlier, or an artist born in {rule.last_free_death_year - MAX_LIFESPAN_YEARS}{" "}

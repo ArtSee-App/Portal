@@ -1,0 +1,9 @@
+{
+ "path": "/admin/news",
+ "query": "?admin_portal_token=…&limit=200",
+ "status": 200,
+ "body": {
+  "items": [],
+  "collection": "updates"
+ }
+}

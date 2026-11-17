@@ -1,0 +1,17 @@
+{
+ "path": "/admin/rights/summary",
+ "query": "?admin_portal_token=…",
+ "status": 200,
+ "body": {
+  "active_artworks": 134847,
+  "by_status_reason": [
+   {
+    "status": null,
+    "reason": null,
+    "count": 134847,
+    "overrides": 0
+   }
+  ],
+  "enforcement_enabled": false
+ }
+}

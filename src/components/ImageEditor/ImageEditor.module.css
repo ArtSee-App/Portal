@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: var(--scrim);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,15 +22,15 @@
 }
 
 .modal {
-    background-color: white;
-    border-radius: 16px;
+    background-color: var(--surface);
+    border-radius: var(--r-panel);
     padding: 32px;
     max-width: 500px;
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
     animation: slideUp 0.3s ease;
 }
 
@@ -53,7 +53,7 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: #666;
+    color: var(--ink);
     width: 32px;
     height: 32px;
     display: flex;
@@ -64,14 +64,14 @@
 }
 
 .closeButton:hover {
-    background-color: #f0f0f0;
-    color: #333;
+    background-color: var(--well);
+    color: var(--ink);
 }
 
 .title {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #333;
+    color: var(--ink);
     margin: 0 0 24px 0;
     text-align: center;
 }
@@ -90,9 +90,9 @@
     border-radius: 50%;
     overflow: hidden;
     position: relative;
-    background-color: #f0f0f0;
-    border: 2px solid #d0d0d0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--well);
+    border: 2px solid var(--line);
+    box-shadow: none;
 }
 
 .previewImage {
@@ -111,7 +111,7 @@
 
 .hint {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--ink);
     font-style: italic;
     margin: 0;
 }
@@ -131,7 +131,7 @@
 .zoomLabel {
     font-size: 0.95rem;
     font-weight: 500;
-    color: #333;
+    color: var(--ink);
 }
 
 .zoomSliderWrapper {
@@ -142,7 +142,7 @@
 
 .zoomValue {
     font-size: 1.2rem;
-    color: #666;
+    color: var(--ink);
     font-weight: 500;
     width: 20px;
     text-align: center;
@@ -152,7 +152,7 @@
     flex: 1;
     height: 6px;
     border-radius: 3px;
-    background: linear-gradient(to right, #e0e0e0 0%, var(--primary-color) 0%);
+    background: linear-gradient(to right, var(--category) 0%, var(--primary-color) 0%);
     outline: none;
     -webkit-appearance: none;
     appearance: none;
@@ -166,13 +166,13 @@
     border-radius: 50%;
     background: var(--primary-color);
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
     transition: all 0.2s ease;
 }
 
 .slider::-webkit-slider-thumb:hover {
     transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
 }
 
 .slider::-moz-range-thumb {
@@ -182,13 +182,13 @@
     background: var(--primary-color);
     cursor: pointer;
     border: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
     transition: all 0.2s ease;
 }
 
 .slider::-moz-range-thumb:hover {
     transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
 }
 
 .actions {
@@ -201,8 +201,8 @@
     flex: 1;
     padding: 12px 20px;
     border: 2px solid var(--primary-color);
-    border-radius: 8px;
-    background-color: white;
+    border-radius: var(--r-control);
+    background-color: var(--surface);
     color: var(--primary-color);
     font-size: 0.95rem;
     font-weight: 600;
@@ -212,18 +212,18 @@
 
 .uploadButton:hover {
     background-color: var(--primary-color);
-    color: white;
+    color: var(--on-accent);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: none;
 }
 
 .saveButton {
     flex: 1;
     padding: 12px 20px;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--r-control);
     background-color: var(--primary-color);
-    color: white;
+    color: var(--on-accent);
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
@@ -233,7 +233,7 @@
 .saveButton:hover {
     background-color: var(--secondary-color);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: none;
 }
 
 /* Mobile adjustments */

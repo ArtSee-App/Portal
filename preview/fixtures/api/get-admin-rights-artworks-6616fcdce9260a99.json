@@ -1,0 +1,11 @@
+{
+ "path": "/admin/rights/artworks",
+ "query": "?admin_portal_token=…&status=restricted&limit=50&offset=0",
+ "status": 200,
+ "body": {
+  "total": 0,
+  "limit": 50,
+  "offset": 0,
+  "items": []
+ }
+}

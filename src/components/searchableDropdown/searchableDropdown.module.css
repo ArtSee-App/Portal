@@ -1,98 +1,97 @@
 .dropdownContainer {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .dropdownInput {
-    background-image: none !important;
-    /* Removes the arrow */
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 16px;
-    padding-right: 30px;
+  background-image: none !important;
+  padding-right: 96px !important;
+  text-overflow: ellipsis;
 }
 
 .dropdownInput:disabled {
-    background-color: #f3f3f3;
-    /* Light gray background */
-    color: #999;
-    /* Dimmed text color */
-    cursor: not-allowed;
-    /* Indicate disabled state */
-    border-color: #ddd;
-    /* Consistent border color */
+  cursor: default;
 }
 
 .dropdownList {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    max-height: 150px;
-    overflow-y: auto;
-    border: 1px solid var(--primary-color);
-    border-top: none;
-    background-color: #fff;
-    border-radius: 0 0 6px 6px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    z-index: 10;
+  list-style: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  max-height: 264px;
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--raised);
+  border-radius: var(--r-control);
+  box-shadow: var(--shadow-overlay);
+  z-index: 60;
 }
 
 .dropdownListItem {
-    padding: 12px 16px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-    border-bottom: 1px solid #eee;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  transition: background-color 0.12s;
 }
 
+
+.dropdownListItem:hover,
 .dropdownListItemHover {
-    background-color: #f0f0f0;
+  background: var(--category);
 }
 
 .dropdownListEmpty {
-    padding: 12px 16px;
-    color: #888;
-    text-align: center;
-    font-size: 1rem;
+  padding: 12px;
+  color: var(--muted);
+  font-size: 0.9375rem;
 }
 
 .clearButton {
-    position: absolute;
-    right: 40px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    color: #999;
-    cursor: pointer;
-    font-size: 0.9rem;
-    text-decoration: underline;
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.clearButton:hover {
+  background: var(--category);
+  color: var(--ink);
+}
+
+.clearButton:disabled {
+  display: none;
 }
 
 .dropdownArrow {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 10px;
-    color: #999;
-    user-select: none;
-    padding: 5px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  padding: 6px;
+  cursor: pointer;
+  font-size: 10px;
+  color: var(--muted);
+  user-select: none;
+  transition: transform 0.18s var(--ease), color 0.18s;
 }
 
 .arrowUp {
-    transform: translateY(-50%) rotate(180deg);
+  transform: translateY(-50%) rotate(180deg);
 }
 
 .arrowDown {
-    transform: translateY(-50%) rotate(0deg);
+  transform: translateY(-50%) rotate(0deg);
 }
 
 .dropdownArrow:hover {
-    color: #666;
+  color: var(--ink);
 }

@@ -1,0 +1,53 @@
+{
+ "path": "/admin/connectors/sources/wikidata_museums",
+ "query": "?admin_portal_token=…",
+ "status": 200,
+ "body": {
+  "source": {
+   "source_key": "wikidata_museums",
+   "display_name": "Wikidata museums (Europe)",
+   "base_url": "https://query.wikidata.org/sparql",
+   "license_policy": "cc0_metadata",
+   "license_summary": "CC0 (Wikidata statements) · images Public domain / CC0 only",
+   "license_warning": null,
+   "attribution_text": "Wikidata (CC0); images from Wikimedia Commons (Public domain / CC0)",
+   "metadata_only": true,
+   "rate_limit_per_sec": 1,
+   "max_submissions_per_run": 0,
+   "schedule_cron": "0 4 * * 0",
+   "workflow_file": "connector-wikidata-museums.yml",
+   "enabled": true,
+   "enabled_changed_by": null,
+   "enabled_changed_at": null,
+   "updated_at": "2026-11-16T20:14:09.738174+00:00",
+   "counts": {
+    "new_7d": 0,
+    "pending": 0,
+    "accepted": 0,
+    "rejected": 0,
+    "candidates": 0,
+    "artist_unresolved": 0,
+    "matched": 0,
+    "skipped": 0,
+    "errors": 0,
+    "total": 0
+   },
+   "last_run": {
+    "run_id": 2,
+    "source_key": "wikidata_museums",
+    "mode": "submit",
+    "trigger": "manual",
+    "status": "succeeded",
+    "started_at": "2026-11-16T20:13:58.710206+00:00",
+    "finished_at": "2026-11-16T20:14:09.738174+00:00",
+    "seen": 53592,
+    "submitted": 9228,
+    "would_submit": 0,
+    "metadata_only": 0,
+    "errors": 0,
+    "error": null
+   }
+  },
+  "run_now_configured": false
+ }
+}

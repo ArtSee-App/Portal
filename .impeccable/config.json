@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-11-17T11:54:01.524Z",
+        "reason": "user confirmed 2026-11-17: the ArtvistaRemake identity (Inter) is binding for the Portal (PRODUCT.md, Brand Commitments)"
+      }
+    ]
+  }
+}

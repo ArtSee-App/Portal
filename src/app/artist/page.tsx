@@ -1,5 +1,7 @@
 "use client";
 
+import { FiX } from "react-icons/fi";
+
 import React, { useEffect, useState, Suspense, useRef } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
@@ -945,7 +947,7 @@ export default function Artist() {
                               className={styles.removeBubble}
                               onClick={() => handleRemoveItem("artMovement", index)}
                             >
-                              ❌
+                              <FiX aria-hidden />
                             </button>
                           )}
                         </span>
@@ -990,7 +992,7 @@ export default function Artist() {
                               className={styles.removeBubble}
                               onClick={() => handleRemoveItem("influencedBy", index)}
                             >
-                              ❌
+                              <FiX aria-hidden />
                             </button>
                           )}
                         </span>
@@ -1036,7 +1038,7 @@ export default function Artist() {
                               className={styles.removeBubble}
                               onClick={() => handleRemoveItem("influencedOn", index)}
                             >
-                              ❌
+                              <FiX aria-hidden />
                             </button>
                           )}
                         </span>
@@ -1082,7 +1084,7 @@ export default function Artist() {
                               className={styles.removeBubble}
                               onClick={() => handleRemoveItem("artInstitution", index)}
                             >
-                              ❌
+                              <FiX aria-hidden />
                             </button>
                           )}
                         </span>
@@ -1128,7 +1130,7 @@ export default function Artist() {
                               className={styles.removeBubble}
                               onClick={() => handleRemoveItem("friendsOrCoworkers", index)}
                             >
-                              ❌
+                              <FiX aria-hidden />
                             </button>
                           )}
                         </span>

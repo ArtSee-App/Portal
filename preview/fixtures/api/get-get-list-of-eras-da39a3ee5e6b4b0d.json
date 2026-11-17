@@ -1,0 +1,1435 @@
+{
+ "path": "/get_list_of_eras/",
+ "query": "?artist_portal_token=…",
+ "status": 200,
+ "body": [
+  {
+   "era_id": 4,
+   "era_name": "1st Intermediate Period",
+   "before": "Old Kingdom",
+   "next": "Middle Kingdom",
+   "period": "2181–2055 BC"
+  },
+  {
+   "era_id": 6,
+   "era_name": "2nd Intermediate Period",
+   "before": "Middle Kingdom",
+   "next": "New Kingdom",
+   "period": "1650–1550 BC"
+  },
+  {
+   "era_id": 9,
+   "era_name": "3rd Intermediate Period",
+   "before": "Amarna Period",
+   "next": "Late Period",
+   "period": "1069–664 BC"
+  },
+  {
+   "era_id": 187,
+   "era_name": "Abbasid Period (750–1258)",
+   "before": "Islamic Art",
+   "next": "Ilkhanid Period (1256–1353)",
+   "period": "750–1258"
+  },
+  {
+   "era_id": 56,
+   "era_name": "Abstract Art",
+   "before": "Cubism",
+   "next": "Suprematism",
+   "period": null
+  },
+  {
+   "era_id": 85,
+   "era_name": "Abstract Expressionism",
+   "before": "Young Poland",
+   "next": "Indian Space Painting",
+   "period": null
+  },
+  {
+   "era_id": 99,
+   "era_name": "Abstract Illusionism",
+   "before": "Post-Painterly Abstraction",
+   "next": "Feminist Art",
+   "period": null
+  },
+  {
+   "era_id": 38,
+   "era_name": "Academic Art",
+   "before": "Orientalism",
+   "next": "Realism",
+   "period": null
+  },
+  {
+   "era_id": 54,
+   "era_name": "Aestheticism",
+   "before": "Secession",
+   "next": "Cubism",
+   "period": null
+  },
+  {
+   "era_id": 8,
+   "era_name": "Amarna Period",
+   "before": "New Kingdom",
+   "next": "3rd Intermediate Period",
+   "period": "1351 - 1334 BC"
+  },
+  {
+   "era_id": 103,
+   "era_name": "Analytical Realism",
+   "before": "Fiber Art",
+   "next": "Mail Art",
+   "period": null
+  },
+  {
+   "era_id": 1,
+   "era_name": "Ancient Egyptian art",
+   "before": null,
+   "next": "Early Dynastic Period",
+   "period": null
+  },
+  {
+   "era_id": 13,
+   "era_name": "Ancient Greek Art",
+   "before": null,
+   "next": "Geometric Period",
+   "period": null
+  },
+  {
+   "era_id": 15,
+   "era_name": "Archaic Period",
+   "before": "Geometric Period",
+   "next": "Classical Period",
+   "period": "700-480 BC"
+  },
+  {
+   "era_id": 67,
+   "era_name": "Art Deco",
+   "before": "Rayonism",
+   "next": "Synchromism",
+   "period": null
+  },
+  {
+   "era_id": 114,
+   "era_name": "Arte Povera",
+   "before": "Spatialism",
+   "next": "Soviet Nonconformist Art",
+   "period": null
+  },
+  {
+   "era_id": 88,
+   "era_name": "Art Informel",
+   "before": "Orphism (Simultanism)",
+   "next": "Tachisme",
+   "period": null
+  },
+  {
+   "era_id": 52,
+   "era_name": "Art Nouveau",
+   "before": "Social Realism",
+   "next": "Secession",
+   "period": null
+  },
+  {
+   "era_id": 201,
+   "era_name": "Art Nouveau (Modern)",
+   "before": "Symbolism",
+   "next": "Modernism",
+   "period": "Late 19th Century - Early 20th Century"
+  },
+  {
+   "era_id": 45,
+   "era_name": "Arts and Crafts",
+   "before": "Naïve Art",
+   "next": "Tonalism",
+   "period": null
+  },
+  {
+   "era_id": 107,
+   "era_name": "Art Singulier",
+   "before": "Outsider art (Art brut)",
+   "next": "Concrete Art (Concretism)",
+   "period": null
+  },
+  {
+   "era_id": 58,
+   "era_name": "Avant-garde",
+   "before": "Suprematism",
+   "next": "Futurism",
+   "period": null
+  },
+  {
+   "era_id": 181,
+   "era_name": "Azuchi-Momoyama period (1573–1603)",
+   "before": "Muromachi period (1392–1573)",
+   "next": "Edo period (1603–1867)",
+   "period": "1573–1603"
+  },
+  {
+   "era_id": 32,
+   "era_name": "Baroque",
+   "before": "Western Post Renaissance Art",
+   "next": "Dutch Golden Age",
+   "period": null
+  },
+  {
+   "era_id": 162,
+   "era_name": "Black Arts Movement",
+   "before": "Chicano art movement",
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 19,
+   "era_name": "Byzantine Art",
+   "before": "Western Medieval Art",
+   "next": "Pre-Romanesque Art",
+   "period": null
+  },
+  {
+   "era_id": 161,
+   "era_name": "Chicano art movement",
+   "before": "Contemporary",
+   "next": "Black Arts Movement",
+   "period": null
+  },
+  {
+   "era_id": 163,
+   "era_name": "Chinese Art",
+   "before": null,
+   "next": "Tang Dynasty (618–907)",
+   "period": null
+  },
+  {
+   "era_id": 16,
+   "era_name": "Classical Period",
+   "before": "Archaic Period",
+   "next": "Hellenistic Period",
+   "period": "480 - 323 BC"
+  },
+  {
+   "era_id": 120,
+   "era_name": "Classical Realism",
+   "before": "New Generation Sculpture",
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 122,
+   "era_name": "Conceptual Art",
+   "before": "Contemporary Art",
+   "next": "Excessivism",
+   "period": null
+  },
+  {
+   "era_id": 108,
+   "era_name": "Concrete Art (Concretism)",
+   "before": "Art Singulier",
+   "next": "Neo-Expressionism",
+   "period": null
+  },
+  {
+   "era_id": 141,
+   "era_name": "Confessional Art",
+   "before": "Pittura Colta",
+   "next": "New European Painting",
+   "period": null
+  },
+  {
+   "era_id": 61,
+   "era_name": "Constructivism",
+   "before": "Dada",
+   "next": "De Stijl (Neoplasticism)",
+   "period": null
+  },
+  {
+   "era_id": 160,
+   "era_name": "Contemporary",
+   "before": "Postinternet",
+   "next": "Chicano art movement",
+   "period": null
+  },
+  {
+   "era_id": 121,
+   "era_name": "Contemporary Art",
+   "before": null,
+   "next": "Conceptual Art",
+   "period": null
+  },
+  {
+   "era_id": 136,
+   "era_name": "Contemporary Realism",
+   "before": "Neo-Conceptualism",
+   "next": "P&D (Pattern and Decoration)",
+   "period": null
+  },
+  {
+   "era_id": 24,
+   "era_name": "Coptic art",
+   "before": "Medieval Art",
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 55,
+   "era_name": "Cubism",
+   "before": "Aestheticism",
+   "next": "Abstract Art",
+   "period": null
+  },
+  {
+   "era_id": 91,
+   "era_name": "Cubo-Futurism",
+   "before": "Haute Pâte (Matter Painting)",
+   "next": "Neo-Concretism",
+   "period": null
+  },
+  {
+   "era_id": 130,
+   "era_name": "CyberArt",
+   "before": "Kitsch",
+   "next": "Relational Art",
+   "period": null
+  },
+  {
+   "era_id": 60,
+   "era_name": "Dada",
+   "before": "Futurism",
+   "next": "Constructivism",
+   "period": null
+  },
+  {
+   "era_id": 178,
+   "era_name": "Dansaekhwa (Korean Monochrome Painting)",
+   "before": "Korean Informel",
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 62,
+   "era_name": "De Stijl (Neoplasticism)",
+   "before": "Constructivism",
+   "next": "Metaphysical art",
+   "period": null
+  },
+  {
+   "era_id": 155,
+   "era_name": "Digital Art",
+   "before": "net.art",
+   "next": "New media art",
+   "period": null
+  },
+  {
+   "era_id": 33,
+   "era_name": "Dutch Golden Age",
+   "before": "Baroque",
+   "next": "Rococo",
+   "period": null
+  },
+  {
+   "era_id": 2,
+   "era_name": "Early Dynastic Period",
+   "before": "Ancient Egyptian art",
+   "next": "Old Kingdom",
+   "period": "3150 – 2686 BC"
+  },
+  {
+   "era_id": 27,
+   "era_name": "Early Renaissance",
+   "before": "Proto Renaissance",
+   "next": "High Renaissance",
+   "period": null
+  },
+  {
+   "era_id": 182,
+   "era_name": "Edo period (1603–1867)",
+   "before": "Azuchi-Momoyama period (1573–1603)",
+   "next": "Meiji Period (1868–1912)",
+   "period": "1603–1867"
+  },
+  {
+   "era_id": 127,
+   "era_name": "Environmental Art (Land art)",
+   "before": "Light and Space",
+   "next": "Junk Art",
+   "period": null
+  },
+  {
+   "era_id": 123,
+   "era_name": "Excessivism",
+   "before": "Conceptual Art",
+   "next": "Minimalism",
+   "period": null
+  },
+  {
+   "era_id": 82,
+   "era_name": "Existential Art",
+   "before": "Neo-Romanticism",
+   "next": "Lettrism",
+   "period": null
+  },
+  {
+   "era_id": 50,
+   "era_name": "Expressionism",
+   "before": "New Realism (American Realism)",
+   "next": "Social Realism",
+   "period": null
+  },
+  {
+   "era_id": 151,
+   "era_name": "Fantasy Art",
+   "before": "Provisional Painting (New Casualism)",
+   "next": "Internet art (Net art)",
+   "period": null
+  },
+  {
+   "era_id": 100,
+   "era_name": "Feminist Art",
+   "before": "Abstract Illusionism",
+   "next": "Modernismo",
+   "period": null
+  },
+  {
+   "era_id": 102,
+   "era_name": "Fiber Art",
+   "before": "Modernismo",
+   "next": "Analytical Realism",
+   "period": null
+  },
+  {
+   "era_id": 165,
+   "era_name": "Five Dynasties and Ten Kingdoms (907–960)",
+   "before": "Tang Dynasty (618–907)",
+   "next": "Northern Song Dynasty (960–1126)",
+   "period": "907–960"
+  },
+  {
+   "era_id": 198,
+   "era_name": "Folk art",
+   "before": "Yoruba Art",
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 132,
+   "era_name": "Funk Art",
+   "before": "Relational Art",
+   "next": "Photorealism (Super-Realism, Hyper-Realism)",
+   "period": null
+  },
+  {
+   "era_id": 153,
+   "era_name": "Futuretech Art",
+   "before": "Internet art (Net art)",
+   "next": "net.art",
+   "period": null
+  },
+  {
+   "era_id": 59,
+   "era_name": "Futurism",
+   "before": "Avant-garde",
+   "next": "Dada",
+   "period": null
+  },
+  {
+   "era_id": 14,
+   "era_name": "Geometric Period",
+   "before": "Ancient Greek Art",
+   "next": "Archaic Period",
+   "period": "c.900 - c.700 BC"
+  },
+  {
+   "era_id": 22,
+   "era_name": "Gothic Art",
+   "before": "Romanesque Art",
+   "next": "Medieval Art",
+   "period": null
+  },
+  {
+   "era_id": 203,
+   "era_name": "Graffiti Photography",
+   "before": "Expressionism",
+   "next": "Graffiti Art",
+   "period": "1970-..."
+  },
+  {
+   "era_id": 73,
+   "era_name": "Harlem Renaissance (New Negro Movement)",
+   "before": "Precisionism",
+   "next": "Incoherents",
+   "period": null
+  },
+  {
+   "era_id": 90,
+   "era_name": "Haute Pâte (Matter Painting)",
+   "before": "Tachisme",
+   "next": "Cubo-Futurism",
+   "period": null
+  },
+  {
+   "era_id": 17,
+   "era_name": "Hellenistic Period",
+   "before": "Classical Period",
+   "next": null,
+   "period": "323-31 BC"
+  },
+  {
+   "era_id": 28,
+   "era_name": "High Renaissance",
+   "before": "Early Renaissance",
+   "next": "Mannerism (Late Renaissance)",
+   "period": null
+  },
+  {
+   "era_id": 188,
+   "era_name": "Ilkhanid Period (1256–1353)",
+   "before": "Abbasid Period (750–1258)",
+   "next": "Timurid Period (c.1370–1507)",
+   "period": "1256–1353"
+  },
+  {
+   "era_id": 43,
+   "era_name": "Impressionism",
+   "before": "Symbolism",
+   "next": "Naïve Art",
+   "period": null
+  },
+  {
+   "era_id": 74,
+   "era_name": "Incoherents",
+   "before": "Harlem Renaissance (New Negro Movement)",
+   "next": "Indigenism",
+   "period": null
+  },
+  {
+   "era_id": 86,
+   "era_name": "Indian Space Painting",
+   "before": "Abstract Expressionism",
+   "next": "Orphism (Simultanism)",
+   "period": null
+  },
+  {
+   "era_id": 75,
+   "era_name": "Indigenism",
+   "before": "Incoherents",
+   "next": "Regionalism",
+   "period": null
+  },
+  {
+   "era_id": 158,
+   "era_name": "Institutional Critique",
+   "before": "Postcolonial art",
+   "next": "Postinternet",
+   "period": null
+  },
+  {
+   "era_id": 152,
+   "era_name": "Internet art (Net art)",
+   "before": "Fantasy Art",
+   "next": "Futuretech Art",
+   "period": null
+  },
+  {
+   "era_id": 186,
+   "era_name": "Islamic Art",
+   "before": null,
+   "next": "Abbasid Period (750–1258)",
+   "period": null
+  },
+  {
+   "era_id": 179,
+   "era_name": "Japanese Art",
+   "before": null,
+   "next": "Muromachi period (1392–1573)",
+   "period": null
+  },
+  {
+   "era_id": 204,
+   "era_name": "Japonism",
+   "before": null,
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 176,
+   "era_name": "Joseon Dynasty",
+   "before": "Korean Art",
+   "next": "Korean Informel",
+   "period": null
+  },
+  {
+   "era_id": 128,
+   "era_name": "Junk Art",
+   "before": "Environmental Art (Land art)",
+   "next": "Kitsch",
+   "period": null
+  },
+  {
+   "era_id": 112,
+   "era_name": "Kinetic art",
+   "before": "Neo-Figurative Art",
+   "next": "Spatialism",
+   "period": null
+  },
+  {
+   "era_id": 129,
+   "era_name": "Kitsch",
+   "before": "Junk Art",
+   "next": "CyberArt",
+   "period": null
+  },
+  {
+   "era_id": 175,
+   "era_name": "Korean Art",
+   "before": null,
+   "next": "Joseon Dynasty",
+   "period": null
+  },
+  {
+   "era_id": 177,
+   "era_name": "Korean Informel",
+   "before": "Joseon Dynasty",
+   "next": "Dansaekhwa (Korean Monochrome Painting)",
+   "period": null
+  },
+  {
+   "era_id": 10,
+   "era_name": "Late Period",
+   "before": "3rd Intermediate Period",
+   "next": "Ptolemaic Period",
+   "period": "664–332 BC"
+  },
+  {
+   "era_id": 83,
+   "era_name": "Lettrism",
+   "before": "Existential Art",
+   "next": "Young Poland",
+   "period": null
+  },
+  {
+   "era_id": 126,
+   "era_name": "Light and Space",
+   "before": "Post-Minimalism",
+   "next": "Environmental Art (Land art)",
+   "period": null
+  },
+  {
+   "era_id": 148,
+   "era_name": "Lowbrow Art",
+   "before": "Street art",
+   "next": "Stuckism",
+   "period": null
+  },
+  {
+   "era_id": 65,
+   "era_name": "Magic Realism",
+   "before": "Modernism",
+   "next": "Rayonism",
+   "period": null
+  },
+  {
+   "era_id": 104,
+   "era_name": "Mail Art",
+   "before": "Analytical Realism",
+   "next": "New Objectivity (Neue Sachlichkeit)",
+   "period": null
+  },
+  {
+   "era_id": 29,
+   "era_name": "Mannerism (Late Renaissance)",
+   "before": "High Renaissance",
+   "next": "Northern Renaissance",
+   "period": null
+  },
+  {
+   "era_id": 145,
+   "era_name": "Maximalism",
+   "before": "Neo-Minimalism (Neo-Geo)",
+   "next": "Neo-Orthodoxism",
+   "period": null
+  },
+  {
+   "era_id": 23,
+   "era_name": "Medieval Art",
+   "before": "Gothic Art",
+   "next": "Coptic art",
+   "period": null
+  },
+  {
+   "era_id": 183,
+   "era_name": "Meiji Period (1868–1912)",
+   "before": "Edo period (1603–1867)",
+   "next": "Taishō period (1912–1926)",
+   "period": "1868–1912"
+  },
+  {
+   "era_id": 63,
+   "era_name": "Metaphysical art",
+   "before": "De Stijl (Neoplasticism)",
+   "next": "Modernism",
+   "period": null
+  },
+  {
+   "era_id": 5,
+   "era_name": "Middle Kingdom",
+   "before": "1st Intermediate Period",
+   "next": "2nd Intermediate Period",
+   "period": "2055–1650 BC"
+  },
+  {
+   "era_id": 169,
+   "era_name": "Ming Dynasty (1368–1644)",
+   "before": "Yuan Dynasty (1271–1368)",
+   "next": "Qing Dynasty (1644–1912)",
+   "period": "1368–1644"
+  },
+  {
+   "era_id": 124,
+   "era_name": "Minimalism",
+   "before": "Excessivism",
+   "next": "Post-Minimalism",
+   "period": null
+  },
+  {
+   "era_id": 40,
+   "era_name": "Modern Art",
+   "before": null,
+   "next": "Naturalism",
+   "period": null
+  },
+  {
+   "era_id": 64,
+   "era_name": "Modernism",
+   "before": "Metaphysical art",
+   "next": "Magic Realism",
+   "period": null
+  },
+  {
+   "era_id": 202,
+   "era_name": "Modernism",
+   "before": "Art Nouveau (Modern)",
+   "next": "Contemporary Art",
+   "period": "Late 19th Century - Mid 20th Century"
+  },
+  {
+   "era_id": 101,
+   "era_name": "Modernismo",
+   "before": "Feminist Art",
+   "next": "Fiber Art",
+   "period": null
+  },
+  {
+   "era_id": 192,
+   "era_name": "Mughal Period (after 1600)",
+   "before": "Süleyman the Magnificent Period (1520–1566)",
+   "next": "Ottoman Period (after 1600)",
+   "period": null
+  },
+  {
+   "era_id": 80,
+   "era_name": "Muralism",
+   "before": "New Medievialism",
+   "next": "Neo-Romanticism",
+   "period": null
+  },
+  {
+   "era_id": 180,
+   "era_name": "Muromachi period (1392–1573)",
+   "before": "Japanese Art",
+   "next": "Azuchi-Momoyama period (1573–1603)",
+   "period": "1392–1573"
+  },
+  {
+   "era_id": 44,
+   "era_name": "Naïve Art",
+   "before": "Impressionism",
+   "next": "Arts and Crafts",
+   "period": null
+  },
+  {
+   "era_id": 196,
+   "era_name": "Native Art",
+   "before": null,
+   "next": "Yoruba Art",
+   "period": null
+  },
+  {
+   "era_id": 41,
+   "era_name": "Naturalism",
+   "before": "Modern Art",
+   "next": "Symbolism",
+   "period": null
+  },
+  {
+   "era_id": 35,
+   "era_name": "Neoclassicism",
+   "before": "Rococo",
+   "next": "Romanticism",
+   "period": null
+  },
+  {
+   "era_id": 135,
+   "era_name": "Neo-Conceptualism",
+   "before": "Poster Art Realism",
+   "next": "Contemporary Realism",
+   "period": null
+  },
+  {
+   "era_id": 92,
+   "era_name": "Neo-Concretism",
+   "before": "Cubo-Futurism",
+   "next": "Viennese Actionism",
+   "period": null
+  },
+  {
+   "era_id": 110,
+   "era_name": "Neo-Dada",
+   "before": "Neo-Expressionism",
+   "next": "Neo-Figurative Art",
+   "period": null
+  },
+  {
+   "era_id": 109,
+   "era_name": "Neo-Expressionism",
+   "before": "Concrete Art (Concretism)",
+   "next": "Neo-Dada",
+   "period": null
+  },
+  {
+   "era_id": 111,
+   "era_name": "Neo-Figurative Art",
+   "before": "Neo-Dada",
+   "next": "Kinetic art",
+   "period": null
+  },
+  {
+   "era_id": 47,
+   "era_name": "Neo-Impressionism",
+   "before": "Tonalism",
+   "next": "Post-Impressionism",
+   "period": null
+  },
+  {
+   "era_id": 144,
+   "era_name": "Neo-Minimalism (Neo-Geo)",
+   "before": "Neo-Pop Art",
+   "next": "Maximalism",
+   "period": null
+  },
+  {
+   "era_id": 146,
+   "era_name": "Neo-Orthodoxism",
+   "before": "Maximalism",
+   "next": "Street art",
+   "period": null
+  },
+  {
+   "era_id": 143,
+   "era_name": "Neo-Pop Art",
+   "before": "New European Painting",
+   "next": "Neo-Minimalism (Neo-Geo)",
+   "period": null
+  },
+  {
+   "era_id": 81,
+   "era_name": "Neo-Romanticism",
+   "before": "Muralism",
+   "next": "Existential Art",
+   "period": null
+  },
+  {
+   "era_id": 95,
+   "era_name": "Neo-Surrealism",
+   "before": "Performance Art",
+   "next": "Transautomatism",
+   "period": null
+  },
+  {
+   "era_id": 154,
+   "era_name": "net.art",
+   "before": "Futuretech Art",
+   "next": "Digital Art",
+   "period": null
+  },
+  {
+   "era_id": 172,
+   "era_name": "New Culture Movement (1915-1926)",
+   "before": "Republic of China (1912–1949)",
+   "next": "Peoples Republic of China (1949-present)",
+   "period": "1915-1926"
+  },
+  {
+   "era_id": 142,
+   "era_name": "New European Painting",
+   "before": "Confessional Art",
+   "next": "Neo-Pop Art",
+   "period": null
+  },
+  {
+   "era_id": 119,
+   "era_name": "New Generation Sculpture",
+   "before": "Nouveau Réalisme",
+   "next": "Classical Realism",
+   "period": null
+  },
+  {
+   "era_id": 138,
+   "era_name": "New Image Painting",
+   "before": "P&D (Pattern and Decoration)",
+   "next": "Transavantgarde",
+   "period": null
+  },
+  {
+   "era_id": 174,
+   "era_name": "New Ink Art",
+   "before": "Peoples Republic of China (1949-present)",
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 7,
+   "era_name": "New Kingdom",
+   "before": "2nd Intermediate Period",
+   "next": "Amarna Period",
+   "period": "1550–1069 BC"
+  },
+  {
+   "era_id": 156,
+   "era_name": "New media art",
+   "before": "Digital Art",
+   "next": "Postcolonial art",
+   "period": null
+  },
+  {
+   "era_id": 79,
+   "era_name": "New Medievialism",
+   "before": "Pictorialism",
+   "next": "Muralism",
+   "period": null
+  },
+  {
+   "era_id": 105,
+   "era_name": "New Objectivity (Neue Sachlichkeit)",
+   "before": "Mail Art",
+   "next": "Outsider art (Art brut)",
+   "period": null
+  },
+  {
+   "era_id": 49,
+   "era_name": "New Realism (American Realism)",
+   "before": "Post-Impressionism",
+   "next": "Expressionism",
+   "period": null
+  },
+  {
+   "era_id": 30,
+   "era_name": "Northern Renaissance",
+   "before": "Mannerism (Late Renaissance)",
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 166,
+   "era_name": "Northern Song Dynasty (960–1126)",
+   "before": "Five Dynasties and Ten Kingdoms (907–960)",
+   "next": "Southern Song Dynasty (1127–1279)",
+   "period": "960–1126"
+  },
+  {
+   "era_id": 118,
+   "era_name": "Nouveau Réalisme",
+   "before": "Pop Art",
+   "next": "New Generation Sculpture",
+   "period": null
+  },
+  {
+   "era_id": 3,
+   "era_name": "Old Kingdom",
+   "before": "Early Dynastic Period",
+   "next": "1st Intermediate Period",
+   "period": "2686–2181 BC"
+  },
+  {
+   "era_id": 116,
+   "era_name": "Op Art",
+   "before": "Soviet Nonconformist Art",
+   "next": "Pop Art",
+   "period": null
+  },
+  {
+   "era_id": 37,
+   "era_name": "Orientalism",
+   "before": "Romanticism",
+   "next": "Academic Art",
+   "period": null
+  },
+  {
+   "era_id": 87,
+   "era_name": "Orphism (Simultanism)",
+   "before": "Indian Space Painting",
+   "next": "Art Informel",
+   "period": null
+  },
+  {
+   "era_id": 193,
+   "era_name": "Ottoman Period (after 1600)",
+   "before": "Mughal Period (after 1600)",
+   "next": "Safavid Period (before 1600)",
+   "period": null
+  },
+  {
+   "era_id": 190,
+   "era_name": "Ottoman Period (before 1600)",
+   "before": "Timurid Period (c.1370–1507)",
+   "next": "Süleyman the Magnificent Period (1520–1566)",
+   "period": null
+  },
+  {
+   "era_id": 106,
+   "era_name": "Outsider art (Art brut)",
+   "before": "New Objectivity (Neue Sachlichkeit)",
+   "next": "Art Singulier",
+   "period": null
+  },
+  {
+   "era_id": 137,
+   "era_name": "P&D (Pattern and Decoration)",
+   "before": "Contemporary Realism",
+   "next": "New Image Painting",
+   "period": null
+  },
+  {
+   "era_id": 173,
+   "era_name": "Peoples Republic of China (1949-present)",
+   "before": "New Culture Movement (1915-1926)",
+   "next": "New Ink Art",
+   "period": "1949-present"
+  },
+  {
+   "era_id": 94,
+   "era_name": "Performance Art",
+   "before": "Viennese Actionism",
+   "next": "Neo-Surrealism",
+   "period": null
+  },
+  {
+   "era_id": 133,
+   "era_name": "Photorealism (Super-Realism, Hyper-Realism)",
+   "before": "Funk Art",
+   "next": "Poster Art Realism",
+   "period": null
+  },
+  {
+   "era_id": 78,
+   "era_name": "Pictorialism",
+   "before": "Socialist Realism",
+   "next": "New Medievialism",
+   "period": null
+  },
+  {
+   "era_id": 140,
+   "era_name": "Pittura Colta",
+   "before": "Transavantgarde",
+   "next": "Confessional Art",
+   "period": null
+  },
+  {
+   "era_id": 117,
+   "era_name": "Pop Art",
+   "before": "Op Art",
+   "next": "Nouveau Réalisme",
+   "period": null
+  },
+  {
+   "era_id": 157,
+   "era_name": "Postcolonial art",
+   "before": "New media art",
+   "next": "Institutional Critique",
+   "period": null
+  },
+  {
+   "era_id": 134,
+   "era_name": "Poster Art Realism",
+   "before": "Photorealism (Super-Realism, Hyper-Realism)",
+   "next": "Neo-Conceptualism",
+   "period": null
+  },
+  {
+   "era_id": 48,
+   "era_name": "Post-Impressionism",
+   "before": "Neo-Impressionism",
+   "next": "New Realism (American Realism)",
+   "period": null
+  },
+  {
+   "era_id": 159,
+   "era_name": "Postinternet",
+   "before": "Institutional Critique",
+   "next": "Contemporary",
+   "period": null
+  },
+  {
+   "era_id": 125,
+   "era_name": "Post-Minimalism",
+   "before": "Minimalism",
+   "next": "Light and Space",
+   "period": null
+  },
+  {
+   "era_id": 98,
+   "era_name": "Post-Painterly Abstraction",
+   "before": "Sots Art",
+   "next": "Abstract Illusionism",
+   "period": null
+  },
+  {
+   "era_id": 72,
+   "era_name": "Precisionism",
+   "before": "Purism",
+   "next": "Harlem Renaissance (New Negro Movement)",
+   "period": null
+  },
+  {
+   "era_id": 199,
+   "era_name": "Pre-Columbian Art",
+   "before": null,
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 20,
+   "era_name": "Pre-Romanesque Art",
+   "before": "Byzantine Art",
+   "next": "Romanesque Art",
+   "period": null
+  },
+  {
+   "era_id": 26,
+   "era_name": "Proto Renaissance",
+   "before": "Western Renaissance Art",
+   "next": "Early Renaissance",
+   "period": null
+  },
+  {
+   "era_id": 150,
+   "era_name": "Provisional Painting (New Casualism)",
+   "before": "Stuckism",
+   "next": "Fantasy Art",
+   "period": null
+  },
+  {
+   "era_id": 11,
+   "era_name": "Ptolemaic Period",
+   "before": "Late Period",
+   "next": "Roman Period",
+   "period": "332–30 BC"
+  },
+  {
+   "era_id": 71,
+   "era_name": "Purism",
+   "before": "Surrealism",
+   "next": "Precisionism",
+   "period": null
+  },
+  {
+   "era_id": 170,
+   "era_name": "Qing Dynasty (1644–1912)",
+   "before": "Ming Dynasty (1368–1644)",
+   "next": "Republic of China (1912–1949)",
+   "period": "1644–1912"
+  },
+  {
+   "era_id": 66,
+   "era_name": "Rayonism",
+   "before": "Magic Realism",
+   "next": "Art Deco",
+   "period": null
+  },
+  {
+   "era_id": 39,
+   "era_name": "Realism",
+   "before": "Academic Art",
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 76,
+   "era_name": "Regionalism",
+   "before": "Indigenism",
+   "next": "Socialist Realism",
+   "period": null
+  },
+  {
+   "era_id": 131,
+   "era_name": "Relational Art",
+   "before": "CyberArt",
+   "next": "Funk Art",
+   "period": null
+  },
+  {
+   "era_id": 171,
+   "era_name": "Republic of China (1912–1949)",
+   "before": "Qing Dynasty (1644–1912)",
+   "next": "New Culture Movement (1915-1926)",
+   "period": "1912–1949"
+  },
+  {
+   "era_id": 34,
+   "era_name": "Rococo",
+   "before": "Dutch Golden Age",
+   "next": "Neoclassicism",
+   "period": null
+  },
+  {
+   "era_id": 21,
+   "era_name": "Romanesque Art",
+   "before": "Pre-Romanesque Art",
+   "next": "Gothic Art",
+   "period": null
+  },
+  {
+   "era_id": 12,
+   "era_name": "Roman Period",
+   "before": "Ptolemaic Period",
+   "next": null,
+   "period": "30 BC - 640 AD"
+  },
+  {
+   "era_id": 36,
+   "era_name": "Romanticism",
+   "before": "Neoclassicism",
+   "next": "Orientalism",
+   "period": null
+  },
+  {
+   "era_id": 195,
+   "era_name": "Safavid and Qajar Periods (after 1600)",
+   "before": "Safavid Period (before 1600)",
+   "next": null,
+   "period": null
+  },
+  {
+   "era_id": 194,
+   "era_name": "Safavid Period (before 1600)",
+   "before": "Ottoman Period (after 1600)",
+   "next": "Safavid and Qajar Periods (after 1600)",
+   "period": null
+  },
+  {
+   "era_id": 53,
+   "era_name": "Secession",
+   "before": "Art Nouveau",
+   "next": "Aestheticism",
+   "period": null
+  },
+  {
+   "era_id": 185,
+   "era_name": "Shōwa period (1926–1989)",
+   "before": "Taishō period (1912–1926)",
+   "next": null,
+   "period": "1926–1989"
+  },
+  {
+   "era_id": 77,
+   "era_name": "Socialist Realism",
+   "before": "Regionalism",
+   "next": "Pictorialism",
+   "period": null
+  },
+  {
+   "era_id": 51,
+   "era_name": "Social Realism",
+   "before": "Expressionism",
+   "next": "Art Nouveau",
+   "period": null
+  },
+  {
+   "era_id": 97,
+   "era_name": "Sots Art",
+   "before": "Transautomatism",
+   "next": "Post-Painterly Abstraction",
+   "period": null
+  },
+  {
+   "era_id": 167,
+   "era_name": "Southern Song Dynasty (1127–1279)",
+   "before": "Northern Song Dynasty (960–1126)",
+   "next": "Yuan Dynasty (1271–1368)",
+   "period": "1127–1279"
+  },
+  {
+   "era_id": 115,
+   "era_name": "Soviet Nonconformist Art",
+   "before": "Arte Povera",
+   "next": "Op Art",
+   "period": null
+  },
+  {
+   "era_id": 113,
+   "era_name": "Spatialism",
+   "before": "Kinetic art",
+   "next": "Arte Povera",
+   "period": null
+  },
+  {
+   "era_id": 147,
+   "era_name": "Street art",
+   "before": "Neo-Orthodoxism",
+   "next": "Lowbrow Art",
+   "period": null
+  },
+  {
+   "era_id": 149,
+   "era_name": "Stuckism",
+   "before": "Lowbrow Art",
+   "next": "Provisional Painting (New Casualism)",
+   "period": null
+  },
+  {
+   "era_id": 191,
+   "era_name": "Süleyman the Magnificent Period (1520–1566)",
+   "before": "Ottoman Period (before 1600)",
+   "next": "Mughal Period (after 1600)",
+   "period": "1520–1566"
+  },
+  {
+   "era_id": 57,
+   "era_name": "Suprematism",
+   "before": "Abstract Art",
+   "next": "Avant-garde",
+   "period": null
+  },
+  {
+   "era_id": 70,
+   "era_name": "Surrealism",
+   "before": "Vorticism",
+   "next": "Purism",
+   "period": null
+  },
+  {
+   "era_id": 42,
+   "era_name": "Symbolism",
+   "before": "Naturalism",
+   "next": "Impressionism",
+   "period": null
+  },
+  {
+   "era_id": 200,
+   "era_name": "Symbolism",
+   "before": "Impressionism",
+   "next": "Art Nouveau (Modern)",
+   "period": "Late 19th Century"
+  },
+  {
+   "era_id": 68,
+   "era_name": "Synchromism",
+   "before": "Art Deco",
+   "next": "Vorticism",
+   "period": null
+  },
+  {
+   "era_id": 89,
+   "era_name": "Tachisme",
+   "before": "Art Informel",
+   "next": "Haute Pâte (Matter Painting)",
+   "period": null
+  },
+  {
+   "era_id": 184,
+   "era_name": "Taishō period (1912–1926)",
+   "before": "Meiji Period (1868–1912)",
+   "next": "Shōwa period (1926–1989)",
+   "period": "1912–1926"
+  },
+  {
+   "era_id": 164,
+   "era_name": "Tang Dynasty (618–907)",
+   "before": "Chinese Art",
+   "next": "Five Dynasties and Ten Kingdoms (907–960)",
+   "period": "618–907"
+  },
+  {
+   "era_id": 189,
+   "era_name": "Timurid Period (c.1370–1507)",
+   "before": "Ilkhanid Period (1256–1353)",
+   "next": "Ottoman Period (before 1600)",
+   "period": "c.1370–1507"
+  },
+  {
+   "era_id": 46,
+   "era_name": "Tonalism",
+   "before": "Arts and Crafts",
+   "next": "Neo-Impressionism",
+   "period": null
+  },
+  {
+   "era_id": 96,
+   "era_name": "Transautomatism",
+   "before": "Neo-Surrealism",
+   "next": "Sots Art",
+   "period": null
+  },
+  {
+   "era_id": 139,
+   "era_name": "Transavantgarde",
+   "before": "New Image Painting",
+   "next": "Pittura Colta",
+   "period": null
+  },
+  {
+   "era_id": 93,
+   "era_name": "Viennese Actionism",
+   "before": "Neo-Concretism",
+   "next": "Performance Art",
+   "period": null
+  },
+  {
+   "era_id": 69,
+   "era_name": "Vorticism",
+   "before": "Synchromism",
+   "next": "Surrealism",
+   "period": null
+  },
+  {
+   "era_id": 18,
+   "era_name": "Western Medieval Art",
+   "before": null,
+   "next": "Byzantine Art",
+   "period": null
+  },
+  {
+   "era_id": 31,
+   "era_name": "Western Post Renaissance Art",
+   "before": null,
+   "next": "Baroque",
+   "period": null
+  },
+  {
+   "era_id": 25,
+   "era_name": "Western Renaissance Art",
+   "before": null,
+   "next": "Proto Renaissance",
+   "period": null
+  },
+  {
+   "era_id": 197,
+   "era_name": "Yoruba Art",
+   "before": "Native Art",
+   "next": "Folk art",
+   "period": null
+  },
+  {
+   "era_id": 84,
+   "era_name": "Young Poland",
+   "before": "Lettrism",
+   "next": "Abstract Expressionism",
+   "period": null
+  },
+  {
+   "era_id": 168,
+   "era_name": "Yuan Dynasty (1271–1368)",
+   "before": "Southern Song Dynasty (1127–1279)",
+   "next": "Ming Dynasty (1368–1644)",
+   "period": "1271–1368"
+  }
+ ]
+}

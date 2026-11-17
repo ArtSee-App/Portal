@@ -1,0 +1,36 @@
+{
+ "path": "/get_artist_details_to_portal/",
+ "query": "?artist_portal_token=…&artist_id=1314",
+ "status": 200,
+ "body": {
+  "text_information": {
+   "artist_id": 1314,
+   "name": "Vincent van Gogh",
+   "full_name": "Vincent Willem van Gogh",
+   "born": "March 30, 1853",
+   "died": "July 29, 1890",
+   "active_years": "1880 - 1890",
+   "nationality": "Dutch",
+   "art_movement": "{Post-Impressionism}",
+   "field": "{painting}",
+   "influenced_by": "{\"Hugo van der Goes\",\"Anton Mauve\",\"Paul Gauguin\",\"Jean-Francois Millet\",\"Alfred Sisley\",\"Jacob van Ruisdael\",\"Luke Fildes\",Rembrandt,\"Jean-Baptiste-Simeon Chardin\"}",
+   "influenced_on": "{\"Egon Schiele\",\"Edvard Munch\",\"Max Pechstein\",\"Piet Mondrian\",\"Francis Bacon\",\"Mikhail Larionov\",\"Leon Tarasewicz\",\"Fernando García Ponce\",\"Max Oppenheimer\",\"Charles E. Burchfield\",\"Beauford Delaney\",\"Jan Mankes\"}",
+   "art_institution": "Royal Academy of Fine Arts, Antwerp, Belgium",
+   "friends_co_workers": "{\"Paul Gauguin\",\"Charles Laval\"}",
+   "family_relatives": "{\"Anton Mauve\"}",
+   "wikipedia_link": "https://en.wikipedia.org/wiki/Vincent_van_Gogh",
+   "official_site_link": "Not found",
+   "source_image_url": "https://uploads8.wikiart.org/images/vincent-van-gogh.jpg!Portrait.jpg",
+   "source_url": "https://www.wikiart.org/en/vincent-van-gogh",
+   "created_at": "2024-01-22T20:42:40.337619",
+   "about": "Van Gogh generally considered the greatest after Rembrandt, and one of the greatest of the Post-Impressionists. The striking colour, emphatic brushwork, and contoured forms of his work powerfully influenced the current of Expressionism in modern art. Van Gogh’s art became astoundingly popular after his death, especially in the late 20th century, when his work sold for record-breaking sums at auctions around the world and was featured in blockbuster touring exhibitions.",
+   "artist_source": "WikiArt",
+   "about_source": "WikiArt",
+   "width_in_pixels": 313,
+   "height_in_pixels": 400,
+   "background_color": "#796a46",
+   "profile_image_path": "vincent-van-gogh/profile_picture.jpg",
+   "spaces_dir": "https://api.artvista.app/__fixture_image/470ed61c93dc2fc3.jpg"
+  }
+ }
+}

@@ -1,0 +1,451 @@
+{
+ "path": "/admin/connectors/budget",
+ "query": "?admin_portal_token=…",
+ "status": 200,
+ "body": {
+  "month": "2026-11",
+  "as_of": "2026-11-17T11:36:44.091294+00:00",
+  "ceilings": {
+   "llm_max_usd_per_run": 1,
+   "llm_max_usd_per_month": 5
+  },
+  "allowed_models": [
+   "gpt-6-luna",
+   "gpt-5.6-luna"
+  ],
+  "max_items_per_run_limit": 200,
+  "projection": "month-to-date + average daily spend of the last 28 days x days left",
+  "total": {
+   "cap": {
+    "requested": 5,
+    "ceiling": 5,
+    "effective": 5,
+    "clamped": false
+   },
+   "spent_usd": 0,
+   "remaining_usd": 5,
+   "projected_month_end_usd": 0,
+   "projected_over_cap": false,
+   "budget_reached": false,
+   "changed_by": null,
+   "changed_at": null,
+   "history": [
+    {
+     "month": "2026-11",
+     "runs": 1,
+     "llm_runs": 0,
+     "llm_calls": 0,
+     "llm_input_tokens": 0,
+     "llm_output_tokens": 0,
+     "llm_cleaned": 0,
+     "llm_fallbacks": 0,
+     "cost_usd": 0
+    },
+    {
+     "month": "2026-10",
+     "runs": 0,
+     "llm_runs": 0,
+     "llm_calls": 0,
+     "llm_input_tokens": 0,
+     "llm_output_tokens": 0,
+     "llm_cleaned": 0,
+     "llm_fallbacks": 0,
+     "cost_usd": 0
+    },
+    {
+     "month": "2026-09",
+     "runs": 0,
+     "llm_runs": 0,
+     "llm_calls": 0,
+     "llm_input_tokens": 0,
+     "llm_output_tokens": 0,
+     "llm_cleaned": 0,
+     "llm_fallbacks": 0,
+     "cost_usd": 0
+    },
+    {
+     "month": "2026-08",
+     "runs": 0,
+     "llm_runs": 0,
+     "llm_calls": 0,
+     "llm_input_tokens": 0,
+     "llm_output_tokens": 0,
+     "llm_cleaned": 0,
+     "llm_fallbacks": 0,
+     "cost_usd": 0
+    },
+    {
+     "month": "2026-07",
+     "runs": 0,
+     "llm_runs": 0,
+     "llm_calls": 0,
+     "llm_input_tokens": 0,
+     "llm_output_tokens": 0,
+     "llm_cleaned": 0,
+     "llm_fallbacks": 0,
+     "cost_usd": 0
+    },
+    {
+     "month": "2026-06",
+     "runs": 0,
+     "llm_runs": 0,
+     "llm_calls": 0,
+     "llm_input_tokens": 0,
+     "llm_output_tokens": 0,
+     "llm_cleaned": 0,
+     "llm_fallbacks": 0,
+     "cost_usd": 0
+    }
+   ]
+  },
+  "sources": [
+   {
+    "source_key": "met",
+    "display_name": "The Met",
+    "settings": {
+     "source_key": "met",
+     "enabled": false,
+     "schedule_cron": "0 3 * * 1",
+     "llm_enabled": false,
+     "llm_model": null,
+     "llm_max_usd_per_run": {
+      "requested": 1,
+      "ceiling": 1,
+      "effective": 1,
+      "clamped": false
+     },
+     "llm_max_usd_per_month": {
+      "requested": 5,
+      "ceiling": 5,
+      "effective": 5,
+      "clamped": false
+     },
+     "max_items_per_run": 100,
+     "settings_changed_by": null,
+     "settings_changed_at": null
+    },
+    "cap": {
+     "requested": 5,
+     "ceiling": 5,
+     "effective": 5,
+     "clamped": false
+    },
+    "spent_usd": 0,
+    "remaining_usd": 5,
+    "projected_month_end_usd": 0,
+    "projected_over_cap": false,
+    "llm_state": "off",
+    "last_llm_run_at": null,
+    "history": [
+     {
+      "month": "2026-11",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-10",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-09",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-08",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-07",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-06",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     }
+    ]
+   },
+   {
+    "source_key": "wikiart",
+    "display_name": "WikiArt",
+    "settings": {
+     "source_key": "wikiart",
+     "enabled": false,
+     "schedule_cron": "0 3 * * 3",
+     "llm_enabled": false,
+     "llm_model": null,
+     "llm_max_usd_per_run": {
+      "requested": 1,
+      "ceiling": 1,
+      "effective": 1,
+      "clamped": false
+     },
+     "llm_max_usd_per_month": {
+      "requested": 5,
+      "ceiling": 5,
+      "effective": 5,
+      "clamped": false
+     },
+     "max_items_per_run": 100,
+     "settings_changed_by": null,
+     "settings_changed_at": null
+    },
+    "cap": {
+     "requested": 5,
+     "ceiling": 5,
+     "effective": 5,
+     "clamped": false
+    },
+    "spent_usd": 0,
+    "remaining_usd": 5,
+    "projected_month_end_usd": 0,
+    "projected_over_cap": false,
+    "llm_state": "off",
+    "last_llm_run_at": null,
+    "history": [
+     {
+      "month": "2026-11",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-10",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-09",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-08",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-07",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-06",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     }
+    ]
+   },
+   {
+    "source_key": "wikidata_museums",
+    "display_name": "Wikidata museums (Europe)",
+    "settings": {
+     "source_key": "wikidata_museums",
+     "enabled": true,
+     "schedule_cron": "0 4 * * 0",
+     "llm_enabled": false,
+     "llm_model": null,
+     "llm_max_usd_per_run": {
+      "requested": 1,
+      "ceiling": 1,
+      "effective": 1,
+      "clamped": false
+     },
+     "llm_max_usd_per_month": {
+      "requested": 5,
+      "ceiling": 5,
+      "effective": 5,
+      "clamped": false
+     },
+     "max_items_per_run": 0,
+     "settings_changed_by": null,
+     "settings_changed_at": null
+    },
+    "cap": {
+     "requested": 5,
+     "ceiling": 5,
+     "effective": 5,
+     "clamped": false
+    },
+    "spent_usd": 0,
+    "remaining_usd": 5,
+    "projected_month_end_usd": 0,
+    "projected_over_cap": false,
+    "llm_state": "off",
+    "last_llm_run_at": null,
+    "history": [
+     {
+      "month": "2026-11",
+      "runs": 1,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-10",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-09",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-08",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-07",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     },
+     {
+      "month": "2026-06",
+      "runs": 0,
+      "llm_runs": 0,
+      "llm_calls": 0,
+      "llm_input_tokens": 0,
+      "llm_output_tokens": 0,
+      "llm_cleaned": 0,
+      "llm_fallbacks": 0,
+      "cost_usd": 0
+     }
+    ]
+   }
+  ],
+  "last_llm_run_at": null,
+  "credentials": [
+   {
+    "name": "CONNECTOR_SERVICE_KEY",
+    "purpose": "Lets the bots call this API (X-Connector-Key header).",
+    "lives_in": "API environment and GitHub environment 'production' of data-connectors (same value in both)",
+    "configured": true,
+    "visible_to_api": true,
+    "note": "Set on the API (32 characters or more)."
+   },
+   {
+    "name": "CONNECTORS_GITHUB_TOKEN",
+    "purpose": "Lets the Portal's Run now button start a workflow on GitHub.",
+    "lives_in": "API environment",
+    "configured": false,
+    "visible_to_api": true,
+    "note": "Not set on the API: Run now is unavailable; scheduled runs are not affected."
+   },
+   {
+    "name": "LLM_API_KEY",
+    "purpose": "Pays for the LLM clean-up. Used only by the bots on GitHub Actions.",
+    "lives_in": "GitHub environment 'production' of data-connectors",
+    "configured": null,
+    "visible_to_api": false,
+    "note": "The API cannot see this key, so it cannot tell whether it is set. Evidence only: the last run that reported LLM calls.",
+    "last_used_at": null
+   }
+  ],
+  "changes": []
+ }
+}

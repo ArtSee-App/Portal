@@ -1,328 +1,260 @@
+/* The rail: the app's deep-navy container, in both themes. */
 .header {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 240px;
-  height: 100vh;
-  background-color: #020019;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  inset: 0 auto 0 0;
+  width: var(--rail-w);
+  background: var(--container);
+  color: var(--on-container);
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
+}
+
+:global(:root[data-theme="dark"]) .header {
+  box-shadow: 1px 0 0 var(--line);
 }
 
 .nav {
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: 20px 12px 16px;
 }
 
-.logoContainer {
+.logoContainer,
+.sidebarLogoContainer {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 32px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   gap: 12px;
+  padding: 4px 8px 24px;
 }
 
 .logo {
-  height: 50px;
-  width: 50px;
+  height: 36px;
+  width: 36px;
+  border-radius: 10px;
 }
 
 .logoText {
-  color: #ffffff;
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-align: center;
-  line-height: 1.4;
-}
-
-.navLinks {
   display: flex;
   flex-direction: column;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.role {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--on-container-muted);
+  text-transform: capitalize;
+}
+
+.navLinks,
+.sidebarLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  list-style: none;
   flex: 1;
-  padding-top: 20px;
 }
 
-.navLinks li {
-  margin: 0;
-}
-
-.navLinks a {
-  display: block;
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 500;
-  padding: 14px 24px;
-  transition: all 0.2s ease;
-  border-left: 3px solid transparent;
-}
-
-.navLinks a:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-left-color: var(--primary-color);
-  color: #ffffff;
-}
-
-.signOutContainer {
-  margin-top: auto;
-  padding: 20px 24px 32px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
+.navLinks a,
+.sidebarLinks a,
 .signOutButton {
-  display: block;
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--r-control);
+  color: var(--on-container-muted);
+  font-size: 0.9375rem;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: background-color 0.18s var(--ease), color 0.18s var(--ease);
 }
 
+.navLinks a svg,
+.sidebarLinks a svg,
+.signOutButton svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+.navLinks a:hover,
+.sidebarLinks a:hover,
 .signOutButton:hover {
-  color: #ffffff;
+  background: var(--container-raised);
+  color: var(--on-container);
+}
+
+.navLinks a.current,
+.sidebarLinks a.current {
+  background: var(--on-container);
+  color: var(--container);
+  font-weight: 600;
+}
+
+.navLinks a:focus-visible,
+.sidebarLinks a:focus-visible,
+.signOutButton:focus-visible,
+.themeOption:focus-visible,
+.hamburger:focus-visible {
+  outline: 2px solid #a893ff;
+  outline-offset: 2px;
+}
+
+.signOutContainer,
+.sidebarSignOutContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+/* Light / match device / dark */
+.themeSwitch {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--container-raised);
+}
+
+.themeOption {
+  display: grid;
+  place-items: center;
+  height: 30px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  color: var(--on-container-muted);
+  cursor: pointer;
+  transition: background-color 0.18s var(--ease), color 0.18s var(--ease);
+}
+
+.themeOption svg {
+  width: 16px;
+  height: 16px;
+}
+
+.themeOption:hover {
+  color: var(--on-container);
+}
+
+.themeOptionOn {
+  background: var(--on-container);
+  color: var(--container);
+}
+
+.themeOptionOn:hover {
+  color: var(--container);
 }
 
 .hamburger {
   display: none;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 25px;
-  height: 20px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 1002;
 }
 
-.hamburger .bar {
-  width: 100%;
-  height: 3px;
-  background: #ffffff;
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-.hamburger.active .topBar {
-  transform: translateY(8.5px) rotate(45deg);
-}
-
-.hamburger.active .middleBar {
-  opacity: 0;
-}
-
-.hamburger.active .bottomBar {
-  transform: translateY(-8.5px) rotate(-45deg);
-}
-
-.mobileSidebar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 250px;
-  height: 100%;
-  background: #020019;
-  z-index: 1001;
-  transform: translateX(100%);
-  transition: transform 0.3s ease-in-out;
-  animation: slideIn 0.3s forwards;
-  display: flex;
-  flex-direction: column;
-  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.3);
-}
-
-.mobileSidebar.sidebarClosing {
-  transform: translateX(100%);
-  animation: slideOut 0.3s forwards;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideOut {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(100%);
-  }
-}
-
+.mobileSidebar,
 .overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  opacity: 0;
-  animation: fadeIn 0.3s forwards;
+  display: none;
+}
+
+/* Below 1024px the rail becomes a top bar with a drawer. */
+@media screen and (max-width: 1024px) {
+  .header {
+    inset: 0 0 auto 0;
+    width: 100%;
+    height: 60px;
+  }
+
+  .nav {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px 0 16px;
+  }
+
+  .logoContainer {
+    padding: 0;
+  }
+
+  .logoText {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .navLinks,
+  .signOutContainer {
+    display: none;
+  }
+
+  .hamburger {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: var(--r-control);
+    background: none;
+    color: var(--on-container);
+    cursor: pointer;
+  }
+
+  .hamburger svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .mobileSidebar {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: 60px 0 0 auto;
+    width: min(320px, 86vw);
+    padding: 20px 12px 16px;
+    background: var(--container);
+    color: var(--on-container);
+    z-index: 1001;
+    overflow-y: auto;
+    animation: drawerIn 0.24s var(--ease);
+  }
+
+  .sidebarLogoContainer {
+    display: none;
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 60px 0 0 0;
+    background: var(--scrim);
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+  }
+}
+
+@keyframes drawerIn {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
-
   to {
     opacity: 1;
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-
-.sidebarLinks {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  flex: 1;
-  padding-top: 20px;
-}
-
-.sidebarLinks li {
-  margin: 0;
-}
-
-.sidebarLinks a {
-  display: block;
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 500;
-  padding: 14px 24px;
-  transition: all 0.2s ease;
-  border-left: 3px solid transparent;
-}
-
-.sidebarLinks a:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-left-color: var(--primary-color);
-  color: #ffffff;
-}
-
-.sidebarSignOutContainer {
-  margin-top: auto;
-  padding: 20px 24px 32px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sidebarSignOutButton {
-  display: block;
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.sidebarSignOutButton:hover {
-  color: #ffffff;
-}
-
-.sidebarLogoContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  gap: 12px;
-}
-
-.sidebarLogo {
-  height: 50px;
-  width: 50px;
-}
-
-.sidebarLogoText {
-  color: #ffffff;
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-align: center;
-  line-height: 1.4;
-}
-
-
-@media screen and (max-width: 1024px) {
-  .header {
-    width: 100%;
-    height: auto;
-    flex-direction: row;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  .nav {
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    height: auto;
-    padding: 12px 20px;
-    width: 100%;
-    position: relative;
-  }
-
-  .logoContainer {
-    flex-direction: row;
-    padding: 0;
-    border-bottom: none;
-    gap: 10px;
-  }
-
-  .hamburger {
-    position: absolute;
-    right: 20px;
-  }
-
-  .logo {
-    height: 36px;
-    width: 36px;
-  }
-
-  .logoText {
-    color: #ffffff;
-    font-size: 1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px;
-  }
-
-  .navLinks {
-    display: none;
-  }
-
-  .signOutContainer {
-    display: none;
-  }
-
-  .hamburger {
-    display: flex;
   }
 }

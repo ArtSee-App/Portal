@@ -1,5 +1,7 @@
 "use client";
 
+import { FiX } from "react-icons/fi";
+
 import React, { useState, useRef } from "react";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation"; // Import useRouter
@@ -872,14 +874,14 @@ export default function Login() {
               <main className={styles.main}>
                 <h1 className={styles.heading}>What Should I Register As?</h1>
                 <div className={styles.infoSection}>
-                  <h2 className={styles.infoHeader}>🎨 Artist Registration</h2>
+                  <h2 className={styles.infoHeader}>Artist Registration</h2>
                   <p className={styles.infoParagraph}>
                     Register as an artist if you are an independent creator or professional
                     who wants to showcase and manage your artworks. This option is ideal for
                     individuals who wish to build a personal portfolio and connect with art
                     enthusiasts.
                   </p>
-                  <h2 className={styles.infoHeader}>🏛️ Museum Registration</h2>
+                  <h2 className={styles.infoHeader}>Museum Registration</h2>
                   <p className={styles.infoParagraph}>
                     Register as a museum if you represent an art institution.
                     This option allows you to manage multiple artists and artworks under a single account.
@@ -1283,7 +1285,7 @@ export default function Login() {
                                           className={styles.removeBubble}
                                           onClick={() => handleRemoveItem("artMovement", index)}
                                         >
-                                          ❌
+                                          <FiX aria-hidden />
                                         </button>
                                       </span>
                                     ))}
@@ -1323,7 +1325,7 @@ export default function Login() {
                                           className={styles.removeBubble}
                                           onClick={() => handleRemoveItem("influencedBy", index)}
                                         >
-                                          ❌
+                                          <FiX aria-hidden />
                                         </button>
                                       </span>
                                     ))}
@@ -1363,7 +1365,7 @@ export default function Login() {
                                           className={styles.removeBubble}
                                           onClick={() => handleRemoveItem("influencedOn", index)}
                                         >
-                                          ❌
+                                          <FiX aria-hidden />
                                         </button>
                                       </span>
                                     ))}
@@ -1403,7 +1405,7 @@ export default function Login() {
                                           className={styles.removeBubble}
                                           onClick={() => handleRemoveItem("artInstitution", index)}
                                         >
-                                          ❌
+                                          <FiX aria-hidden />
                                         </button>
                                       </span>
                                     ))}
@@ -1443,7 +1445,7 @@ export default function Login() {
                                           className={styles.removeBubble}
                                           onClick={() => handleRemoveItem("friendsOrCoworkers", index)}
                                         >
-                                          ❌
+                                          <FiX aria-hidden />
                                         </button>
                                       </span>
                                     ))}
@@ -1787,7 +1789,7 @@ export default function Login() {
                           className={styles.registerArtist}
                           onClick={handleRegisterAsArtist}
                         >
-                          🎨 Register as Artist
+                          Register as Artist
                         </button>
                       </div>
                       <div className={styles.buttonWrapper}>
@@ -1795,7 +1797,7 @@ export default function Login() {
                           className={styles.registerMuseum}
                           onClick={handleRegisterAsMuseum}
                         >
-                          🏛️ Register as Museum
+                          Register as Museum
                         </button>
                       </div>
                       <div className={styles.linkWrapper}>

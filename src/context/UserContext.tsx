@@ -18,6 +18,14 @@ interface UserContextProps {
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
+// Preview harness seam (preview/README.md): Playwright injects a signed-in user so pages can be
+// screenshotted without anyone signing in. `process.env.NODE_ENV` is inlined at build time, so in
+// a production bundle this function is `() => null` and the branches below are dead code.
+const previewUser = (): User | null =>
+    process.env.NODE_ENV === "development" && typeof window !== "undefined"
+        ? ((window as unknown as { __PORTAL_PREVIEW_USER__?: User }).__PORTAL_PREVIEW_USER__ ?? null)
+        : null;
+
 export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null); // Initially null
     const [isLoadingUser, setIsLoadingUser] = useState(true); // Add a loading state for rehydration
@@ -33,6 +41,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const getIdToken = useCallback(async (): Promise<string | null> => {
+        if (previewUser()) return "preview-token";
         if (auth.currentUser) {
             try {
                 const token = await auth.currentUser.getIdToken();
@@ -47,6 +56,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     useEffect(() => {
+        const preview = previewUser();
+        if (preview) {
+            setUser(preview);
+            setIsLoadingUser(false);
+            return;
+        }
         // Listen for Firebase auth state changes
         const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
             if (firebaseUser) {

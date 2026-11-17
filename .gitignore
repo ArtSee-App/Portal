@@ -47,3 +47,7 @@ AGENTS.md
 
 # daily work logs (never committed)
 gunluk/
+
+# design review captures and decision mocks
+.impeccable/review/
+.impeccable/mocks/

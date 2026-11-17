@@ -1,50 +1,42 @@
-/* Footer Container */
 .footer {
-  margin-top: 50px;
-  padding: 20px 10px;
-  border-top: 1px solid var(--text-gray);
+  margin: 56px 0 0;
+  padding: 20px 32px 28px;
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
   justify-content: space-between;
   align-items: center;
-  background-color: transparent;
+  color: var(--muted);
+  font-size: 0.875rem;
 }
 
-.footer p {
-  color: var(--text);
-  /* Set text color to white */
-}
-
-/* Navigation Links Container */
 .navLinks {
   display: flex;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  list-style: none;
 }
 
-/* Individual Navigation Links */
-.navLinks li {
-  margin-left: 20px;
-}
-
-/* Navigation Links Styling */
 .navLinks a {
-  color: var(--text);
-  text-decoration: none;
-  font-size: 16px;
-  transition: color 0.3s ease;
+  color: var(--muted);
+  text-underline-offset: 3px;
+  transition: color 0.18s var(--ease);
 }
 
 .navLinks a:hover {
-  color: #1D88F0;
-  /* Example hover color */
+  color: var(--ink);
+  text-decoration: underline;
 }
 
-/* Media Queries for Responsive Design */
+/* Pages with the rail keep the footer clear of it. */
+:global(body:has(nav[aria-label="Main"])) .footer {
+  margin-left: var(--rail-w);
+}
 
-/* Mobile View: 768px and below */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
+  :global(body:has(nav[aria-label="Main"])) .footer,
   .footer {
-    display: none;
+    margin-left: 0;
+    padding: 20px 16px 28px;
   }
 }

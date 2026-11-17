@@ -1,5 +1,7 @@
 "use client";
 
+import { FiSearch, FiAlertTriangle } from "react-icons/fi";
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
@@ -973,7 +975,7 @@ export default function Home() {
                         : "museum"
                       }...`}
                   />
-                  <span className={styles.searchIcon}>🔍</span>
+                  <span className={styles.searchIcon}><FiSearch aria-hidden /></span>
                   {searchText && (
                     <span
                       className={styles.clearIcon}
@@ -1277,7 +1279,7 @@ export default function Home() {
                                   if (score < 50) {
                                     return (
                                       <div className={`${styles.duplicateCheck} ${styles.duplicateCheckSuccess}`}>
-                                        <div className={styles.duplicateCheckIcon}>✓</div>
+                                        <div className={styles.duplicateCheckIcon}><FiCheck aria-hidden /></div>
                                         <div className={styles.duplicateCheckContent}>
                                           <div className={styles.duplicateCheckTitle}>No Duplicate Detected</div>
                                           <div className={styles.duplicateCheckMeta}>
@@ -1290,7 +1292,7 @@ export default function Home() {
                                   } else if (score < 95) {
                                     return (
                                       <div className={`${styles.duplicateCheck} ${styles.duplicateCheckWarning}`}>
-                                        <div className={styles.duplicateCheckIcon}>⚠</div>
+                                        <div className={styles.duplicateCheckIcon}><FiAlertTriangle aria-hidden /></div>
                                         <div className={styles.duplicateCheckContent}>
                                           <div className={styles.duplicateCheckTitle}>Possible Similarity</div>
                                           <div className={styles.duplicateCheckMeta}>
@@ -1322,7 +1324,7 @@ export default function Home() {
                                   } else {
                                     return (
                                       <div className={`${styles.duplicateCheck} ${styles.duplicateCheckError}`}>
-                                        <div className={styles.duplicateCheckIcon}>⚠</div>
+                                        <div className={styles.duplicateCheckIcon}><FiAlertTriangle aria-hidden /></div>
                                         <div className={styles.duplicateCheckContent}>
                                           <div className={styles.duplicateCheckTitle}>Duplicate Detected</div>
                                           <div className={styles.duplicateCheckMeta}>

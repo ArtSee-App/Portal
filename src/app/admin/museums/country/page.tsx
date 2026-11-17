@@ -90,11 +90,11 @@ function BatchPanel({ country, onOpen }: { country: CountrySummary; onOpen: () =
       </div>
       <div className={styles.batchLegend}>
         <span>
-          <span className={styles.legendDot} style={{ backgroundColor: "#1b8e5e" }} aria-hidden="true" />
+          <span className={styles.legendDot} style={{ backgroundColor: "var(--success-solid)" }} aria-hidden="true" />
           Ready: {fmt(ready)}
         </span>
         <span>
-          <span className={styles.legendDot} style={{ backgroundColor: "#ff9800" }} aria-hidden="true" />
+          <span className={styles.legendDot} style={{ backgroundColor: "var(--warning-solid)" }} aria-hidden="true" />
           Flagged: {fmt(flagged)}
           {country.counts.duplicates > 0 && <span className={styles.muted}> (includes possible duplicates of museums we already have)</span>}
         </span>

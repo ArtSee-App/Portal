@@ -1039,10 +1039,10 @@ export default function Artwork() {
                       disabled={isEditMode && !isEditing}
                     />
                     <span
-                      className={`${styles.charCounter} ${formData.artworkMedia.length === 25 ? styles.charCounterLimit : ""
+                      className={`${styles.charCounter} ${formData.artworkMedia.length >= 25 ? styles.charCounterLimit : ""
                         }`}
                     >
-                      {formData.artworkMedia.length} / 25 characters
+                      {formData.artworkMedia.length} / 25 characters{formData.artworkMedia.length > 25 ? ". Shorten this to 25 before saving." : ""}
                     </span>
                   </div>
                   <div className={styles.inputWrapper}>
@@ -1058,10 +1058,10 @@ export default function Artwork() {
                       disabled={isEditMode && !isEditing}
                     />
                     <span
-                      className={`${styles.charCounter} ${formData.artworkDimensions.length === 25 ? styles.charCounterLimit : ""
+                      className={`${styles.charCounter} ${formData.artworkDimensions.length >= 25 ? styles.charCounterLimit : ""
                         }`}
                     >
-                      {formData.artworkDimensions.length} / 25 characters
+                      {formData.artworkDimensions.length} / 25 characters{formData.artworkDimensions.length > 25 ? ". Shorten this to 25 before saving." : ""}
                     </span>
                   </div>
                   {user?.type === "admin" && isEditMode && artworkId !== null && isPending !== null && (

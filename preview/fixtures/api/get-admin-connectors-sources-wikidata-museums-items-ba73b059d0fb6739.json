@@ -1,0 +1,8 @@
+{
+ "path": "/admin/connectors/sources/wikidata_museums/items",
+ "query": "?admin_portal_token=…&limit=100&offset=0",
+ "status": 200,
+ "body": {
+  "items": []
+ }
+}

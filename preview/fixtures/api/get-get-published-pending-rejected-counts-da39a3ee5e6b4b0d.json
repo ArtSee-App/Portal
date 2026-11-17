@@ -1,0 +1,10 @@
+{
+ "path": "/get_published_pending_rejected_counts/",
+ "query": "?artist_portal_token=…",
+ "status": 200,
+ "body": {
+  "approved": 1162,
+  "pending": 0,
+  "rejected": 0
+ }
+}
