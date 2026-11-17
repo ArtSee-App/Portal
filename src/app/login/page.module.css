@@ -1617,6 +1617,7 @@
   border: 0;
   border-radius: var(--r-pill);
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
   font-size: 0.9375rem;
   font-weight: 600;
@@ -1632,6 +1633,7 @@
 .resetButton:hover,
 .fileButton:hover {
   background: var(--solid);
+  border: 2px solid transparent;
   opacity: 0.84;
   transform: none;
   box-shadow: none;
@@ -1648,11 +1650,13 @@
 .button.approveButton {
   order: 3;
   background: var(--solid) !important;
+  border: 2px solid transparent !important;
   color: var(--on-solid);
 }
 
 .button.approveButton:hover {
   background: var(--solid) !important;
+  border: 2px solid transparent !important;
 }
 
 .buttonRow:has(.approveButton) > .button:not(.approveButton):not(.rejectButton),
@@ -1915,6 +1919,7 @@
 
 .addBubbleButton {
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
 }
 
@@ -2187,12 +2192,14 @@
 .nextButton,
 .backToLoginButton {
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
 }
 
 .nextButton:hover,
 .backToLoginButton:hover {
   background: var(--solid);
+  border: 2px solid transparent;
   opacity: 0.84;
   transform: none;
 }
@@ -2348,40 +2355,58 @@
 }
 
 /* --------------------------------------------------------------------------
-   Sign-in as a gallery wall: the artwork fills the brand panel, the form sits
-   beside it, and the pair is centred in the window.
+   Sign-in fills the window, as it always did: the artwork takes the left half
+   edge to edge, the form sits in the right half and scrolls inside it when a
+   registration step is taller than the window. Nothing is ever cut off.
    -------------------------------------------------------------------------- */
 .page {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .pageContent {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 32px 24px;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 .cardsContainer {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
   width: 100%;
-  min-height: min(660px, calc(100vh - 150px));
+  max-width: none;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
 }
 
 .logoCardOuter {
   position: relative;
   flex: 0 0 46%;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
   overflow: hidden;
   background: #05050d url("/login/starry-night.webp") center / cover no-repeat;
-  box-shadow: 0 30px 80px -30px rgb(29 136 240 / 0.45), 0 0 0 1px rgb(255 255 255 / 0.08);
+  box-shadow: none;
 }
 
 .logoCardOuter::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgb(10 10 21 / 0.1) 0%, rgb(10 10 21 / 0.35) 40%, rgb(10 10 21 / 0.94) 88%);
+  background: linear-gradient(180deg, rgb(10 10 21 / 0.05) 0%, rgb(10 10 21 / 0.3) 45%, rgb(10 10 21 / 0.9) 92%);
 }
 
 .logoCard {
@@ -2389,7 +2414,9 @@
   z-index: 1;
   top: auto;
   height: 100%;
+  padding: clamp(24px, 5vh, 56px) clamp(24px, 4vw, 56px);
   justify-content: flex-end;
+  overflow: hidden;
   color: #fff;
 }
 
@@ -2398,15 +2425,48 @@
 }
 
 .logoSubtitle {
-  color: rgb(255 255 255 / 0.82);
+  color: rgb(255 255 255 / 0.85);
+}
+
+.mainWrapperOuter {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  max-height: none;
+  padding: clamp(16px, 4vh, 48px) clamp(16px, 4vw, 56px);
+  border-radius: 0;
+  background: var(--screen);
+  overflow-y: auto;
+  display: flex;
+}
+
+.mainWrapper {
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  min-height: 0;
+  margin: auto;
+  overflow: visible;
 }
 
 @media screen and (max-width: 900px) {
+  .page {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+  .pageContent,
   .cardsContainer {
-    min-height: 0;
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
   }
   .logoCardOuter {
     flex: none;
-    min-height: 260px;
+    height: 240px;
+  }
+  .mainWrapperOuter {
+    height: auto;
+    overflow: visible;
   }
 }

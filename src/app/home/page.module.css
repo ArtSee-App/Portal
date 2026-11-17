@@ -1339,11 +1339,13 @@
 
 .shapePrimary {
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
 }
 
 .shapePrimary:hover {
   background: var(--solid);
+  border: 2px solid transparent;
   opacity: 0.84;
 }
 
@@ -1398,6 +1400,7 @@
 
 .toggleButton.active {
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
   transform: none;
 }
@@ -1627,6 +1630,7 @@
 .approveButton {
   order: 3;
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
 }
 
@@ -1691,6 +1695,7 @@
 
 .loadMoreButton.activePage {
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
   transform: none;
 }
@@ -1796,12 +1801,14 @@
 .headerRight > a:only-child .shapeSecondary,
 .headerRight > .shapeSecondary:only-child {
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
 }
 
 .headerRight > a:only-child .shapeSecondary:hover,
 .headerRight > .shapeSecondary:only-child:hover {
   background: var(--solid);
+  border: 2px solid transparent;
   opacity: 0.84;
 }
 

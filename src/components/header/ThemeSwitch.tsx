@@ -16,11 +16,11 @@ const apply = (choice: Choice) => {
 /** Light, dark, or whatever the device uses. The choice is kept in localStorage; the inline
  *  script in src/app/layout.tsx applies it before the first paint. */
 const ThemeSwitch = () => {
-    const [choice, setChoice] = useState<Choice>("dark");
+    const [choice, setChoice] = useState<Choice>("light");
 
     useEffect(() => {
         const saved = localStorage.getItem(KEY);
-        setChoice(saved === "light" || saved === "system" ? saved : "dark");
+        setChoice(saved === "dark" || saved === "system" ? saved : "light");
         const media = window.matchMedia("(prefers-color-scheme: dark)");
         const onChange = () => {
             const current = localStorage.getItem(KEY);

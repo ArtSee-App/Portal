@@ -1457,11 +1457,13 @@ textarea.control {
 
 .buttonPrimary {
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
 }
 
 .buttonPrimary:hover:not(:disabled) {
   background: var(--solid);
+  border: 2px solid transparent;
   opacity: 0.84;
 }
 

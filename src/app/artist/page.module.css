@@ -1302,6 +1302,7 @@
   border: 0;
   border-radius: var(--r-pill);
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
   font-size: 0.9375rem;
   font-weight: 600;
@@ -1317,6 +1318,7 @@
 .resetButton:hover,
 .fileButton:hover {
   background: var(--solid);
+  border: 2px solid transparent;
   opacity: 0.84;
   transform: none;
   box-shadow: none;
@@ -1333,11 +1335,13 @@
 .button.approveButton {
   order: 3;
   background: var(--solid) !important;
+  border: 2px solid transparent !important;
   color: var(--on-solid);
 }
 
 .button.approveButton:hover {
   background: var(--solid) !important;
+  border: 2px solid transparent !important;
 }
 
 .buttonRow:has(.approveButton) > .button:not(.approveButton):not(.rejectButton),
@@ -1600,6 +1604,7 @@
 
 .addBubbleButton {
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
 }
 

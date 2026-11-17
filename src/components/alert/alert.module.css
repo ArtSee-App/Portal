@@ -99,6 +99,7 @@
 
 .okButton {
   background: var(--solid);
+  border: 2px solid transparent;
   color: var(--on-solid);
 }
 

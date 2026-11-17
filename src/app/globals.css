@@ -8,27 +8,28 @@
   color-scheme: light;
 
   /* grounds */
-  --screen: #eae9ee;          /* app: screen */
-  --surface: #f6f5f9;         /* panels; app: field */
+  --screen: #ffffff;
+  --surface: #ffffff;
   --raised: #ffffff;           /* menus and dialogs, above a panel */
-  --well: #e4e3ea;            /* inputs and image wells inside a panel */
-  --well-hover: #dcdae4;
-  --category: #d0ced9;        /* app: category; secondary buttons, tracks */
-  --category-hover: #c4c1d0;
-  --line: #d9d8db;            /* app: separator */
-  --container: #020019;       /* app: container; the rail */
-  --on-container: #ffffff;
-  --on-container-muted: #a9a6bd;
-  --container-raised: #1a1832;
-  --selected: #020019;         /* the chosen filter or tab */
+  --well: #f4f3f8;            /* inputs and image wells */
+  --well-hover: #eceaf3;
+  --category: #ebe9f2;        /* secondary buttons, tracks */
+  --category-hover: #dfdcea;
+  --line: #e4e2ec;
+  --hairline: #e4e2ec;
+  --container: #ffffff;       /* the rail */
+  --on-container: #0c0b14;
+  --on-container-muted: #5d5b6b;
+  --container-raised: #f1f0f6;
+  --selected: #0c0b14;         /* the chosen filter or tab */
   --on-selected: #ffffff;
 
   /* text */
   --ink: #0c0b14;
   --muted: #5d5b6b;           /* app muted is #808080; darkened to pass AA on --screen */
   --placeholder: #6a6878;
-  --solid: linear-gradient(100deg, #1d88f0 0%, #6a4be0 52%, #bf03b0 100%);  /* the one primary action */
-  --on-solid: #ffffff;
+  --solid: linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(100deg, #1d88f0, #7a4fe0 52%, #bf03b0) border-box;  /* the one primary action: a gradient stroke */
+  --on-solid: #0c0b14;
 
   /* brand */
   --accent: #5d3fd3;          /* app: purple */
@@ -90,6 +91,7 @@
   --category: #262536;
   --category-hover: #313044;
   --line: #232233;
+  --hairline: rgb(255 255 255 / 0.07);
   --container: #0a0a15;
   --on-container: #ffffff;
   --on-container-muted: #9d9bb0;
@@ -100,7 +102,7 @@
   --ink: #ffffff;
   --muted: #a3a1b5;
   --placeholder: #8a889c;
-  --solid: linear-gradient(100deg, #1d88f0 0%, #7a4fe0 52%, #bf03b0 100%);
+  --solid: linear-gradient(#14131f, #14131f) padding-box, linear-gradient(100deg, #1d88f0, #7a4fe0 52%, #bf03b0) border-box;
   --on-solid: #ffffff;
 
   --accent: #b3a1ff;
@@ -185,7 +187,7 @@ body::before {
 }
 
 :root[data-theme="light"] body::before {
-  opacity: 0.45;
+  display: none;
 }
 
 /* The parts of the page the browser draws */
