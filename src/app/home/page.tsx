@@ -1,5 +1,7 @@
 "use client";
 
+import { FiSearch, FiAlertTriangle } from "react-icons/fi";
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
@@ -12,6 +14,7 @@ import Link from "next/link";
 import LoadingOverlay from "@/components/loadingOverlay/loadingOverlay";
 import { Loader } from "@/components/loadingOverlay/loadingOverlay";
 import { useAlert } from "@/context/AlertContext";
+import { getProvenance, listBotPending, llmDiff, Provenance, safeExternalUrl, safeImageUrl } from "@/lib/bots";
 
 type AdminData = {
   id: string;
@@ -104,6 +107,10 @@ export default function Home() {
   const [hoveredDuplicate, setHoveredDuplicate] = useState<{ artworkId: number; imageUrl: string; title: string; artist: string } | null>(null);
   const itemsPerPage = 8;
   const refreshedArtworkIds = useRef<Set<number>>(new Set());
+  // Bots: source/licence info for bot-created submissions (admin only). Empty when the backend lacks the endpoints.
+  const [submissionFilter, setSubmissionFilter] = useState<"all" | "bots">("all");
+  const [provenance, setProvenance] = useState<Record<number, Provenance>>({});
+  const [botsNotice, setBotsNotice] = useState<string | null>(null);
 
   // Fun empty state messages
   const emptyMessages = {
@@ -344,6 +351,42 @@ export default function Home() {
       if (user) {
         const token = await getIdToken();
 
+        if (user?.type === "admin" && submissionFilter === "bots") {
+          if (!token) throw new Error("Admin token not found.");
+          const res = await listBotPending(token, page, itemsPerPage);
+          if (!res.ok) {
+            setBotsNotice(
+              res.kind === "not_deployed"
+                ? "Bot submissions aren't available yet: the API on this environment doesn't have the Bots endpoints."
+                : `Could not load bot submissions: ${res.message}`
+            );
+            if (page === 1) setArtworks([]);
+            setHasMoreData(false);
+            return;
+          }
+          setBotsNotice(null);
+          const items = res.data.items ?? [];
+          setHasMoreData(items.length === itemsPerPage);
+          setProvenance((prev) => {
+            const next = { ...prev };
+            items.forEach((item) => {
+              if (item.source) next[item.artwork_id] = item.source;
+            });
+            return next;
+          });
+          const botArtworks: Artwork[] = items.map((item) => ({
+            id: item.artwork_id,
+            pending_id: item.pending_id,
+            title: item.title ?? `Artwork #${item.artwork_id}`,
+            artist: item.artist ?? "",
+            artist_id: item.artist_id ?? 0,
+            image: item.spaces_dir_low_resolution ?? "",
+            pending_situation: item.pending_situation ?? 2,
+          }));
+          setArtworks((prev) => (page === 1 ? botArtworks : [...prev, ...botArtworks]));
+          return;
+        }
+
         const endpoint =
           user?.type === "admin"
             ? `/get_pending_artworks/`
@@ -395,6 +438,22 @@ export default function Home() {
         }));
 
         setArtworks((prev) => (page === 1 ? formattedArtworks : [...prev, ...formattedArtworks]));
+
+        // Badge bot submissions in the normal admin list. Best effort: silently skipped if the endpoint is missing.
+        if (user?.type === "admin" && token && formattedArtworks.length > 0) {
+          getProvenance(token, formattedArtworks.map((a) => a.id)).then((res) => {
+            if (!res.ok) return;
+            const found = res.data.provenance ?? {};
+            if (Object.keys(found).length === 0) return;
+            setProvenance((prev) => {
+              const next = { ...prev };
+              Object.values(found).forEach((p) => {
+                next[p.artwork_id] = p;
+              });
+              return next;
+            });
+          });
+        }
       } else {
         console.error("User is not logged in.");
       }
@@ -585,6 +644,16 @@ export default function Home() {
 
 
 
+
+  const submissionFilterMounted = useRef(false);
+  useEffect(() => {
+    if (!submissionFilterMounted.current) {
+      submissionFilterMounted.current = true;
+      return;
+    }
+    if (user?.type === "admin") handleRefresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submissionFilter]);
 
   useEffect(() => {
     if (isRefreshing) {
@@ -906,7 +975,7 @@ export default function Home() {
                         : "museum"
                       }...`}
                   />
-                  <span className={styles.searchIcon}>🔍</span>
+                  <span className={styles.searchIcon}><FiSearch aria-hidden /></span>
                   {searchText && (
                     <span
                       className={styles.clearIcon}
@@ -931,6 +1000,31 @@ export default function Home() {
               </>
             )}
           </div>
+          {user?.type === "admin" && activeTab === "artworks" && (
+            <div className={styles.submissionFilter}>
+              <div
+                className={`${styles.shapeWhite} ${submissionFilter === "all" ? styles.selected : ""}`}
+                onClick={() => setSubmissionFilter("all")}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === "Enter" && setSubmissionFilter("all")}
+              >
+                All submissions
+              </div>
+              <div
+                className={`${styles.shapeWhite} ${submissionFilter === "bots" ? styles.selected : ""}`}
+                onClick={() => setSubmissionFilter("bots")}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === "Enter" && setSubmissionFilter("bots")}
+              >
+                Bot submissions
+              </div>
+              <Link href="/admin/bots" className={styles.submissionFilterLink}>
+                Manage bots →
+              </Link>
+            </div>
+          )}
           <div className={styles.artworkList}>
             {activeTab === "artworks" ? (
               <>
@@ -984,7 +1078,9 @@ export default function Home() {
                     <div className={styles.noArtworksMessage}>
                       {user?.type === "artist" && !searchText
                         ? getRandomEmptyMessage(pendingSituationFilter)
-                        : "No artworks found"}
+                        : user?.type === "admin" && submissionFilter === "bots" && !searchText
+                          ? botsNotice ?? "No bot submissions waiting for review."
+                          : "No artworks found"}
                     </div>
                   ) : (
                     artworks.map((artwork, index) => (
@@ -1001,7 +1097,7 @@ export default function Home() {
 
                         <div className={styles.imageContainer}>
                           <img
-                            src={artwork.image}
+                            src={safeImageUrl(artwork.image)}
                             alt={artwork.title}
                             className={styles.artworkImage}
                             onError={() => handleArtworkImageError(artwork)}
@@ -1026,6 +1122,14 @@ export default function Home() {
                                   ? "Published"
                                   : "Pending"}
                             </span>
+                            {user?.type === "admin" && provenance[artwork.id] && (
+                              <span
+                                className={`${styles.sourceBadge} ${provenance[artwork.id].license_warning ? styles.sourceBadgeRisk : ""}`}
+                                title={`Submitted by the ${provenance[artwork.id].source_name} bot`}
+                              >
+                                Bot · {provenance[artwork.id].source_name} · {provenance[artwork.id].license}
+                              </span>
+                            )}
                           </div>
                           {user?.type === "admin" && artwork.artist && (
                             <span className={styles.artworkMetadata}>
@@ -1082,6 +1186,80 @@ export default function Home() {
                             </div>
                           ) : expandedArtworkDetails?.text_information ? (
                             <div className={styles.detailsContent}>
+                              {user?.type === "admin" && provenance[artwork.id] && (() => {
+                                const p = provenance[artwork.id];
+                                return (
+                                  <div className={styles.provenance}>
+                                    <div>
+                                      <span className={styles.provenanceLabel}>Source</span>
+                                      <a href={safeExternalUrl(p.source_url)} target="_blank" rel="noopener noreferrer" className={styles.provenanceLink}>
+                                        {p.source_name} object {p.source_object_id} ↗
+                                      </a>
+                                    </div>
+                                    <div>
+                                      <span className={styles.provenanceLabel}>Licence</span>
+                                      {p.rights_url ? (
+                                        <a href={safeExternalUrl(p.rights_url)} target="_blank" rel="noopener noreferrer" className={styles.provenanceLink}>
+                                          {p.license} ↗
+                                        </a>
+                                      ) : (
+                                        p.license
+                                      )}
+                                    </div>
+                                    {p.attribution && (
+                                      <div>
+                                        <span className={styles.provenanceLabel}>Attribution</span>
+                                        {p.attribution}
+                                      </div>
+                                    )}
+                                    {p.duplicate_of_artwork_id && (
+                                      <div className={styles.provenanceWarning}>
+                                        The bot found a similar title by this artist: artwork #{p.duplicate_of_artwork_id}. Check it is not a duplicate.
+                                      </div>
+                                    )}
+                                    {p.license_warning && <div className={styles.provenanceWarning}>{p.license_warning}</div>}
+                                    {p.prompt_version && (
+                                      <div>
+                                        <span className={styles.provenanceLabel}>Clean-up</span>
+                                        {p.cleaned_by_model
+                                          ? `Cleaned by LLM (${p.llm_model ?? "model"}, ${p.prompt_version}). Raw source record kept.`
+                                          : "Not cleaned by LLM: deterministic parse used."}
+                                      </div>
+                                    )}
+                                    {p.needs_review && (p.review_flags?.length ?? 0) > 0 && (
+                                      <div className={styles.provenanceWarning}>
+                                        Needs review: {(p.review_flags ?? []).map((f) => `${f.flag.replace("_", " ")}: ${f.reason}`).join(" · ")}
+                                      </div>
+                                    )}
+                                    {llmDiff(p).length > 0 && (
+                                      <table className={styles.llmDiff}>
+                                        <thead>
+                                          <tr>
+                                            <th />
+                                            <th>Source</th>
+                                            <th>Cleaned</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {llmDiff(p).map((d) => (
+                                            <tr key={d.field}>
+                                              <th scope="row">{d.field}</th>
+                                              <td>{d.raw || "—"}</td>
+                                              <td>{d.cleaned}</td>
+                                            </tr>
+                                          ))}
+                                        </tbody>
+                                      </table>
+                                    )}
+                                    {typeof p.cleaned_record?.description === "string" && (
+                                      <div>
+                                        <span className={styles.provenanceLabel}>AI-generated description (source fields only, not saved)</span>
+                                        {p.cleaned_record.description}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })()}
                               {/* Duplicate Check Status - Only show for admin or non-published artworks */}
                               {(user?.type === "admin" || artwork.pending_situation !== 1) && (
                                 <>
@@ -1101,7 +1279,7 @@ export default function Home() {
                                   if (score < 50) {
                                     return (
                                       <div className={`${styles.duplicateCheck} ${styles.duplicateCheckSuccess}`}>
-                                        <div className={styles.duplicateCheckIcon}>✓</div>
+                                        <div className={styles.duplicateCheckIcon}><FiCheck aria-hidden /></div>
                                         <div className={styles.duplicateCheckContent}>
                                           <div className={styles.duplicateCheckTitle}>No Duplicate Detected</div>
                                           <div className={styles.duplicateCheckMeta}>
@@ -1114,7 +1292,7 @@ export default function Home() {
                                   } else if (score < 95) {
                                     return (
                                       <div className={`${styles.duplicateCheck} ${styles.duplicateCheckWarning}`}>
-                                        <div className={styles.duplicateCheckIcon}>⚠</div>
+                                        <div className={styles.duplicateCheckIcon}><FiAlertTriangle aria-hidden /></div>
                                         <div className={styles.duplicateCheckContent}>
                                           <div className={styles.duplicateCheckTitle}>Possible Similarity</div>
                                           <div className={styles.duplicateCheckMeta}>
@@ -1146,7 +1324,7 @@ export default function Home() {
                                   } else {
                                     return (
                                       <div className={`${styles.duplicateCheck} ${styles.duplicateCheckError}`}>
-                                        <div className={styles.duplicateCheckIcon}>⚠</div>
+                                        <div className={styles.duplicateCheckIcon}><FiAlertTriangle aria-hidden /></div>
                                         <div className={styles.duplicateCheckContent}>
                                           <div className={styles.duplicateCheckTitle}>Duplicate Detected</div>
                                           <div className={styles.duplicateCheckMeta}>
@@ -1267,7 +1445,7 @@ export default function Home() {
                         )}
 
                         <div className={styles.imageContainer}>
-                          <img src={artist.image} alt={artist.name} className={styles.artworkImage} />
+                          <img src={safeImageUrl(artist.image)} alt={artist.name} className={styles.artworkImage} />
                         </div>
                         <div style={{ display: 'flex', alignItems: 'flex-start', flex: 1, minWidth: 0, gap: '12px', paddingTop: '4px' }}>
                           <span className={styles.artworkTitle}>{artist.name}</span>
@@ -1399,7 +1577,7 @@ export default function Home() {
         <div className={styles.duplicateTooltip}>
           <div className={styles.duplicateTooltipContent}>
             <img
-              src={hoveredDuplicate.imageUrl}
+              src={safeImageUrl(hoveredDuplicate.imageUrl)}
               alt={hoveredDuplicate.title}
               className={styles.duplicateTooltipImage}
             />

@@ -1,0 +1,467 @@
+{
+ "path": "/admin/indexing/health",
+ "query": "?admin_portal_token=…&limit=50",
+ "status": 200,
+ "body": {
+  "summary": {
+   "active_total": 134847,
+   "active_without_vectors": 134847,
+   "active_without_header": 0,
+   "pending_queue": 464,
+   "oldest_pending": "2025-11-03T20:02:34.997067"
+  },
+  "unindexed": [
+   {
+    "artwork_id": 418299,
+    "artist_id": 173,
+    "title": "Portret van een man",
+    "artist_name": "Jan van Hemessen",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418294,
+    "artist_id": null,
+    "title": "Rivierlandschap met de heilige Christoffel",
+    "artist_name": "Meester J. Kock",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418292,
+    "artist_id": null,
+    "title": "Self-Portrait",
+    "artist_name": "Rietveld, Bep",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418288,
+    "artist_id": null,
+    "title": "Vanitas stilleven",
+    "artist_name": "Maria van Oosterwijck",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418286,
+    "artist_id": null,
+    "title": "Portrait of Chevalier(ère) d’Éon",
+    "artist_name": "Jean-Laurent Mosnier",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418285,
+    "artist_id": null,
+    "title": "Jesus and the Canaanite Woman",
+    "artist_name": "anonymous",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418284,
+    "artist_id": null,
+    "title": "Two Card Players",
+    "artist_name": "Tjeerd Eernstman",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418282,
+    "artist_id": null,
+    "title": "Portrait of Jan de Bosch and Margaretha Kroon",
+    "artist_name": "Adriaan de Lelie, in or after 1800",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418280,
+    "artist_id": null,
+    "title": "Portrait of Hendrik Voogd (1768-1839)",
+    "artist_name": "Charles Howard Hodges",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418279,
+    "artist_id": null,
+    "title": "Pietje (Girl Reading)",
+    "artist_name": "Suze Robertson",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418278,
+    "artist_id": null,
+    "title": "The Grote Postweg (Great Postal Road) near Rajapolah",
+    "artist_name": "Antoine Auguste Joseph Payen",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418275,
+    "artist_id": null,
+    "title": "Johannes Thedens (1741-1743)",
+    "artist_name": "anonymous",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418274,
+    "artist_id": null,
+    "title": "Portrait of the Collector Josephus Augustinus Brentano",
+    "artist_name": "Adriaan de Lelie",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418273,
+    "artist_id": null,
+    "title": "Man from the Island of Patmos",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418271,
+    "artist_id": null,
+    "title": "Stilleven met rozen en een vogelnestje",
+    "artist_name": "Jan Frans van Dael",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418270,
+    "artist_id": null,
+    "title": "Man from the Island of Mykonos",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418269,
+    "artist_id": null,
+    "title": "A groep of Guardsmen",
+    "artist_name": "Dirck Jacobsz",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418268,
+    "artist_id": null,
+    "title": "Dirk van Cloon (1730-1735)",
+    "artist_name": "Hendrik van den Bosch",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418265,
+    "artist_id": null,
+    "title": "The Capoudgi Bachi, Grand-master of the Seraglio",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418264,
+    "artist_id": null,
+    "title": "Jeroboam Sacrificing to the Idols",
+    "artist_name": "Jacques Ignatius de Roore",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418259,
+    "artist_id": 313,
+    "title": "Mehmet, the vizir kâhyasi",
+    "artist_name": "Jean Baptiste Vanmour",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418256,
+    "artist_id": null,
+    "title": "Abraham Patras",
+    "artist_name": "Theodorus Justinus Rheen",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418255,
+    "artist_id": null,
+    "title": "Jupiter",
+    "artist_name": "anonymous",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418254,
+    "artist_id": null,
+    "title": "Man from the Island of Kithnos (Thermia)",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418253,
+    "artist_id": null,
+    "title": "Hendrik Swaardecroon (1718-1725)",
+    "artist_name": "Hendrik van den Bosch",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418251,
+    "artist_id": null,
+    "title": "The Chaous Bachi",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418250,
+    "artist_id": null,
+    "title": "Drie kinderen ruziënd om een vogelnestje",
+    "artist_name": "Isaac Walraven [rejected attribution]",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418249,
+    "artist_id": null,
+    "title": "Diederik van Durven (1729-1730)",
+    "artist_name": "Hendrik van den Bosch",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 1
+   },
+   {
+    "artwork_id": 418247,
+    "artist_id": null,
+    "title": "Portrait of Leonardus van der Voort",
+    "artist_name": "Johan Bernard Scheffer",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418243,
+    "artist_id": null,
+    "title": "A Seascape with Figures by a Boat on a Shore",
+    "artist_name": "Ludolf Bakhuysen",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418241,
+    "artist_id": null,
+    "title": "Abraham van Riebeeck (1709-1713)",
+    "artist_name": "anonymous",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418239,
+    "artist_id": null,
+    "title": "Man from the Bulgarian Coast",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418237,
+    "artist_id": null,
+    "title": "Woman from the Island of Kithnos (Thermia)",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418236,
+    "artist_id": 125,
+    "title": "The Dead Christ Supported by Angels",
+    "artist_name": "Bartholomeus Spranger",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418235,
+    "artist_id": null,
+    "title": "Man from the Albanian Coast",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418234,
+    "artist_id": null,
+    "title": "Portrait of the Inspectors of the Collegium Medicum",
+    "artist_name": "Cornelis Troost",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418233,
+    "artist_id": null,
+    "title": "Baron Gustaaf Willem van Imhoff (1743-1750)",
+    "artist_name": "anonymous",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418232,
+    "artist_id": null,
+    "title": "Woman from the Island of Mykonos",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418230,
+    "artist_id": null,
+    "title": "Cimon and Pero",
+    "artist_name": "attributed to Willem Drost",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418229,
+    "artist_id": null,
+    "title": "Portrait of Guilliam Courten, Husband of Margarita Cassier",
+    "artist_name": "anonymous",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418228,
+    "artist_id": null,
+    "title": "Mattheus de Haan (1725-1729)",
+    "artist_name": "anonymous, 1726-10",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418226,
+    "artist_id": null,
+    "title": "Portrait of Paulus Joseph Gabriël",
+    "artist_name": "Woutherus Mol",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418225,
+    "artist_id": null,
+    "title": "Woman from the Island of Tinos",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418223,
+    "artist_id": null,
+    "title": "A Sprig of Gooseberries on a Stone Plinth",
+    "artist_name": "Adriaen Coorte",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418221,
+    "artist_id": null,
+    "title": "Drie kinderen spelend met een vogelnestje",
+    "artist_name": "Isaac Walraven [rejected attribution]",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418219,
+    "artist_id": null,
+    "title": "Crucifixion of Christ, with the Virgin and St John",
+    "artist_name": "anonymous",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418218,
+    "artist_id": null,
+    "title": "Saint Philip Baptizes the Eunuch",
+    "artist_name": "Jacob de Wit",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418217,
+    "artist_id": null,
+    "title": "The Birdwatchers",
+    "artist_name": "Nicolaas Verkolje",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418216,
+    "artist_id": null,
+    "title": "Woman from the Bulgarian Coast",
+    "artist_name": "workshop of Jean Baptiste Vanmour, 1700 - 1737",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   },
+   {
+    "artwork_id": 418215,
+    "artist_id": null,
+    "title": "Jacob Mossel (1750-1761)",
+    "artist_name": "anonymous",
+    "has_header_image": true,
+    "additional_images": 0,
+    "scan_count": 0
+   }
+  ],
+  "retry_available": true
+ }
+}

@@ -1,0 +1,39 @@
+{
+ "path": "/get_artwork_details_to_portal/",
+ "query": "?artist_portal_token=…&artwork_id=227112&is_pending=false",
+ "status": 200,
+ "body": {
+  "image_links": {
+   "header_image": "https://api.artvista.app/__fixture_image/71f43ad613ede270.jpg",
+   "vector_images": []
+  },
+  "text_information": {
+   "painting_id": 227112,
+   "artwork_id": 227112,
+   "title": "Self Portrait with Pallette",
+   "artist": "Vincent van Gogh",
+   "artist_id": 1314,
+   "original_title": "Not found",
+   "creation_date": "1889",
+   "style": "Post-Impressionism",
+   "genre": "self-portrait",
+   "media": "oil, canvas",
+   "location": "Private Collection",
+   "dimensions": "57 x 43.5 cm",
+   "description": "Not found",
+   "museum_id": null,
+   "is_nsfw": false,
+   "is_copyrighted": false,
+   "importance_factor": 0,
+   "pending_situation": 1,
+   "based_on_artwork_id": null,
+   "source_image_url": "https://uploads8.wikiart.org/images/vincent-van-gogh.jpg!Portrait.jpg",
+   "profile_image_path": "vincent-van-gogh/profile_picture.jpg",
+   "pre_style": "Neo-Impressionism",
+   "post_style": "New Realism (American Realism)",
+   "header_image_path": "vincent-van-gogh/227112.jpg",
+   "vector_image_paths": null,
+   "spaces_dir": "https://api.artvista.app/__fixture_image/71f43ad613ede270.jpg"
+  }
+ }
+}

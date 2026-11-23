@@ -44,3 +44,10 @@ next-env.d.ts
 .claude_history
 CLAUDE.md
 AGENTS.md
+
+# daily work logs (never committed)
+gunluk/
+
+# design review captures and decision mocks
+.impeccable/review/
+.impeccable/mocks/

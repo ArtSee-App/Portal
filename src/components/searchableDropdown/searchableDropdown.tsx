@@ -1,3 +1,4 @@
+import { FiChevronDown } from "react-icons/fi";
 import React, { useState } from "react";
 import styles from "../../app/artwork/page.module.css";
 import stylesLocal from "./searchableDropdown.module.css";
@@ -63,7 +64,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                 className={`${stylesLocal.dropdownArrow} ${isOpen ? stylesLocal.arrowUp : stylesLocal.arrowDown}`}
                 onClick={() => setIsOpen(!isOpen)}
             >
-                ▼
+                <FiChevronDown aria-hidden />
             </div>
 
             {isOpen && (

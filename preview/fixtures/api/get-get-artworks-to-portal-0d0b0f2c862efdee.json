@@ -1,0 +1,6 @@
+{
+ "path": "/get_artworks_to_portal/",
+ "query": "?page_count=1&artworks_per_page=8&artist_portal_token=…&filter_by_pending_situation=pending",
+ "status": 200,
+ "body": []
+}

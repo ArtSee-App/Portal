@@ -1,5 +1,7 @@
 "use client";
 
+import { FiX } from "react-icons/fi";
+
 import { useState, useRef, useEffect } from "react";
 import styles from "./ImageEditor.module.css";
 
@@ -80,7 +82,7 @@ const ImageEditor = ({ image, onSave, onClose, onUploadNew }: ImageEditorProps) 
         <div className={styles.backdrop} onClick={handleBackdropClick}>
             <div className={styles.modal}>
                 <button className={styles.closeButton} onClick={onClose} aria-label="Close">
-                    ✕
+                    <FiX aria-hidden />
                 </button>
 
                 <h2 className={styles.title}>Adjust Profile Image</h2>

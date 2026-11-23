@@ -1,30 +1,132 @@
+/* ArtVista Portal design tokens.
+   Colours mirror the mobile app (ArtvistaRemake/src/shared/theme/theme.ts): the same
+   screen, container, category, field, purple, primary and secondary values, light and dark.
+   Where the web needs a role the app has no token for (panel surface, readable muted
+   text, status tints) the value is derived from those and named here. */
+
 :root {
-  --background: linear-gradient(180deg, #FFFFFF 0%, #F7F7F7 100%);
-  /* Darker gray-beige color */
-  --primary-color: #1D88F0;
-  --secondary-color: #BF03B0;
-  /* Washed-out version of the previous purple */
-  --background-container: #e6e6e6;
-  --text: black;
-  --text-gray: gray;
-  /* Very light gray for a clean container background */
+  color-scheme: light;
+
+  /* grounds */
+  --screen: #ffffff;
+  --surface: #ffffff;
+  --raised: #ffffff;           /* menus and dialogs, above a panel */
+  --well: #f4f3f8;            /* inputs and image wells */
+  --well-hover: #eceaf3;
+  --category: #ebe9f2;        /* secondary buttons, tracks */
+  --category-hover: #dfdcea;
+  --line: #e4e2ec;
+  --hairline: #e4e2ec;
+  --stroke: #c4c1d2;          /* outline of a secondary button */
+  --container: #0a0a15;       /* the rail stays dark in both themes */
+  --on-container: #ffffff;
+  --on-container-muted: #a9a6bd;
+  --container-raised: #1b1a2d;
+  --selected: #0c0b14;         /* the chosen filter or tab */
+  --on-selected: #ffffff;
+
+  /* text */
+  --ink: #0c0b14;
+  --muted: #5d5b6b;           /* app muted is #808080; darkened to pass AA on --screen */
+  --placeholder: #6a6878;
+  --solid: linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(100deg, #1d88f0, #7a4fe0 52%, #bf03b0) border-box;  /* the one primary action: a gradient stroke */
+  --on-solid: #0c0b14;
+
+  /* brand */
+  --accent: #5d3fd3;          /* app: purple */
+  --accent-solid: #5d3fd3;
+  --on-accent: #ffffff;
+  --accent-soft: #e3dcf7;
+  --primary: #1d88f0;
+  --secondary: #bf03b0;
+
+  /* status */
+  --danger: #c22a30;
+  --danger-solid: #d83a40;
+  --danger-soft: #f6dcdd;
+  --success: #17683f;
+  --success-solid: #1b8e5e;
+  --success-soft: #d6ecdf;
+  --warning: #8a5a00;
+  --warning-solid: #c98500;
+  --warning-soft: #f3e3c0;
+  --info: #0b5cab;
+  --info-soft: #dbe8f8;
+
+  --grad: linear-gradient(100deg, #1d88f0 0%, #7a4fe0 52%, #bf03b0 100%);
+  --glow: 0 10px 28px -12px rgb(106 75 224 / 0.6);
+  --scrim: rgb(10 10 21 / 0.55);
+  --shadow-overlay: 0 12px 32px -8px rgb(10 10 21 / 0.28), 0 2px 6px rgb(10 10 21 / 0.08);
+
+  /* shape and rhythm */
+  --r-control: 12px;
+  --r-panel: 20px;
+  --r-image: 5px;
+  --r-pill: 999px;
+  --control-h: 44px;
+  --rail-w: 240px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font: var(--font-inter), "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, monospace;
+
+  /* legacy names still referenced by older rules */
+  --background: var(--screen);
+  --foreground: var(--ink);
+  --primary-color: var(--primary);
+  --secondary-color: var(--secondary);
+  --background-container: var(--well);
+  --text: var(--ink);
+  --text-gray: var(--muted);
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
 
+  /* The app at night: one near-black ground, panels barely lifted from it, light from the brand gradient. */
+  --screen: #0a0a15;
+  --surface: #11101c;
+  --raised: #1b1a29;
+  --well: #171624;
+  --well-hover: #1e1d2d;
+  --category: #262536;
+  --category-hover: #313044;
+  --line: #232233;
+  --hairline: rgb(255 255 255 / 0.07);
+  --stroke: #45435c;
+  --container: #0a0a15;
+  --on-container: #ffffff;
+  --on-container-muted: #9d9bb0;
+  --container-raised: #17162a;
+  --selected: #262536;
+  --on-selected: #ffffff;
 
-html,
-body {
-  margin: 0;
-  font-size: 16px;
-  width: 100%;
-}
+  --ink: #ffffff;
+  --muted: #a3a1b5;
+  --placeholder: #8a889c;
+  --solid: linear-gradient(#14131f, #14131f) padding-box, linear-gradient(100deg, #1d88f0, #7a4fe0 52%, #bf03b0) border-box;
+  --on-solid: #ffffff;
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --accent: #b3a1ff;
+  --accent-solid: #6a4be0;
+  --on-accent: #ffffff;
+  --accent-soft: #221c45;
+
+  --danger: #ff7a7f;
+  --danger-solid: #d83a40;
+  --danger-soft: #3a171b;
+  --success: #5fd19a;
+  --success-solid: #1b8e5e;
+  --success-soft: #122e22;
+  --warning: #f0c14b;
+  --warning-solid: #c98500;
+  --warning-soft: #33270b;
+  --info: #7db7f5;
+  --info-soft: #12263b;
+
+  --scrim: rgb(4 4 12 / 0.72);
+  --shadow-overlay: 0 24px 60px -12px rgb(0 0 0 / 0.8), 0 0 0 1px rgb(255 255 255 / 0.07);
+  --glow: 0 10px 34px -10px rgb(122 79 224 / 0.75);
 }
 
 * {
@@ -33,53 +135,111 @@ body {
   margin: 0;
 }
 
+html,
+body {
+  margin: 0;
+  width: 100%;
+  font-size: 16px;
+}
+
+body {
+  color: var(--ink);
+  background: var(--screen);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
 a {
   color: inherit;
   text-decoration: none;
 }
 
-body::-webkit-scrollbar {
-  width: 12px;
-  /* Increase width for better visibility */
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
-body::-webkit-scrollbar-track {
-  background: #E0E0E0;
-  /* Light gray to contrast with thumb */
-  border-radius: 10px;
-  /* Rounded edges for a modern look */
+img {
+  max-width: 100%;
 }
 
-body::-webkit-scrollbar-thumb {
-  background-color: #888;
-  /* Neutral gray for better visibility */
-  border-radius: 10px;
-  /* Rounded corners for a smoother look */
-  border: 3px solid #E0E0E0;
-  /* Matches track background for a clean design */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60vw 46vh at 88% -8%, rgb(29 136 240 / 0.16), transparent 70%),
+    radial-gradient(52vw 50vh at 6% 108%, rgb(191 3 176 / 0.13), transparent 70%);
 }
 
-body::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
-  /* Darker gray on hover for clear feedback */
+:root[data-theme="light"] body::before {
+  display: none;
 }
 
-/* Default: Show reCAPTCHA badge */
+/* The parts of the page the browser draws */
+::selection {
+  background: var(--accent-solid);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+input,
+textarea {
+  caret-color: var(--accent);
+}
+
+::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
+}
+
+html {
+  scrollbar-color: var(--category) transparent;
+  scrollbar-width: thin;
+}
+
+table {
+  font-variant-numeric: tabular-nums;
+}
+
+/* reCAPTCHA badge: shown on /login only */
 .grecaptcha-badge {
   visibility: visible;
   transition: visibility 0.3s ease-in-out;
   z-index: 10;
 }
 
-/* Hide reCAPTCHA badge when specified */
 .hide-recaptcha .grecaptcha-badge {
   visibility: hidden;
 }
 
-
-
-@media (prefers-color-scheme: light) {
-  html {
-    color-scheme: light;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

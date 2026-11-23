@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useRef, useState, Suspense } from "react";
 import styles from "./page.module.css";
 import Header from "../../components/header/header";
 import Footer from "@/components/footer/footer";
@@ -12,6 +12,8 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase"; // Adjust this path to match your project structure
 import { useAlert } from "@/context/AlertContext";
 import SearchableDropdown from "@/components/searchableDropdown/searchableDropdown";
+import MuseumPicker, { MuseumPickerHandle } from "@/components/admin/MuseumPicker";
+import { safeImageUrl } from "@/lib/bots";
 
 function SearchParamsHandler({
   setIsEditMode,
@@ -158,6 +160,7 @@ export default function Artwork() {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loadingApproval, setLoadingApproval] = useState(false);
+  const museumPickerRef = useRef<MuseumPickerHandle>(null);
 
   const statusMap: { 0: "Rejected"; 1: "Accepted"; 2: "Pending" } = {
     0: "Rejected",
@@ -217,10 +220,19 @@ export default function Artwork() {
 
   const handleApprove = async () => {
     try {
+      // An unsaved museum choice is saved before the approval, so it is not lost.
+      const picker = museumPickerRef.current;
+      const saveMuseumFirst = Boolean(picker?.isDirty());
       const confirmApprove = await showConfirm(
-        "Are you sure you want to approve this artwork?"
+        saveMuseumFirst
+          ? `Are you sure you want to approve this artwork? Its museum (${picker!.describe()}) is saved first.`
+          : "Are you sure you want to approve this artwork?"
       );
       if (confirmApprove && pendingId) {
+        if (saveMuseumFirst && !(await picker!.save())) {
+          showAlert("The museum could not be saved, so the artwork was not approved. See the Museum field.", "error");
+          return;
+        }
         setLoadingApproval(true); // Start loading state
         const token = await getIdToken();
         const params = new URLSearchParams({
@@ -823,7 +835,7 @@ export default function Artwork() {
                             src={
                               formData.artworkImage instanceof File
                                 ? URL.createObjectURL(formData.artworkImage)
-                                : formData.artworkImage // Use the URL string if it's not a File
+                                : safeImageUrl(formData.artworkImage) // API URL string: http(s) only
                             }
                             alt="Artwork Profile"
                             className={styles.uploadedImage}
@@ -879,7 +891,7 @@ export default function Artwork() {
                             >
                               {image ? (
                                 <img
-                                  src={image instanceof File ? URL.createObjectURL(image) : (image as string)}
+                                  src={image instanceof File ? URL.createObjectURL(image) : safeImageUrl(image as string)}
                                   alt={`Additional Image ${index + 1}`}
                                   className={styles.uploadedImage}
                                 />
@@ -1027,10 +1039,10 @@ export default function Artwork() {
                       disabled={isEditMode && !isEditing}
                     />
                     <span
-                      className={`${styles.charCounter} ${formData.artworkMedia.length === 25 ? styles.charCounterLimit : ""
+                      className={`${styles.charCounter} ${formData.artworkMedia.length >= 25 ? styles.charCounterLimit : ""
                         }`}
                     >
-                      {formData.artworkMedia.length} / 25 characters
+                      {formData.artworkMedia.length} / 25 characters{formData.artworkMedia.length > 25 ? ". Shorten this to 25 before saving." : ""}
                     </span>
                   </div>
                   <div className={styles.inputWrapper}>
@@ -1046,12 +1058,21 @@ export default function Artwork() {
                       disabled={isEditMode && !isEditing}
                     />
                     <span
-                      className={`${styles.charCounter} ${formData.artworkDimensions.length === 25 ? styles.charCounterLimit : ""
+                      className={`${styles.charCounter} ${formData.artworkDimensions.length >= 25 ? styles.charCounterLimit : ""
                         }`}
                     >
-                      {formData.artworkDimensions.length} / 25 characters
+                      {formData.artworkDimensions.length} / 25 characters{formData.artworkDimensions.length > 25 ? ". Shorten this to 25 before saving." : ""}
                     </span>
                   </div>
+                  {user?.type === "admin" && isEditMode && artworkId !== null && isPending !== null && (
+                    <MuseumPicker
+                      ref={museumPickerRef}
+                      artworkId={artworkId}
+                      isPending={isPending}
+                      fallbackMuseumId={formData.museumID}
+                      savesOnApprove={isPending && Boolean(pendingId)}
+                    />
+                  )}
                   <div
                     className={styles.inputWrapper}
                     onClick={(e) => {

@@ -1,0 +1,8 @@
+{
+ "path": "/get_artist_account_status/",
+ "query": "?artist_portal_token=…&artist_id=1314",
+ "status": 200,
+ "body": {
+  "account_status": "approved"
+ }
+}

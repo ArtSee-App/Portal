@@ -1,384 +1,284 @@
 "use client";
 
-import React, { useState } from "react";
-import styles from "./page.module.css";
-import Header from "../../components/header/header";
-import Footer from "@/components/footer/footer";
-import { useAlert } from "@/context/AlertContext";
+// Museum lookup. Replaces the old mock edit form (it never called an API and showed fake
+// "saved" messages). Admins search the live museum list and open one museum read-only;
+// country import review lives in /admin/museums and an artwork's museum is set in the
+// artwork form. Museum accounts get an honest "not available yet" message.
 
-export default function Museum() {
-  const [formData, setFormData] = useState<{
-    image: File | null;
-    name: string;
-    latitude: string;
-    longitude: string;
-    about: string;
-    city: string;
-    province: string;
-    country: string;
-    type: string;
-    visitorsPerYear: string;
-    websiteLink: string;
-    wikipediaLink: string;
-  }>({
-    image: null,
-    name: "",
-    latitude: "",
-    longitude: "",
-    about: "",
-    city: "",
-    province: "",
-    country: "",
-    type: "",
-    visitorsPerYear: "",
-    websiteLink: "",
-    wikipediaLink: "",
-  });
+import React, { Suspense, useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import Header from "@/components/header/header";
+import styles from "../admin/admin.module.css";
+import { useUser } from "@/context/UserContext";
+import { ErrorState, LoadingState } from "@/components/admin/AdminKit";
+import { safeExternalUrl } from "@/lib/bots";
+import {
+  COMMERCIAL_NOTE,
+  formatCoord,
+  getMuseum,
+  KIND_LABEL,
+  licenseLabel,
+  MuseumDetail,
+  MuseumOption,
+  osmUrl,
+  searchMuseums,
+  wikidataUrl,
+} from "@/lib/museums";
+import type { ApiErrorKind } from "@/lib/api";
 
-  const resetForm = () => {
-    setFormData({
-      image: null,
-      name: "",
-      latitude: "",
-      longitude: "",
-      about: "",
-      city: "",
-      province: "",
-      country: "",
-      type: "",
-      visitorsPerYear: "",
-      websiteLink: "",
-      wikipediaLink: "",
-    });
-    setIsSubmitted(false);
-  };
+type Load<T> = { phase: "idle" } | { phase: "loading" } | { phase: "error"; kind: ApiErrorKind; message: string } | { phase: "ready"; data: T };
 
+const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // Track if currently editing in edit mode
-  const [museumStatus] = useState<"pending" | "published" | null>(null);
+function MuseumSearch() {
+  const { getIdToken } = useUser();
+  const [q, setQ] = useState("");
+  const [state, setState] = useState<Load<MuseumOption[]>>({ phase: "idle" });
 
-  const { showAlert, showConfirm } = useAlert();
-
-  const handleEditClick = () => {
-    setIsEditing(true); // Enable editing
-  };
-
-  const handleCancelEdit = async () => {
-    const confirmCancel = await showConfirm(
-      "Are you sure you want to cancel changes? Any unsaved changes will be lost."
-    );
-    if (confirmCancel) {
-      setIsEditing(false); // Cancel editing
-    }
-  };
-
-  const handleSaveChanges = async () => {
-    const confirmSave = await showConfirm(
-      "Do you want to save the changes to this museum? Saved changes will be pending and will have to be verified."
-    );
-    if (confirmSave) {
-      // Implement logic to save changes here
-      showAlert("Changes saved successfully!", "success");
-      setIsEditing(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    const confirmDelete = await showConfirm(
-      "Are you sure you want to delete this museum? This action cannot be undone."
-    );
-    if (confirmDelete) {
-      // Implement logic to delete the museum here
-      showAlert("Museum deleted!", "success");
-
-    }
-  };
-
-
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value, files } = e.target as HTMLInputElement & { files: FileList };
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "image" ? files?.[0] : value,
-    }));
-  };
-
-  const isFormValid =
-    formData.image &&
-    formData.name &&
-    formData.latitude &&
-    formData.longitude &&
-    formData.about &&
-    formData.city &&
-    formData.province &&
-    formData.country &&
-    formData.type;
-
-
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const run = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid) {
-      setIsSubmitted(true); // Set submission status to true
-    } else {
-      showAlert("Please fill in all required fields.", "error");
-    }
+    if (q.trim().length < 2) return;
+    setState({ phase: "loading" });
+    const token = await getIdToken();
+    if (!token) return setState({ phase: "error", kind: "forbidden", message: "No session token." });
+    const res = await searchMuseums(token, q, 50);
+    setState(res.ok ? { phase: "ready", data: res.data?.museums ?? [] } : { phase: "error", kind: res.kind, message: res.message });
   };
 
+  return (
+    <section className={styles.panel} aria-labelledby="search-title">
+      <h2 id="search-title" className={styles.panelTitle} style={{ marginBottom: 12 }}>
+        Find a museum
+      </h2>
+      <form className={styles.filterBar} role="search" onSubmit={run}>
+        <label className={styles.field}>
+          English or native name
+          <input type="search" className={`${styles.control} ${styles.controlWide}`} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rijksmuseum" />
+        </label>
+        <button type="submit" className={styles.button} disabled={q.trim().length < 2}>
+          Search
+        </button>
+      </form>
+      {state.phase === "loading" && <LoadingState />}
+      {state.phase === "error" && <ErrorState kind={state.kind} message={state.message} />}
+      {state.phase === "ready" && state.data.length === 0 && <p className={styles.muted}>No museum matches.</p>}
+      {state.phase === "ready" && state.data.length > 0 && (
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <caption className={styles.srOnly}>Museums matching the search</caption>
+            <thead>
+              <tr>
+                <th scope="col">Museum</th>
+                <th scope="col">Kind</th>
+                <th scope="col">City</th>
+                <th scope="col" className={styles.num}>
+                  Artworks
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {state.data.map((m) => (
+                <tr key={m.museum_id}>
+                  <td>
+                    <Link href={`/museum?id=${m.museum_id}`} className={styles.link}>
+                      {m.name}
+                    </Link>{" "}
+                    <span className={styles.muted}>#{m.museum_id}</span>
+                    {m.name_native && m.name_native !== m.name && <span className={styles.nameNative}>{m.name_native}</span>}
+                  </td>
+                  <td>{m.kind ? KIND_LABEL[m.kind] ?? m.kind : <span className={styles.muted}>Not set</span>}</td>
+                  <td>{[m.city, m.country].filter(Boolean).join(", ") || <span className={styles.muted}>Unknown</span>}</td>
+                  <td className={styles.num}>{m.artwork_count ?? 0}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
 
+function Fact({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className={styles.ruleItem}>
+      <strong>{label}</strong>
+      {children}
+    </div>
+  );
+}
 
+function MuseumView({ id }: { id: number }) {
+  const { getIdToken } = useUser();
+  const [state, setState] = useState<Load<MuseumDetail>>({ phase: "loading" });
+
+  const load = useCallback(async () => {
+    setState({ phase: "loading" });
+    const token = await getIdToken();
+    if (!token) return setState({ phase: "error", kind: "forbidden", message: "No session token." });
+    const res = await getMuseum(token, id);
+    if (!res.ok) return setState({ phase: "error", kind: res.kind, message: res.message });
+    setState(res.data.museum ? { phase: "ready", data: res.data.museum } : { phase: "error", kind: "server", message: `The API returned no museum #${id}.` });
+  }, [getIdToken, id]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  if (state.phase === "loading" || state.phase === "idle") return <LoadingState />;
+  if (state.phase === "error") return <ErrorState kind={state.kind} message={state.message} onRetry={load} />;
+  const m = state.data;
+  const coord = formatCoord(m.latitude, m.longitude);
+
+  return (
+    <section className={styles.panel} aria-labelledby="museum-title">
+      <h2 id="museum-title" className={styles.title} style={{ fontSize: "1.3rem" }}>
+        {m.name} <span className={styles.muted}>#{m.museum_id}</span>
+      </h2>
+      {m.name_native && m.name_native !== m.name && <p className={styles.subtitle}>{m.name_native}</p>}
+      {m.merged_into_museum_id && (
+        <div className={`${styles.notice} ${styles.noticeWarning}`} style={{ marginTop: 12 }}>
+          This row was merged into{" "}
+          <Link href={`/museum?id=${m.merged_into_museum_id}`} className={styles.link}>
+            #{m.merged_into_museum_id}
+          </Link>
+          . The app answers the old id with that museum.
+        </div>
+      )}
+      <div className={styles.ruleBox} style={{ marginTop: 16 }}>
+        <Fact label="Kind">
+          {m.kind ? KIND_LABEL[m.kind] ?? m.kind : "Not set"}
+          {(m.kind === "commercial_gallery" || m.display_mode === "location_only") && <span className={styles.cellNote}>{COMMERCIAL_NOTE}</span>}
+          {m.is_closed && <span className={styles.cellNote}>Closed</span>}
+        </Fact>
+        <Fact label="Place">
+          {[m.city, m.country].filter(Boolean).join(", ") || "Unknown"}
+          {coord ? (
+            <span className={styles.cellNote}>
+              {coord}{" "}
+              <a href={safeExternalUrl(osmUrl(m.latitude!, m.longitude!))} {...ext} className={styles.link}>
+                Map ↗
+              </a>
+            </span>
+          ) : (
+            <span className={styles.cellNote}>No coordinates</span>
+          )}
+        </Fact>
+        <Fact label="Artworks">{m.artwork_count === null ? "Not reported" : `${m.artwork_count} linked`}</Fact>
+        <Fact label="Links">
+          {m.wikidata_qid && (
+            <span className={styles.cellNote}>
+              <a href={safeExternalUrl(wikidataUrl(m.wikidata_qid))} {...ext} className={styles.link}>
+                {m.wikidata_qid} on Wikidata ↗
+              </a>
+            </span>
+          )}
+          {m.website_link && (
+            <span className={styles.cellNote}>
+              <a href={safeExternalUrl(m.website_link)} {...ext} className={styles.link}>
+                Website ↗
+              </a>
+            </span>
+          )}
+          {m.wikipedia_link && (
+            <span className={styles.cellNote}>
+              <a href={safeExternalUrl(m.wikipedia_link)} {...ext} className={styles.link}>
+                Wikipedia ↗
+              </a>
+            </span>
+          )}
+          {!m.wikidata_qid && !m.website_link && !m.wikipedia_link && <span className={styles.muted}>None</span>}
+        </Fact>
+        <Fact label="Image">
+          {m.display_mode === "location_only" ? (
+            "None: location only"
+          ) : m.image_license ? (
+            <>
+              {licenseLabel(m.image_license)}
+              {m.image_credit && <span className={styles.cellNote}>Credit: {m.image_credit}</span>}
+              {m.image_source_url && (
+                <span className={styles.cellNote}>
+                  <a href={safeExternalUrl(m.image_source_url)} {...ext} className={styles.link}>
+                    Source ↗
+                  </a>
+                </span>
+              )}
+            </>
+          ) : (
+            "No image (the app shows a placeholder)"
+          )}
+        </Fact>
+        <Fact label="Data source">{m.source ?? "Not recorded"}</Fact>
+      </div>
+    </section>
+  );
+}
+
+function MuseumPageContent() {
+  const { user, isLoadingUser } = useUser();
+  const idParam = useSearchParams().get("id");
+  const id = idParam && /^\d+$/.test(idParam) ? Number(idParam) : null;
+
+  if (isLoadingUser) return <LoadingState />;
+
+  if (user?.type !== "admin") {
+    return (
+      <>
+        <div className={styles.pageHeader}>
+          <h1 className={styles.title}>Museum profile</h1>
+        </div>
+        <div className={styles.state}>
+          <div className={styles.stateTitle}>Not available yet</div>
+          <p>
+            Editing a museum profile from the Portal is not available yet. Museum details come from public sources and are reviewed by the
+            ArtVista team; if something about your museum is wrong, please contact us.
+          </p>
+          <p style={{ marginTop: 12 }}>
+            <Link href="/home" className={styles.link}>
+              Back to home
+            </Link>
+          </p>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
-      <Header />
-      <div className={styles.page}>
-        {isSubmitted ? (
-          <div className={styles.thankYouMessage}>
-            <h1>Thank You for Submitting a New Museum!</h1>
-            <p>
-              Your submission has been received. This museum will be pending until your submission is verified and accepted.
-            </p>
-            <button className={styles.resetButton} onClick={resetForm}>
-              Add Another Museum
-            </button>
-          </div>
-        ) : (
-          <>
-
-            <div className={styles.header}>
-              <h1 className={styles.headerTitle}>
-                Edit Museum
-              </h1>
-              <>
-                <span className={styles.divider}></span>
-                <p
-                  className={`${styles.headerHelp} ${museumStatus === "pending" ? styles.pendingStatus : styles.publishedStatus
-                    }`}
-                >
-                  {museumStatus === "pending"
-                    ? "There are pending changes to the museum"
-                    : "This museum has been published"}
-                </p>
-              </>
-            </div>
-            <form
-              id="museum-register-form"
-              className={`${styles.form} ${styles.registeringForm}`}
-              onSubmit={handleSubmit}
-            >
-              <div className={styles.formRow}>
-                <div className={styles.leftColumn}>
-                  <div className={styles.inputWrapperRequired}>
-                    <p>Upload a museum profile image</p>
-                    <div className={styles.imageUploadWrapper}>
-                      <input
-                        type="file"
-                        id="museumImageInput"
-                        name="image"
-                        accept="image/*"
-                        className={styles.hiddenInput}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                      />
-                      <label htmlFor="museumImageInput" className={styles.imageUploadBox}>
-                        {formData.image ? (
-                          <img
-                            src={URL.createObjectURL(formData.image)}
-                            alt="Museum Profile"
-                            className={styles.uploadedImage}
-                          />
-                        ) : (
-                          <span className={styles.plusIcon}>+</span>
-                        )}
-                      </label>
-                    </div>
-                  </div>
-                  <div className={styles.inputWrapperRequired}>
-                    <p>Museum's Name</p>
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Example: DAF Museum"
-                      className={styles.input}
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className={styles.inputWrapperRequired}>
-                    <p>Latitude</p>
-                    <input
-                      type="number"
-                      name="latitude"
-                      placeholder="Example: 40.7128"
-                      className={styles.input}
-                      value={formData.latitude}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className={styles.inputWrapperRequired}>
-                    <p>Longitude</p>
-                    <input
-                      type="number"
-                      name="longitude"
-                      placeholder="Example: -74.0060"
-                      className={styles.input}
-                      value={formData.longitude}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                </div>
-
-                <div className={styles.rightColumn}>
-                  <div className={styles.inputWrapperRequired}>
-                    <p>About</p>
-                    <textarea
-                      name="about"
-                      className={`${styles.input} ${styles.textarea}`}
-                      value={formData.about}
-                      onChange={(e) => {
-                        handleInputChange(e);
-                        e.target.style.height = "auto"; // Reset height to auto
-                        e.target.style.height = `${e.target.scrollHeight}px`; // Adjust height based on scroll height
-                      }}
-                      rows={1} // Initial height of 1 row
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className={styles.inputWrapperRequired}>
-                    <p>City</p>
-                    <input
-                      type="text"
-                      name="city"
-                      className={styles.input}
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className={styles.inputWrapperRequired}>
-                    <p>Province</p>
-                    <input
-                      type="text"
-                      name="province"
-                      className={styles.input}
-                      value={formData.province}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className={styles.inputWrapperRequired}>
-                    <p>Country</p>
-                    <input
-                      type="text"
-                      name="country"
-                      className={styles.input}
-                      value={formData.country}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className={styles.inputWrapperRequired}>
-                    <p>Type</p>
-                    <input
-                      type="text"
-                      name="type"
-                      placeholder="Example: Museum"
-                      className={styles.input}
-                      value={formData.type}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className={styles.inputWrapper}>
-                    <p>Number Of Visitors Per Year</p>
-                    <input
-                      type="number"
-                      name="visitorsPerYear"
-                      className={styles.input}
-                      value={formData.visitorsPerYear}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className={styles.inputWrapper}>
-                    <p>Website Link</p>
-                    <input
-                      type="url"
-                      name="websiteLink"
-                      placeholder="Example: https://artvista.app/"
-                      className={styles.input}
-                      value={formData.websiteLink}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className={styles.inputWrapper}>
-                    <p>Wikipedia Link</p>
-                    <input
-                      type="url"
-                      name="wikipediaLink"
-                      placeholder="Example: https://artvista.app/"
-                      className={styles.input}
-                      value={formData.wikipediaLink}
-                      onChange={handleInputChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                </div>
-
-              </div>
-
-              <div className={`${styles.buttonRow} ${styles.registerButtonWrapper}`}>
-                {isEditing ? (
-                  <>
-                    <button
-                      type="button"
-                      className={styles.button}
-                      onClick={handleSaveChanges}
-                    >
-                      Save Changes
-                    </button>
-                    <button
-                      type="button"
-                      className={`${styles.button} ${styles.cancelButton}`}
-                      onClick={handleCancelEdit}
-                    >
-                      Cancel Changes
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      className={styles.button}
-                      onClick={handleEditClick}
-                    >
-                      Edit Museum
-                    </button>
-                    <button
-                      type="button"
-                      className={`${styles.button} ${styles.deleteButton}`}
-                      onClick={handleDelete}
-                    >
-                      Delete Museum
-                    </button>
-                  </>
-
-                )}
-              </div>
-            </form>
-          </>
+      <div>
+        {id !== null && (
+          <Link href="/museum" className={styles.backLink}>
+            ← Find another museum
+          </Link>
         )}
+        <div className={styles.pageHeader}>
+          <div>
+            <h1 className={styles.title}>Museum lookup</h1>
+            <p className={styles.subtitle}>
+              Read-only view of the live museum list. New museums come in through{" "}
+              <Link href="/admin/museums" className={styles.link}>
+                country review
+              </Link>
+              ; an artwork&apos;s museum is set in the artwork form.
+            </p>
+          </div>
+        </div>
+      </div>
+      {id !== null ? <MuseumView id={id} /> : <MuseumSearch />}
+    </>
+  );
+}
 
-      </div >
-      <Footer />
+export default function MuseumPage() {
+  return (
+    <>
+      <Header />
+      <main className={styles.page}>
+        <Suspense fallback={<LoadingState />}>
+          <MuseumPageContent />
+        </Suspense>
+      </main>
     </>
   );
 }

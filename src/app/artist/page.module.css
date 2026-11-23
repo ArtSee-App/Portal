@@ -2,8 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+  background-color: var(--well);
   margin-left: 240px;
   transition: margin-left 0.3s ease;
   overflow: hidden;
@@ -26,7 +25,7 @@
   padding: 20px;
   background: var(--background-container);
   border: 2px solid var(--primary-color);
-  border-radius: 8px;
+  border-radius: var(--r-control);
 }
 
 .thankYouMessage h1 {
@@ -37,16 +36,16 @@
 
 .thankYouMessage p {
   font-size: 1.2rem;
-  color: #333;
+  color: var(--ink);
 }
 
 .resetButton {
   margin-top: 24px;
   padding: 12px 24px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: var(--primary-color);
-  color: white;
+  color: var(--on-accent);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -54,9 +53,9 @@
 }
 
 .resetButton:hover {
-  background-color: #003366;
+  background-color: var(--container);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 
@@ -65,11 +64,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  background-color: #ffffff;
+  background-color: var(--surface);
   padding: 20px 32px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.04);
+  border-radius: var(--r-control);
+  border: 1px solid var(--line);
+  box-shadow: none;
   width: 100%;
 }
 
@@ -110,7 +109,7 @@
 .divider {
   width: 1px;
   height: 24px;
-  background-color: #ccc;
+  background-color: var(--category);
   /* Light gray divider */
 }
 
@@ -124,7 +123,7 @@
 
 .headerHelp {
   font-size: 1rem;
-  color: #1e90ff;
+  color: var(--accent);
   /* Fallback blue for browsers without gradient support */
 }
 
@@ -169,11 +168,11 @@
 
 
 .registeringForm {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
   padding: 32px;
-  background-color: #ffffff;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.04);
+  background-color: var(--surface);
+  box-shadow: none;
 }
 
 
@@ -185,7 +184,7 @@
 .form::-webkit-scrollbar-thumb {
   background: var(--primary-color);
   /* Customize scrollbar thumb color */
-  border-radius: 8px;
+  border-radius: var(--r-control);
 }
 
 .form::-webkit-scrollbar-thumb:hover {
@@ -206,9 +205,9 @@
 .fileButton {
   padding: 12px 24px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: var(--primary-color);
-  color: white;
+  color: var(--on-accent);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -216,14 +215,14 @@
 }
 
 .fileButton:hover {
-  background-color: #003366;
+  background-color: var(--container);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 .fileName {
   font-size: 0.875rem;
-  color: #555;
+  color: var(--ink);
   word-wrap: break-word;
   max-width: 200px;
 }
@@ -239,13 +238,13 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: color-mix(in srgb, var(--ink) 20%, transparent);
   /* Semi-transparent dark overlay */
   z-index: 1;
   /* Ensure it appears above the content */
   pointer-events: none;
   /* Prevent overlay from blocking interactions */
-  border-radius: 8px;
+  border-radius: var(--r-control);
   /* Match existing border-radius */
 }
 
@@ -274,26 +273,26 @@
 .imageUploadBox {
   width: 100%;
   height: 400px;
-  border: 2px dashed #e0e0e0;
-  border-radius: 8px;
+  border: 2px dashed var(--line);
+  border-radius: var(--r-control);
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background-color: #ffffff;
+  background-color: var(--surface);
   position: relative;
   overflow: hidden;
   transition: all 0.2s ease;
 }
 
 .imageUploadBox:hover {
-  border-color: #999;
-  background-color: #fafafa;
+  border-color: var(--line);
+  background-color: var(--well);
 }
 
 .plusIcon {
   font-size: 2rem;
-  color: #ccc;
+  color: var(--muted);
 }
 
 .uploadedImage {
@@ -318,13 +317,13 @@
 .circularImageUploadBox {
   width: 280px;
   height: 280px;
-  border: 2px dashed #d0d0d0;
+  border: 2px dashed var(--line);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background-color: #fafafa;
+  background-color: var(--well);
   position: relative;
   overflow: hidden;
   transition: all 0.2s ease;
@@ -332,7 +331,7 @@
 
 .circularImageUploadBox:hover {
   border-color: var(--primary-color);
-  background-color: #f5f5f5;
+  background-color: var(--well);
 }
 
 .circularImageContainer {
@@ -341,7 +340,7 @@
   border-radius: 50%;
   overflow: hidden;
   position: relative;
-  background-color: #f0f0f0;
+  background-color: var(--well);
 }
 
 .circularUploadedImage {
@@ -360,14 +359,14 @@
 
 .dragHint {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--ink);
   margin-top: 4px;
   font-style: italic;
 }
 
 .clickHint {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--ink);
   margin-top: 4px;
   font-style: italic;
   text-align: center;
@@ -378,10 +377,10 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-control);
   padding: 8px;
-  background-color: white;
+  background-color: var(--surface);
   min-height: 44px;
   /* Ensures enough space for typing */
 }
@@ -401,10 +400,10 @@
 
 
 .bubble {
-  background: lightgray;
-  color: black;
+  background: var(--category);
+  color: var(--ink);
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: var(--r-control);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -425,7 +424,7 @@
 .removeBubble {
   background: none;
   border: none;
-  color: white;
+  color: var(--on-accent);
   cursor: pointer;
   font-size: 0.875rem;
   flex-shrink: 0;
@@ -433,7 +432,7 @@
 
 .addBubbleButton {
   background: var(--primary-color);
-  color: white;
+  color: var(--on-accent);
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -463,7 +462,7 @@
 
 .inputWrapperRequired p::after {
   content: "*";
-  color: red;
+  color: var(--danger);
   /* Slightly larger to make it noticeable */
   margin-left: 2px;
 }
@@ -484,19 +483,19 @@
 
 .input {
   padding: 12px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
   font-size: 0.95rem;
-  background-color: #fafafa;
+  background-color: var(--well);
   transition: all 0.2s ease;
   width: 100%;
 }
 
 .input:focus {
   outline: none;
-  border-color: #999;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  border-color: var(--line);
+  background-color: var(--surface);
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .input::placeholder {
@@ -511,18 +510,18 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: 12px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
   font-size: 0.95rem;
-  background-color: #fafafa;
+  background-color: var(--well);
   transition: all 0.2s ease;
 }
 
 .textarea:focus {
   outline: none;
-  border-color: #999;
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  border-color: var(--line);
+  background-color: var(--surface);
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 /* Custom scrollbar styles for the textarea */
@@ -534,7 +533,7 @@
 .textarea::-webkit-scrollbar-thumb {
   background: var(--primary-color);
   /* Customize scrollbar thumb color */
-  border-radius: 8px;
+  border-radius: var(--r-control);
   /* Round scrollbar thumb edges */
 }
 
@@ -558,11 +557,11 @@
   width: 100%;
   padding: 12px 24px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 600;
   background-color: var(--primary-color);
-  color: white;
+  color: var(--on-accent);
   cursor: pointer;
   transition: all 0.2s ease;
   flex: 1;
@@ -570,27 +569,27 @@
 }
 
 .button:hover {
-  background-color: #003366;
+  background-color: var(--container);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 .button.cancelButton {
-  background-color: #ccc !important;
+  background-color: var(--category) !important;
   /* Gray for cancel */
-  color: #333;
+  color: var(--ink);
   background: none;
   /* Remove the linear gradient */
 }
 
 .button.cancelButton:hover {
-  background-color: #aaa;
+  background-color: var(--muted);
 }
 
 .button.deleteButton {
-  background-color: #d32f2f !important;
+  background-color: var(--danger-solid) !important;
   /* Red for delete */
-  color: white;
+  color: var(--on-accent);
   background: none;
   /* Remove the linear gradient */
 }
@@ -600,9 +599,9 @@
 }
 
 .approveButton {
-  background-color: #1b8e5e !important;
+  background-color: var(--success-solid) !important;
   ;
-  color: white;
+  color: var(--on-accent);
   background: none;
   /* Remove the linear gradient */
 }
@@ -612,9 +611,9 @@
 }
 
 .rejectButton {
-  background-color: #d32f2f !important;
+  background-color: var(--danger-solid) !important;
   ;
-  color: white;
+  color: var(--on-accent);
   background: none;
   /* Remove the linear gradient */
 }
@@ -625,15 +624,15 @@
 
 
 .pendingStatus {
-  color: #FF9800;
+  color: var(--warning);
 }
 
 .publishedStatus {
-  color: #1b8e5e;
+  color: var(--success);
 }
 
 .rejectedStatus {
-  color: #d32f2f;
+  color: var(--danger);
 }
 
 
@@ -643,8 +642,8 @@
   justify-content: space-between;
   background-color: var(--background-container);
   padding: 16px 24px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: var(--r-control);
+  box-shadow: none;
   gap: 12px;
   width: 100%;
 }
@@ -652,7 +651,7 @@
 .guideText {
   font-size: 1rem;
   font-weight: bold;
-  color: #333;
+  color: var(--ink);
   margin: 0;
 }
 
@@ -664,7 +663,7 @@
 
 .guideLink {
   font-size: 0.9rem;
-  color: #555;
+  color: var(--ink);
   text-align: right;
 }
 
@@ -675,18 +674,18 @@
 
 .soonButton {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--on-accent);
   font-weight: bold;
   font-size: 0.9rem;
   padding: 8px 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--r-control);
   cursor: not-allowed;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 .soonButton:hover {
-  background-color: #003366;
+  background-color: var(--container);
 }
 
 
@@ -811,4 +810,869 @@
 
 
 
+}
+
+/* ==========================================================================
+   Form system (shared vocabulary of /artwork, /artist and /login).
+   Panels are flat fills with 20px corners; controls are filled wells with a
+   purple focus ring; buttons are pills: ink for the primary action, a grey
+   fill for secondary ones, red text for destructive ones.
+   ========================================================================== */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 20px;
+  min-height: 100vh;
+  max-width: calc(var(--rail-w) + 1240px);
+  margin: 0 0 0 var(--rail-w);
+  padding: 40px 32px 0;
+  background: none;
+}
+
+/* Page header: a title, then its status, on the page ground rather than in a card. */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px 16px;
+  width: 100%;
+  padding: 0 4px 4px;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  text-align: left;
+}
+
+.headerTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.divider {
+  display: none;
+}
+
+.headerHelp {
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.pendingStatus,
+.publishedStatus,
+.rejectedStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 10px;
+  border-radius: var(--r-pill);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.pendingStatus::before,
+.publishedStatus::before,
+.rejectedStatus::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pendingStatus {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.publishedStatus {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.rejectedStatus {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.gradientText {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--accent);
+}
+
+.gradientText::after {
+  content: none;
+}
+
+/* The panel */
+.form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  overflow: visible;
+  background: var(--surface);
+}
+
+.registeringForm {
+  padding: 28px;
+  border: 0;
+  border-radius: var(--r-panel);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 40px;
+  width: 100%;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 24px;
+  min-width: 0;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* Field: label, control, then hint or counter */
+.inputWrapper,
+.inputWrapperRequired {
+  width: 100%;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.inputWrapper > p,
+.inputWrapperRequired > p {
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.inputWrapperRequired > p::after {
+  content: " *";
+  margin: 0;
+  color: var(--danger);
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  min-height: var(--control-h);
+  padding: 10px 14px;
+  border: 0;
+  border-radius: var(--r-control);
+  background-color: var(--well);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  outline: 2px solid transparent;
+  outline-offset: 0;
+  box-shadow: none;
+  transition: background-color 0.15s, outline-color 0.15s;
+}
+
+.input:hover:not(:disabled),
+.select:hover:not(:disabled) {
+  background-color: var(--well-hover);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline-color: var(--accent);
+  background-color: var(--well);
+  border: 0;
+  box-shadow: none;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--placeholder);
+  font-style: normal;
+}
+
+/* A disabled control is how these pages show a saved value before "Edit" is pressed:
+   it stays fully legible and only loses its well. */
+.input:disabled::placeholder,
+.textarea:disabled::placeholder {
+  -webkit-text-fill-color: var(--placeholder);
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
+  opacity: 1;
+  cursor: default;
+}
+
+.textarea {
+  min-height: 132px;
+  max-height: 320px;
+  padding: 12px 14px;
+  resize: none;
+  overflow-y: auto;
+  line-height: 1.55;
+  scrollbar-width: thin;
+}
+
+.select {
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%238a8898' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px;
+}
+
+.select:disabled {
+  background-image: none;
+}
+
+.customInput {
+  margin-top: 8px;
+}
+
+.charCounter {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+.charCounterLimit {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* Image wells. The main image sits inside the scan frame the app draws around an
+   artwork it recognises: four purple corner brackets. */
+.hiddenInput {
+  display: none;
+}
+
+.imageUploadWrapper {
+  position: relative;
+  display: block;
+  flex: none;
+}
+
+.imageUploadBox {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: clamp(360px, 52vh, 560px);
+  border: 0;
+  border-radius: var(--r-panel);
+  background: var(--well);
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.imageUploadBox:hover {
+  background: var(--well-hover);
+}
+
+.imageUploadBox:not(.smallImageUploadBox)::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  z-index: 3;
+  pointer-events: none;
+  --b: 3px;
+  --l: 30px;
+  background:
+    linear-gradient(var(--accent-solid) 0 0) left top / var(--l) var(--b),
+    linear-gradient(var(--accent-solid) 0 0) left top / var(--b) var(--l),
+    linear-gradient(var(--accent-solid) 0 0) right top / var(--l) var(--b),
+    linear-gradient(var(--accent-solid) 0 0) right top / var(--b) var(--l),
+    linear-gradient(var(--accent-solid) 0 0) left bottom / var(--l) var(--b),
+    linear-gradient(var(--accent-solid) 0 0) left bottom / var(--b) var(--l),
+    linear-gradient(var(--accent-solid) 0 0) right bottom / var(--l) var(--b),
+    linear-gradient(var(--accent-solid) 0 0) right bottom / var(--b) var(--l);
+  background-repeat: no-repeat;
+}
+
+.smallImageUploadBox {
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: var(--r-control);
+}
+
+.uploadedImage {
+  position: absolute;
+  inset: 34px;
+  width: calc(100% - 68px);
+  height: calc(100% - 68px);
+  object-fit: contain;
+  border-radius: var(--r-image);
+}
+
+.smallImageUploadBox .uploadedImage {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.plusIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 1.75rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.imageUploadBox:not(.smallImageUploadBox) .plusIcon::after {
+  content: "Choose an image";
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.overlay {
+  position: relative;
+}
+
+.imageUploadWrapper.overlay .imageUploadBox {
+  cursor: default;
+}
+
+.imageUploadWrapper.overlay .imageUploadBox::after {
+  content: "The main image cannot be changed";
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  top: auto;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, 6px);
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  background: var(--container);
+  color: var(--on-container);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  z-index: 4;
+  pointer-events: none;
+  transition: opacity 0.18s, transform 0.18s var(--ease);
+}
+
+.imageUploadWrapper.overlay:hover .imageUploadBox::after {
+  content: "The main image cannot be changed";
+  background: var(--container);
+  color: var(--on-container);
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.imageUploadWrapper.overlay:hover img {
+  filter: none;
+}
+
+.additionalInfo {
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.additionalInfo a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.extraImagesContainer,
+.extraImagesRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.additionalImageUploadWrapper {
+  position: relative;
+  flex: none;
+  max-width: none;
+}
+
+.imageBox {
+  position: relative;
+}
+
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--container);
+  color: var(--on-container);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.closeButton:hover {
+  background: var(--danger-solid);
+}
+
+.uploadingText {
+  position: absolute;
+  inset: auto auto 40% 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Actions. One ink pill per view; the rest step back. */
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.button,
+.resetButton,
+.fileButton {
+  flex: none;
+  width: auto;
+  min-width: 120px;
+  height: var(--control-h);
+  padding: 0 22px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--solid);
+  border: 2px solid transparent;
+  color: var(--on-solid);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transform: none;
+  order: 3;
+  transition: background-color 0.18s var(--ease), opacity 0.18s, color 0.18s;
+}
+
+.button:hover,
+.resetButton:hover,
+.fileButton:hover {
+  background: var(--solid);
+  border: 2px solid transparent;
+  opacity: 0.84;
+  transform: none;
+  box-shadow: none;
+}
+
+.button:disabled {
+  background: var(--category);
+  color: var(--muted);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Review row: Reject (left, quiet) | Edit (secondary) | Approve (primary). */
+.button.approveButton {
+  order: 3;
+  background: var(--solid) !important;
+  border: 2px solid transparent !important;
+  color: var(--on-solid);
+}
+
+.button.approveButton:hover {
+  background: var(--solid) !important;
+  border: 2px solid transparent !important;
+}
+
+.buttonRow:has(.approveButton) > .button:not(.approveButton):not(.rejectButton),
+.button.cancelButton {
+  order: 2;
+  background: var(--category) !important;
+  color: var(--ink);
+}
+
+.buttonRow:has(.approveButton) > .button:not(.approveButton):not(.rejectButton):hover,
+.button.cancelButton:hover {
+  background: var(--category-hover) !important;
+  opacity: 1;
+}
+
+.button.rejectButton,
+.button.deleteButton {
+  order: 1;
+  margin-right: auto;
+  background: transparent !important;
+  color: var(--danger);
+}
+
+.button.rejectButton:hover,
+.button.deleteButton:hover {
+  background: var(--danger-soft) !important;
+  opacity: 1;
+}
+
+.buttonRow:has(.cancelButton) > .button:not(.cancelButton) {
+  order: 3;
+}
+
+/* After a submission */
+.thankYouMessage {
+  margin-top: 24px;
+  padding: 48px 32px;
+  border: 0;
+  border-radius: var(--r-panel);
+  background: var(--surface);
+  text-align: center;
+}
+
+.thankYouMessage h1 {
+  margin-bottom: 12px;
+  color: var(--ink);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.thankYouMessage p {
+  max-width: 60ch;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.resetButton {
+  margin-top: 28px;
+}
+
+/* The bulk-upload note under the form */
+.guideContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  width: 100%;
+  padding: 18px 28px;
+  border: 0;
+  border-radius: var(--r-panel);
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.guideText {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.guideActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.guideLink {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.italicText {
+  font-style: normal;
+  text-decoration: none;
+}
+
+.soonButton {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--category);
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: default;
+}
+
+.soonButton:hover {
+  background: var(--category);
+}
+
+@media (max-width: 1024px) {
+  .page {
+    margin-left: 0;
+    padding: 84px 16px 0;
+  }
+
+  .formRow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .imageUploadBox {
+    height: clamp(280px, 60vw, 460px);
+  }
+
+  .imageUploadBox.smallImageUploadBox {
+    height: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .headerTitle {
+    font-size: 1.5rem;
+  }
+
+  .registeringForm {
+    padding: 18px;
+  }
+
+  .form {
+    gap: 24px;
+  }
+
+  .buttonRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .buttonRow > .button {
+    order: 2 !important;
+    width: 100%;
+    margin: 0;
+  }
+
+  .buttonRow > .button.approveButton,
+  .buttonRow:not(:has(.approveButton)) > .button:not(.cancelButton):not(.deleteButton) {
+    order: 1 !important;
+  }
+
+  .buttonRow > .button.rejectButton,
+  .buttonRow > .button.deleteButton {
+    order: 3 !important;
+  }
+
+  .guideContainer {
+    padding: 16px 18px;
+  }
+}
+
+/* Profile fields shared by /artist and registration: portrait and multi-value inputs */
+.circularImageUploadWrapper {
+  align-items: center;
+  gap: 10px;
+  margin-top: 0;
+}
+
+.circularImageUploadBox {
+  width: 240px;
+  height: 240px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--well);
+  outline: 2px solid transparent;
+  outline-offset: 4px;
+  transition: background-color 0.15s, outline-color 0.15s;
+}
+
+.circularImageUploadBox:hover {
+  background: var(--well-hover);
+  outline-color: var(--accent);
+}
+
+.circularImageContainer {
+  background: var(--well);
+}
+
+.dragHint,
+.clickHint {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-style: normal;
+}
+
+.inputWithBubbles {
+  gap: 6px;
+  min-height: var(--control-h);
+  padding: 6px;
+  border: 0;
+  border-radius: var(--r-control);
+  background: var(--well);
+  outline: 2px solid transparent;
+  transition: outline-color 0.15s;
+}
+
+.inputWithBubbles:focus-within {
+  outline-color: var(--accent);
+}
+
+.inputWithBubbles.overlay {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.inputWithBubbles input {
+  padding: 4px 8px;
+  background: none;
+  color: var(--ink);
+  font-size: 0.9375rem;
+}
+
+.bubble {
+  gap: 4px;
+  padding: 4px 6px 4px 12px;
+  border-radius: var(--r-pill);
+  background: var(--category);
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.removeBubble {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: var(--muted);
+}
+
+.removeBubble:hover {
+  background: var(--category-hover);
+  color: var(--danger);
+}
+
+.addBubbleButton {
+  background: var(--solid);
+  border: 2px solid transparent;
+  color: var(--on-solid);
+}
+
+.editNotice {
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* /artist reads as a page, not a fixed-height scroller */
+.page {
+  height: auto;
+  overflow: visible;
+}
+
+.pageContent {
+  flex: none;
+  align-items: stretch;
+  gap: 20px;
+  padding: 0;
+  overflow: visible;
+}
+
+.form {
+  flex: none;
+}
+
+.header {
+  justify-content: flex-start;
+}
+
+.leftColumn,
+.rightColumn {
+  width: auto;
+  overflow: visible;
+}
+
+/* Read-only state: values stay fully legible; nothing is greyed over. */
+.overlay::before {
+  content: none;
+}
+
+.overlay img,
+.overlay .plusIcon {
+  opacity: 1;
+}
+
+.page > footer {
+  margin-left: 0 !important;
+}
+
+/* Every button is an outline on the page colour: gradient for the one primary
+   action, a neutral line for the others, red for the destructive one. */
+.buttonRow:has(.approveButton) > .button:not(.approveButton):not(.rejectButton),
+.button.cancelButton {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--stroke) !important;
+  color: var(--ink);
+}
+
+.buttonRow:has(.approveButton) > .button:not(.approveButton):not(.rejectButton):hover,
+.button.cancelButton:hover {
+  background: var(--well) !important;
+  border-color: var(--ink) !important;
+  opacity: 1;
+}
+
+.button.rejectButton,
+.button.rejectButton:hover {
+  border: 1.5px solid color-mix(in srgb, var(--danger) 55%, transparent) !important;
 }

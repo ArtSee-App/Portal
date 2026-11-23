@@ -1,0 +1,8 @@
+{
+ "path": "/admin/connectors/provenance",
+ "query": "?admin_portal_token=…&artwork_ids=418298%2C418297%2C418296%2C418293%2C418291%2C418290%2C418289%2C418287",
+ "status": 200,
+ "body": {
+  "provenance": {}
+ }
+}

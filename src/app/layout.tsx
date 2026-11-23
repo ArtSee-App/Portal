@@ -1,19 +1,15 @@
 // src/app/layout.tsx
 import "./globals.css";
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Inter } from "next/font/google";
 import RootClient from "./RootClient"; // Import Client Component
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+// Inter is the mobile app's only typeface; next/font downloads it at build time and serves it
+// from this origin, so no request leaves for a font host at runtime.
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -24,14 +20,21 @@ export const metadata: Metadata = {
   },
 };
 
+// Applies the saved theme before the first paint: "light", "dark", or the system's choice.
+// Kept in sync with src/components/header/ThemeSwitch.tsx.
+const themeScript = `(function(){var t="light";try{var s=localStorage.getItem("artvista-theme");if(s==="dark")t="dark";else if(s==="system")t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}catch(e){}document.documentElement.dataset.theme=t})();`;
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body>
         <RootClient>{children}</RootClient>
       </body>
     </html>

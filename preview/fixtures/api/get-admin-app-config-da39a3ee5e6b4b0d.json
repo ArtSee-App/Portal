@@ -1,0 +1,47 @@
+{
+ "path": "/admin/app-config",
+ "query": "?admin_portal_token=…",
+ "status": 200,
+ "body": {
+  "platforms": {
+   "ios": {
+    "platform": "ios",
+    "min_version": null,
+    "latest_version": null,
+    "store_url": "https://apps.apple.com/app/artvista-art-companion/id6503986684",
+    "update_message": {},
+    "updated_by": "migration",
+    "updated_at": "2026-11-16T18:43:07.467689+00:00",
+    "configured": true
+   },
+   "android": {
+    "platform": "android",
+    "min_version": null,
+    "latest_version": null,
+    "store_url": "https://play.google.com/store/apps/details?id=com.artvista",
+    "update_message": {},
+    "updated_by": "migration",
+    "updated_at": "2026-11-16T18:43:07.467689+00:00",
+    "configured": true
+   }
+  },
+  "default_store_urls": {
+   "ios": "https://apps.apple.com/app/artvista-art-companion/id6503986684",
+   "android": "https://play.google.com/store/apps/details?id=com.artvista"
+  },
+  "languages": [
+   "en",
+   "de",
+   "es",
+   "fr",
+   "it",
+   "nl",
+   "pt",
+   "ro",
+   "tr",
+   "el",
+   "ar"
+  ],
+  "cache_seconds": 300
+ }
+}

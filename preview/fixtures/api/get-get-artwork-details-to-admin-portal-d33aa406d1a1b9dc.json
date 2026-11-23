@@ -1,0 +1,38 @@
+{
+ "path": "/get_artwork_details_to_admin_portal/",
+ "query": "?admin_portal_token=…&artwork_id=418297&is_pending=true",
+ "status": 200,
+ "body": {
+  "image_links": {
+   "header_image": "https://api.artvista.app/__fixture_image/a8ba8dc0eda8cc2e.jpg",
+   "vector_images": []
+  },
+  "text_information": {
+   "painting_id": 418297,
+   "artwork_id": 418297,
+   "title": "The Adoration of the Magi",
+   "artist": "anonymous",
+   "artist_id": null,
+   "original_title": null,
+   "creation_date": "1410",
+   "style": "Gothic Art",
+   "genre": "Religious painting",
+   "media": null,
+   "location": "Rijksmuseum Amsterdam",
+   "dimensions": "h 29 cm x w 15.5 cm x h 36 cm x w 22.5 cm",
+   "description": "Delicate, jewel-like colors and finely patterned textiles place this devotional scene within the Gothic tradition of the early 15th century. Under a shallow canopy, Mary cradles the Christ child as the eldest Magus kneels to kiss the infant’s foot, while the other kings present ornate vessels and remove their crowns in homage. The compressed space, arched framing, and tiled floor focus attention on gesture and sacred hierarchy, enhanced by shimmering brocades and crisp, linear drapery. As a surviving fragment from a larger cycle on Christ’s life and Passion, the panel distills the narrative to a moment of humble recognition. Its intimate scale and meticulous detailing invite close looking, notice the tender exchange of glances and the careful rendering of goldwork that embodies the era’s courtly refinement.",
+   "museum_id": 412,
+   "is_nsfw": false,
+   "is_copyrighted": false,
+   "importance_factor": 0,
+   "pending_situation": 2,
+   "based_on_artwork_id": null,
+   "source_image_url": null,
+   "pre_style": "Romanesque Art",
+   "post_style": "Medieval Art",
+   "header_image_path": "unknown/418297_pending.jpg",
+   "vector_image_paths": null,
+   "header_image_link": "https://api.artvista.app/__fixture_image/a8ba8dc0eda8cc2e.jpg"
+  }
+ }
+}

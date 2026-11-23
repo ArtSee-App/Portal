@@ -1,145 +1,130 @@
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    animation: fadeInOverlay 0.15s ease-out;
-}
-
-@keyframes fadeInOverlay {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: var(--scrim);
+  z-index: 2000;
+  animation: fade 0.18s ease-out;
 }
 
 .alertBox {
-    background: #ffffff;
-    padding: 0;
-    border-radius: 8px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
-    max-width: 420px;
-    width: 90%;
-    animation: fadeIn 0.2s ease-out;
-    overflow: hidden;
-}
-
-.alertBox.success {
-    border: 2px solid #1B8E5E;
-}
-
-.alertBox.error {
-    border: 2px solid #d32f2f;
-}
-
-.alertBox.info {
-    border: 2px solid var(--primary-color);
-}
-
-.alertBox.warning {
-    border: 2px solid #FF9800;
+  width: min(440px, 100%);
+  padding: 24px;
+  border-radius: var(--r-panel);
+  background: var(--raised);
+  color: var(--ink);
+  box-shadow: var(--shadow-overlay);
+  animation: rise 0.24s var(--ease);
 }
 
 .alertContent {
-    padding: 24px 28px;
+  display: flex;
+  gap: 14px;
+}
+
+/* A status dot instead of a coloured frame: the message carries the meaning. */
+.alertContent::before {
+  content: "";
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: var(--info);
+}
+
+.alertBox.success .alertContent::before {
+  background: var(--success-solid);
+}
+
+.alertBox.error .alertContent::before {
+  background: var(--danger-solid);
+}
+
+.alertBox.warning .alertContent::before {
+  background: var(--warning-solid);
+}
+
+.alertText {
+  flex: 1;
+  min-width: 0;
 }
 
 .alertText p {
-    font-size: 0.95rem;
-    font-weight: 500;
-    margin: 0;
-    color: #333;
-    line-height: 1.5;
-    text-align: left;
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
-
-.buttonContainer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 16px 28px;
-    background-color: #fafafa;
-    border-top: 1px solid #e0e0e0;
-}
-
-.okButton {
-    background-color: var(--primary-color);
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 20px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.15s ease;
-    min-width: 70px;
-}
-
-.okButton:hover {
-    background-color: #0066cc;
-    box-shadow: 0 2px 6px rgba(29, 136, 240, 0.3);
-}
-
-.cancelButton {
-    background-color: transparent;
-    color: #666;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 20px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.15s ease;
-    min-width: 70px;
-}
-
-.cancelButton:hover {
-    background-color: #f0f0f0;
-    color: #333;
-}
-
 
 .inputField {
-    width: 100%;
-    padding: 10px 14px;
-    margin-top: 14px;
-    border: 1px solid #d0d0d0;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    background-color: #ffffff;
-    color: #333;
-    outline: none;
-    transition: all 0.15s ease;
-    box-sizing: border-box;
-}
-
-.inputField::placeholder {
-    color: #999;
+  width: 100%;
+  height: var(--control-h);
+  margin-top: 14px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--r-control);
+  background: var(--well);
+  color: var(--ink);
+  outline: 2px solid transparent;
+  outline-offset: 0;
+  transition: outline-color 0.15s, background-color 0.15s;
 }
 
 .inputField:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(29, 136, 240, 0.1);
+  outline-color: var(--accent);
 }
 
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
+.okButton,
+.cancelButton {
+  height: 40px;
+  min-width: 88px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: background-color 0.18s var(--ease), opacity 0.18s;
+}
 
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+.okButton {
+  background: var(--solid);
+  border: 2px solid transparent;
+  color: var(--on-solid);
+}
+
+.okButton:hover {
+  opacity: 0.85;
+}
+
+.cancelButton {
+  background: var(--category);
+  color: var(--ink);
+}
+
+.cancelButton:hover {
+  background: var(--category-hover);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
 }

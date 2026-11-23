@@ -4,3 +4,19 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Pages and the API route are answered by the Next.js runtime, which sets the
+# security headers (including the Content-Security-Policy) from `headers()` in
+# next.config.ts. The block below covers the files the CDN serves by itself
+# (/_next/static, /public), which never reach that runtime.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Deploy previews and branch deploys are NOT restricted here on purpose: a pull
+# request builds with its own copy of this file, so a rule in it protects nothing.
+# Restrict them in the Netlify UI (Site configuration > Build & deploy).

@@ -1,0 +1,8 @@
+{
+ "path": "/admin/artworks/418297/museum",
+ "query": "?admin_portal_token=…&is_pending=true",
+ "status": 405,
+ "body": {
+  "detail": "Method Not Allowed"
+ }
+}
